@@ -36,9 +36,7 @@ public class HomeFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
         Button button = view.findViewById(R.id.btn);
-        button.setOnClickListener(v -> {
-            navigator.navigate("navigation_album");
-        });
+        button.setOnClickListener(v -> navigator.navigate(com.prm.common.R.string.route_album));
 
         return view;
     }

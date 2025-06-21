@@ -20,6 +20,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
+    private AppBarConfiguration appBarConfiguration;
+
     private boolean isNavigatingFromDestinationListener = false;
 
     @Override
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up the bottom navigation view
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+        appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_search, R.id.navigation_library)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
@@ -62,5 +64,12 @@ public class MainActivity extends AppCompatActivity {
             }
             return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+               || super.onSupportNavigateUp();
     }
 }

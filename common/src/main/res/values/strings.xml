@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Start Destination/Route -->
+    <string name="route_home">route_home</string>
+    <string name="route_search">route_search</string>
+    <string name="route_library">route_library</string>
+    <string name="route_album">route_album</string>
+    <!-- End Destination/Route -->
+</resources>

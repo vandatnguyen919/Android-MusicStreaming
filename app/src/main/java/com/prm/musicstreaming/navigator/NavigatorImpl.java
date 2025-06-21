@@ -19,6 +19,12 @@ public class NavigatorImpl implements Navigator {
     }
 
     @Override
+    public void navigate(int route) {
+        NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_activity_main);
+        navController.navigate(activity.getString(route));
+    }
+
+    @Override
     public void navigate(String route) {
         NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_activity_main);
         navController.navigate(route);

@@ -9,7 +9,7 @@
         android:id="@+id/navigation_home"
         android:name="com.prm.home.HomeFragment"
         android:label="Home"
-        app:route="navigation_home"
+        app:route="@string/route_home"
         tools:layout="@layout/fragment_home" >
     </fragment>
 
@@ -17,20 +17,20 @@
         android:id="@+id/navigation_search"
         android:name="com.prm.search.SearchFragment"
         android:label="Search"
-        app:route="navigation_search"
+        app:route="@string/route_search"
         tools:layout="@layout/fragment_search" />
 
     <fragment
         android:id="@+id/navigation_library"
         android:name="com.prm.library.LibraryFragment"
         android:label="Library"
-        app:route="navigation_library"
+        app:route="@string/route_library"
         tools:layout="@layout/fragment_library" />
 
     <fragment
         android:id="@+id/navigation_album"
         android:name="com.prm.album.AlbumFragment"
         android:label="Album"
-        app:route="navigation_album"
-        tools:layout="@layout/fragment_album" />
+        app:route="@string/route_album"
+    tools:layout="@layout/fragment_album" />
 </navigation>
