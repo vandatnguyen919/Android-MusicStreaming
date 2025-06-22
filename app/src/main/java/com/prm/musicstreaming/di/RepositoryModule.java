@@ -2,11 +2,11 @@ package com.prm.musicstreaming.di;
 
 import com.prm.data.repository.ArtistRepositoryImpl;
 import com.prm.data.repository.CartRepositoryImpl;
-import com.prm.data.repository.MusicRepositoryImpl;
+import com.prm.data.repository.SongRepositoryImpl;
 import com.prm.data.repository.UserRepositoryImpl;
 import com.prm.domain.repository.ArtistRepository;
 import com.prm.domain.repository.CartRepository;
-import com.prm.domain.repository.MusicRepository;
+import com.prm.domain.repository.SongRepository;
 import com.prm.domain.repository.UserRepository;
 
 import javax.inject.Singleton;
@@ -22,7 +22,7 @@ public abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    public abstract MusicRepository bindMusicRepository(MusicRepositoryImpl impl);
+    public abstract SongRepository bindMusicRepository(SongRepositoryImpl impl);
 
     @Binds
     @Singleton
