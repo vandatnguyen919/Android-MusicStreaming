@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Onboarding Screen -->
+    <string name="onboarding_title">Millions of Songs.\nFree on Spotify.</string>
+    <string name="onboarding_subtitle">Listen to your favorite music and discover new songs</string>
+    
+    <!-- Buttons -->
+    <string name="button_sign_up_free">Sign up free</string>
+    <string name="button_continue_with_google">Continue with Google</string>
+    <string name="button_continue_with_facebook">Continue with Facebook</string>
+    <string name="button_continue_with_apple">Continue with Apple</string>
+    <string name="button_log_in">Log in</string>
+    
+    <!-- Content Descriptions -->
+    <string name="cd_spotify_logo">Spotify Logo</string>
+    <string name="cd_google_logo">Google Logo</string>
+    <string name="cd_facebook_logo">Facebook Logo</string>
+    <string name="cd_apple_logo">Apple Logo</string>
+    <string name="cd_background_image">Background Music Image</string>
+</resources>

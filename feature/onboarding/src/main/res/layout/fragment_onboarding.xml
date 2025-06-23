@@ -1,13 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/onboarding_background"
     tools:context=".OnboardingFragment">
 
-    <TextView
+    <!-- Background with Music Theme -->
+    <View
+        android:id="@+id/view_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        android:background="@drawable/bg_music_neon" />
+
+    <!-- Main Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/onboarding_margin_horizontal"
+        android:paddingEnd="@dimen/onboarding_margin_horizontal"
+        android:paddingBottom="@dimen/onboarding_margin_bottom">
+
+        <!-- Top Section with Logo and Title -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingTop="@dimen/content_margin_top">
+
+            <!-- Spotify Logo -->
+            <ImageView
+                android:id="@+id/iv_logo"
+                android:layout_width="@dimen/logo_size"
+                android:layout_height="@dimen/logo_size"
+                android:layout_marginBottom="@dimen/logo_margin_bottom"
+                android:src="@drawable/ic_spotify_logo"
+                android:contentDescription="@string/cd_spotify_logo" />
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/tv_title"
+                style="@style/OnboardingTitle"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/onboarding_title" />
+
+        </LinearLayout>
+
+        <!-- Bottom Section with Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Sign Up Free Button -->
+            <Button
+                android:id="@+id/btn_sign_up_free"
+                style="@style/OnboardingButton.Primary"
+                android:text="@string/button_sign_up_free" />
+
+            <!-- Continue with Google Button -->
+            <Button
+                android:id="@+id/btn_continue_google"
+                style="@style/OnboardingButton.Social"
+                android:text="@string/button_continue_with_google"
+                android:drawableStart="@drawable/ic_google_logo"
+                android:drawablePadding="@dimen/button_icon_margin"
+                android:gravity="center" />
+
+            <!-- Continue with Facebook Button -->
+            <Button
+                android:id="@+id/btn_continue_facebook"
+                style="@style/OnboardingButton.Social"
+                android:text="@string/button_continue_with_facebook"
+                android:drawableStart="@drawable/ic_facebook_logo"
+                android:drawablePadding="@dimen/button_icon_margin"
+                android:gravity="center" />
+
+            <!-- Continue with Apple Button -->
+            <Button
+                android:id="@+id/btn_continue_apple"
+                style="@style/OnboardingButton.Social"
+                android:text="@string/button_continue_with_apple"
+                android:drawableStart="@drawable/ic_apple_logo"
+                android:drawablePadding="@dimen/button_icon_margin"
+                android:gravity="center" />
+
+            <!-- Log In Link -->
+            <TextView
+                android:id="@+id/tv_log_in"
+                style="@style/OnboardingLink"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:text="@string/button_log_in"
+                android:clickable="true"
+                android:focusable="true" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </FrameLayout>
