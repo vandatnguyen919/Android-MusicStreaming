@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
     id 'dagger.hilt.android.plugin'
 }
 
@@ -24,6 +26,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
 }
 
 dependencies {
@@ -34,6 +39,7 @@ dependencies {
     // Hilt core dependency
     implementation libs.hilt.android
     annotationProcessor libs.hilt.android.compiler
+    kapt libs.hilt.android.compiler
 
     implementation libs.appcompat
     implementation libs.material
