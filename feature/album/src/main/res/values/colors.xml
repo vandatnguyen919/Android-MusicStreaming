@@ -17,4 +17,10 @@
     
     <!-- Accent Colors -->
     <color name="accent_orange">#FF5722</color>
+
+    <!-- Share Button Colors -->
+    <color name="share_copy_link_bg">#666666</color>
+    <color name="share_whatsapp_bg">#25D366</color>
+    <color name="share_twitter_bg">#1DA1F2</color>
+    <color name="share_messages_bg">#34C759</color>
 </resources>

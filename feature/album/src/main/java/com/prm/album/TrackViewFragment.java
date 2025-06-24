@@ -16,7 +16,9 @@ import androidx.fragment.app.Fragment;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class TrackViewFragment extends Fragment {
+public class TrackViewFragment extends Fragment implements
+    TrackOptionsBottomSheetFragment.OnTrackOptionsListener,
+    ShareBottomSheetFragment.OnShareListener {
 
     // Views
     private ImageButton btnBack;
@@ -35,6 +37,10 @@ public class TrackViewFragment extends Fragment {
     private ImageButton btnRepeat;
     private ImageButton btnQueue;
     private ImageButton btnShare;
+
+    // Bottom Sheets
+    private TrackOptionsBottomSheetFragment trackOptionsBottomSheet;
+    private ShareBottomSheetFragment shareBottomSheet;
 
     public static TrackViewFragment newInstance() {
         return new TrackViewFragment();
@@ -82,7 +88,7 @@ public class TrackViewFragment extends Fragment {
         });
 
         btnMoreOptions.setOnClickListener(v -> {
-            // TODO: Show more options
+            showTrackOptionsBottomSheet();
         });
 
         btnLike.setOnClickListener(v -> {
@@ -114,7 +120,7 @@ public class TrackViewFragment extends Fragment {
         });
 
         btnShare.setOnClickListener(v -> {
-            // TODO: Share song
+            showShareBottomSheet();
         });
 
         seekBarProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -147,5 +153,100 @@ public class TrackViewFragment extends Fragment {
         
         // Set album cover background color (placeholder)
         ivAlbumCover.setBackgroundColor(getResources().getColor(R.color.primary_red));
+    }
+
+    private void showTrackOptionsBottomSheet() {
+        trackOptionsBottomSheet = TrackOptionsBottomSheetFragment.newInstance();
+        trackOptionsBottomSheet.setOnTrackOptionsListener(this);
+        trackOptionsBottomSheet.show(getChildFragmentManager(), "TrackOptionsBottomSheet");
+    }
+
+    private void showShareBottomSheet() {
+        shareBottomSheet = ShareBottomSheetFragment.newInstance();
+        shareBottomSheet.setOnShareListener(this);
+        shareBottomSheet.show(getChildFragmentManager(), "ShareBottomSheet");
+    }
+
+    // TrackOptionsBottomSheetFragment.OnTrackOptionsListener implementation
+    @Override
+    public void onLikeClicked() {
+        // TODO: Toggle like
+    }
+
+    @Override
+    public void onHideSongClicked() {
+        // TODO: Hide song
+    }
+
+    @Override
+    public void onAddToPlaylistClicked() {
+        // TODO: Show playlist selection dialog
+    }
+
+    @Override
+    public void onAddToQueueClicked() {
+        // TODO: Add to queue
+    }
+
+    @Override
+    public void onShareClicked() {
+        showShareBottomSheet();
+    }
+
+    @Override
+    public void onGoToRadioClicked() {
+        // TODO: Navigate to radio
+    }
+
+    @Override
+    public void onViewAlbumClicked() {
+        // TODO: Navigate to album
+    }
+
+    @Override
+    public void onViewArtistClicked() {
+        // TODO: Navigate to artist
+    }
+
+    @Override
+    public void onSongCreditsClicked() {
+        // TODO: Show song credits
+    }
+
+    @Override
+    public void onSleepTimerClicked() {
+        // TODO: Show sleep timer dialog
+    }
+
+    @Override
+    public void onCloseClicked() {
+        // Handle close for both bottom sheets
+        if (trackOptionsBottomSheet != null) {
+            trackOptionsBottomSheet = null;
+        }
+        if (shareBottomSheet != null) {
+            shareBottomSheet = null;
+        }
+    }
+
+    // ShareBottomSheetFragment.OnShareListener implementation
+    @Override
+    public void onCopyLinkClicked() {
+        // TODO: Copy link to clipboard
+    }
+
+    @Override
+    public void onWhatsAppClicked() {
+        // TODO: Share via WhatsApp
+    }
+
+    @Override
+    public void onTwitterClicked() {
+        // TODO: Share via Twitter
+    }
+
+    @Override
+    public void onMessagesClicked() {
+        // TODO: Share via Messages
     }
 }

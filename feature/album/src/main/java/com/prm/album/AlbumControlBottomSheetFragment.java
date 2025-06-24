@@ -134,7 +134,7 @@ public class AlbumControlBottomSheetFragment extends BottomSheetDialogFragment {
             tvAlbumTitle.setText(albumState.getAlbum().getName());
             tvArtistName.setText(albumState.getArtist().getName());
             
-            // TODO: Load album cover image using image loading library like Glide or Picasso
+            // TODO: Load album cover image using image loading library
             // Glide.with(this).load(albumState.getAlbum().getCoverImageUrl()).into(ivAlbumCover);
         }
     }
