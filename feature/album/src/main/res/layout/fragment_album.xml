@@ -217,8 +217,10 @@
             android:id="@+id/btn_mini_player_play_pause"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background="@drawable/mini_player_button_selector"
             android:src="@drawable/ic_pause"
+            android:tint="@color/mini_player_icon_color"
+            android:scaleType="center"
             android:contentDescription="Play/Pause" />
 
     </LinearLayout>
