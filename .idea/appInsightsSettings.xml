@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.prm.musicstreaming" />
+                  <option name="mobileSdkAppId" value="1:585106703577:android:2a4b7ca0ddba80dc1eaac8" />
+                  <option name="projectId" value="prm392-21f64" />
+                  <option name="projectNumber" value="585106703577" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
