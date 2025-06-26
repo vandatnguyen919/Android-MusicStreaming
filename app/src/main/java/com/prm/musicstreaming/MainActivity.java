@@ -1,8 +1,11 @@
 package com.prm.musicstreaming;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -24,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private NavController navController;
 
     private boolean isNavigatingFromDestinationListener = false;
+    private boolean isTopLevelDestination = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,20 @@ public class MainActivity extends AppCompatActivity {
 
         // Add a listener to handle navigation from child fragment back to parent fragment
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            // Determine if we're on a top-level destination
+            isTopLevelDestination = appBarConfiguration.getTopLevelDestinations()
+                    .contains(destination.getId());
+
+            // Set profile icon for top-level destinations, back button for others
+            if (isTopLevelDestination) {
+                toolbar.setNavigationIcon(R.drawable.ic_profile);
+                toolbar.setNavigationOnClickListener(v -> navController.navigate(R.id.navigation_profile));
+            } else {
+                toolbar.setNavigationIcon(R.drawable.ic_back); // Or let system handle it
+                toolbar.setNavigationOnClickListener(v -> navController.navigateUp());
+            }
+
+            // Existing destination changed logic
             if (destination.getId() == R.id.navigation_album && !isNavigatingFromDestinationListener) {
                 isNavigatingFromDestinationListener = true;
                 navView.setSelectedItemId(R.id.navigation_home);
