@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- Album Title Style -->
+    <style name="AlbumTitleStyle">
+        <item name="android:textColor">@color/text_white</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+    <!-- Artist Name Style -->
+    <style name="ArtistNameStyle">
+        <item name="android:textColor">@color/text_white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+    <!-- Album Info Style -->
+    <style name="AlbumInfoStyle">
+        <item name="android:textColor">@color/text_dark_gray</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+    <!-- Song Title Style -->
+    <style name="SongTitleStyle">
+        <item name="android:textColor">@color/text_white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+    <!-- Song Artist Style -->
+    <style name="SongArtistStyle">
+        <item name="android:textColor">@color/text_dark_gray</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+    <!-- Song Duration Style -->
+    <style name="SongDurationStyle">
+        <item name="android:textColor">@color/text_dark_gray</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    
+    <!-- Bottom Sheet Title Style -->
+    <style name="BottomSheetTitleStyle">
+        <item name="android:textColor">@color/text_white</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+    <!-- Bottom Sheet Option Style -->
+    <style name="BottomSheetOptionStyle">
+        <item name="android:textColor">@color/text_white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    
+    <!-- Mini Player Title Style -->
+    <style name="MiniPlayerTitleStyle">
+        <item name="android:textColor">@color/text_white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+    <!-- Mini Player Artist Style -->
+    <style name="MiniPlayerArtistStyle">
+        <item name="android:textColor">@color/text_dark_gray</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    
+</resources>

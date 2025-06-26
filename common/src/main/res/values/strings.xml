@@ -6,5 +6,6 @@
     <string name="route_search">route_search</string>
     <string name="route_library">route_library</string>
     <string name="route_album">route_album</string>
+    <string name="route_profile">route_profile</string>
     <!-- End Destination/Route -->
 </resources>

@@ -1,9 +1,11 @@
 package com.prm.musicstreaming;
 
 import android.os.Bundle;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -15,22 +17,17 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.prm.login.LoginFragment;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener {
+public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private NavController navController;
-    private BottomNavigationView navView;
-    private View navHostFragment;
-    private View fragmentContainer;
-    private Toolbar toolbar;
 
     private boolean isNavigatingFromDestinationListener = false;
-    private boolean isUserLoggedIn = false; // This would be determined by your auth system
+    private boolean isTopLevelDestination = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,88 +40,54 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
             return insets;
         });
 
-        // Initialize views
-        toolbar = findViewById(R.id.toolbar);
-        navView = findViewById(R.id.nav_view);
-        navHostFragment = findViewById(R.id.nav_host_fragment_activity_main);
-        fragmentContainer = findViewById(R.id.fragment_container);
-
         // Set up the toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (!isUserLoggedIn) {
-            // User not logged in - show login screen and hide nav elements
-            showLoginScreen();
-        } else {
-            // User is logged in - show main navigation
-            showMainNavigation();
-        }
-    }
-
-    private void showLoginScreen() {
-        // Hide navigation elements
-        navView.setVisibility(View.GONE);
-        toolbar.setVisibility(View.GONE);
-        navHostFragment.setVisibility(View.GONE);
-        fragmentContainer.setVisibility(View.VISIBLE);
-
-        // Load the LoginFragment as the first screen
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, LoginFragment.newInstance())
-                .commit();
-    }
-
-    private void showMainNavigation() {
-        // Show navigation elements
-        navView.setVisibility(View.VISIBLE);
-        toolbar.setVisibility(View.VISIBLE);
-        navHostFragment.setVisibility(View.VISIBLE);
-        fragmentContainer.setVisibility(View.GONE);
-
         // Set up the bottom navigation view
+        BottomNavigationView navView = findViewById(R.id.nav_view);
         appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_search, R.id.navigation_library)
                 .build();
-        
-        try {
-            navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-            NavigationUI.setupWithNavController(navView, navController);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(navView, navController);
 
-            // Add a listener to handle navigation from child fragment back to parent fragment
-            navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-                if (destination.getId() == R.id.navigation_album && !isNavigatingFromDestinationListener) {
-                    isNavigatingFromDestinationListener = true;
-                    navView.setSelectedItemId(R.id.navigation_home);
-                    isNavigatingFromDestinationListener = false;
-                }
-            });
+        // Add a listener to handle navigation from child fragment back to parent fragment
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            // Determine if we're on a top-level destination
+            isTopLevelDestination = appBarConfiguration.getTopLevelDestinations()
+                    .contains(destination.getId());
 
-            // Add this listener to prevent navigation when we're just updating UI
-            navView.setOnItemSelectedListener(item -> {
-                if (isNavigatingFromDestinationListener) {
-                    return true;
-                }
-                return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+            // Set profile icon for top-level destinations, back button for others
+            if (isTopLevelDestination) {
+                toolbar.setNavigationIcon(R.drawable.ic_profile);
+                toolbar.setNavigationOnClickListener(v -> navController.navigate(R.id.navigation_profile));
+            } else {
+                toolbar.setNavigationIcon(R.drawable.ic_back); // Or let system handle it
+                toolbar.setNavigationOnClickListener(v -> navController.navigateUp());
+            }
 
-    // Method to be called when user successfully logs in
-    @Override
-    public void onLoginSuccess() {
-        isUserLoggedIn = true;
-        showMainNavigation();
+            // Existing destination changed logic
+            if (destination.getId() == R.id.navigation_album && !isNavigatingFromDestinationListener) {
+                isNavigatingFromDestinationListener = true;
+                navView.setSelectedItemId(R.id.navigation_home);
+                isNavigatingFromDestinationListener = false;
+            }
+        });
+
+        // Add this listener to prevent navigation when we're just updating UI
+        navView.setOnItemSelectedListener(item -> {
+            if (isNavigatingFromDestinationListener) {
+                return true;
+            }
+            return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
+        });
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        if (navController != null) {
-            return NavigationUI.navigateUp(navController, appBarConfiguration)
-                   || super.onSupportNavigateUp();
-        }
-        return super.onSupportNavigateUp();
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+               || super.onSupportNavigateUp();
     }
 }

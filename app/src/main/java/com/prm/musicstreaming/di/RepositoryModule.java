@@ -1,9 +1,11 @@
 package com.prm.musicstreaming.di;
 
+import com.prm.data.repository.AlbumRepositoryImpl;
 import com.prm.data.repository.ArtistRepositoryImpl;
 import com.prm.data.repository.CartRepositoryImpl;
 import com.prm.data.repository.SongRepositoryImpl;
 import com.prm.data.repository.UserRepositoryImpl;
+import com.prm.domain.repository.AlbumRepository;
 import com.prm.domain.repository.ArtistRepository;
 import com.prm.domain.repository.CartRepository;
 import com.prm.domain.repository.SongRepository;
@@ -35,4 +37,8 @@ public abstract class RepositoryModule {
     @Binds
     @Singleton
     public abstract UserRepository bindUserRepository(UserRepositoryImpl impl);
+
+    @Binds
+    @Singleton
+    public abstract AlbumRepository bindAlbumRepository(AlbumRepositoryImpl impl);
 }
