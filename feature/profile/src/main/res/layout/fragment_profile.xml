@@ -8,33 +8,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ProfileFragment">
 
-<!-- Header -->
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="16dp"
-    android:gravity="center_vertical">
-
-    <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/ic_arrow_back"
-        app:tint="@color/white" />
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_weight="1" />
-
-    <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/ic_more_vert"
-        app:tint="@color/white" />
-
-</LinearLayout>
-
 <ScrollView
     android:layout_width="match_parent"
     android:layout_height="0dp"
@@ -52,6 +25,7 @@
             android:id="@+id/iv_profile"
             android:layout_width="120dp"
             android:layout_height="120dp"
+            android:layout_marginTop="12dp"
             android:src="@drawable/user_avatar"
             android:background="@drawable/circle_background"
             android:scaleType="centerCrop" />
@@ -335,8 +309,5 @@
     </LinearLayout>
 
 </ScrollView>
-
-<!-- Bottom Navigation -->
-<include layout="@layout/bottom_navigation" />
 
 </LinearLayout>
