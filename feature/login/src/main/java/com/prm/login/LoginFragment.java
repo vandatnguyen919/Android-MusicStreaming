@@ -20,16 +20,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.prm.common.Navigator;
+
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "LoginFragment";
-    
-    // Interface for communication with hosting activity
-    public interface LoginListener {
-        void onLoginSuccess();
-    }
-    
-    private LoginListener loginListener;
+
+    @Inject
+    Navigator navigator;
 
     private LoginViewModel mViewModel;
     // UI Components
@@ -43,17 +46,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
-    }
-    
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        // Verify that the host activity implements the callback interface
-        try {
-            loginListener = (LoginListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement LoginListener");
-        }
     }
 
     @Override
@@ -84,7 +76,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setupClickListeners() {
-        btnSignUpFree.setOnClickListener(this);
+        btnSignUpFree.setOnClickListener(v -> navigator.navigate(com.prm.common.R.string.route_home));
         btnContinueGoogle.setOnClickListener(this);
         btnContinueFacebook.setOnClickListener(this);
         btnContinueApple.setOnClickListener(this);
@@ -142,12 +134,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         // Simulate successful login for demonstration
         simulateSuccessfulLogin();
     }
-    
+
     private void simulateSuccessfulLogin() {
         // Notify the activity that login was successful
-        if (loginListener != null) {
-            loginListener.onLoginSuccess();
-        }
+        navigator.navigate(com.prm.common.R.string.route_home);
     }
 
     private void setupAnimations() {

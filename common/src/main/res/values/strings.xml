@@ -7,5 +7,6 @@
     <string name="route_library">route_library</string>
     <string name="route_album">route_album</string>
     <string name="route_profile">route_profile</string>
+    <string name="route_login">route_login</string>
     <!-- End Destination/Route -->
 </resources>
