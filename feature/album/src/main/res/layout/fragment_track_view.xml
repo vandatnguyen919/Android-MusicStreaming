@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_dark"
+    android:paddingHorizontal="24dp"
+    android:paddingVertical="16dp">
+
+    <!-- Top Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="8dp">
+
+        <!-- Back Button -->
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
+            android:tint="@android:color/white"
+            android:contentDescription="Back" />
+
+        <!-- Progress Indicator -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="16dp"
+            android:background="@color/primary_green" />
+
+        <!-- More Options -->
+        <ImageButton
+            android:id="@+id/btn_more_options"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_more"
+            android:tint="@android:color/white"
+            android:contentDescription="More options" />
+
+    </LinearLayout>
+
+    <!-- Album Cover Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingVertical="32dp">
+
+        <!-- Album Cover -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="320dp"
+            android:layout_height="320dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="8dp">
+
+            <ImageView
+                android:id="@+id/iv_album_cover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="@color/primary_red"
+                tools:src="@tools:sample/avatars" />
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Song Info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="32dp"
+            android:paddingHorizontal="16dp">
+
+            <!-- Song Details -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_song_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="From Me to You - Mono / Remastered"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/tv_artist_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="The Beatles"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+            </LinearLayout>
+
+            <!-- Like Button -->
+            <ImageButton
+                android:id="@+id/btn_like"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_heart"
+                android:tint="@android:color/white"
+                android:contentDescription="Like" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Progress Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="8dp">
+
+        <!-- Progress Bar -->
+        <SeekBar
+            android:id="@+id/seek_bar_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progressTint="@android:color/white"
+            android:thumbTint="@android:color/white"
+            android:progressBackgroundTint="@android:color/darker_gray"
+            android:max="100"
+            android:progress="30" />
+
+        <!-- Time Labels -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:id="@+id/tv_current_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1:23"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_total_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2:23"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Control Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingVertical="24dp">
+
+        <!-- Shuffle -->
+        <ImageButton
+            android:id="@+id/btn_shuffle"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ripple_circle_white"
+            android:src="@drawable/ic_shuffle"
+            android:tint="@android:color/darker_gray"
+            android:contentDescription="Shuffle" />
+
+        <!-- Previous -->
+        <ImageButton
+            android:id="@+id/btn_previous"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/ripple_circle_white"
+            android:src="@drawable/ic_skip_previous"
+            android:tint="@android:color/white"
+            android:contentDescription="Previous" />
+
+        <!-- Play/Pause -->
+        <ImageButton
+            android:id="@+id/btn_play_pause"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/circle_button_selector"
+            android:src="@drawable/ic_pause"
+            android:tint="@color/play_button_icon_color"
+            android:scaleType="center"
+            android:contentDescription="Play/Pause" />
+
+        <!-- Next -->
+        <ImageButton
+            android:id="@+id/btn_next"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/ripple_circle_white"
+            android:src="@drawable/ic_skip_next"
+            android:tint="@android:color/white"
+            android:contentDescription="Next" />
+
+        <!-- Repeat -->
+        <ImageButton
+            android:id="@+id/btn_repeat"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ripple_circle_white"
+            android:src="@drawable/ic_repeat"
+            android:tint="@android:color/darker_gray"
+            android:contentDescription="Repeat" />
+
+    </LinearLayout>
+
+    <!-- Bottom Controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingVertical="16dp">
+
+        <!-- Queue -->
+        <ImageButton
+            android:id="@+id/btn_queue"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_queue_music"
+            android:tint="@android:color/white"
+            android:contentDescription="Queue" />
+
+        <!-- Share -->
+        <ImageButton
+            android:id="@+id/btn_share"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_share"
+            android:tint="@android:color/white"
+            android:contentDescription="Share" />
+
+    </LinearLayout>
+
+</LinearLayout>

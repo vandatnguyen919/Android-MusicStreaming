@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tablet specific dimensions -->
+    <dimen name="onboarding_margin_horizontal">64dp</dimen>
+    <dimen name="logo_size">64dp</dimen>
+    <dimen name="text_size_title">40sp</dimen>
+    <dimen name="text_size_subtitle">18sp</dimen>
+    <dimen name="button_height">56dp</dimen>
+    <dimen name="content_margin_top">160dp</dimen>
+</resources>

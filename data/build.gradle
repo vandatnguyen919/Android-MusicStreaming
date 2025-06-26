@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     id 'dagger.hilt.android.plugin'
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -34,9 +35,19 @@ dependencies {
     implementation libs.hilt.android
     annotationProcessor libs.hilt.android.compiler
 
+    // Firebase
+    implementation platform(libs.firebase.bom)
+    implementation libs.firebase.firestore
+
+    // RxJava
+    implementation libs.rxjava
+    implementation libs.rxandroid
+
     implementation libs.appcompat
     implementation libs.material
     testImplementation libs.junit
+    testImplementation 'org.mockito:mockito-core:4.6.1'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.6.1'
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
 }

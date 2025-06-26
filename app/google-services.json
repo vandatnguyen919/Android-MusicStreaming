@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "585106703577",
+    "project_id": "prm392-21f64",
+    "storage_bucket": "prm392-21f64.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585106703577:android:2a4b7ca0ddba80dc1eaac8",
+        "android_client_info": {
+          "package_name": "com.prm.musicstreaming"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSurqWNhxFgz8tW1ONGPq9kJ1X-4DLE3M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

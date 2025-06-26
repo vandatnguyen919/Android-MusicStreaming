@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spotify Brand Colors -->
+    <color name="spotify_green">#1DB954</color>
+    <color name="spotify_green_dark">#1AA34A</color>
+    <color name="spotify_black">#191414</color>
+    <color name="spotify_dark_gray">#121212</color>
+    <color name="spotify_gray">#535353</color>
+    <color name="spotify_light_gray">#B3B3B3</color>
+    <color name="spotify_white">#FFFFFF</color>
+    
+    <!-- Background Colors -->
+    <color name="onboarding_background">#000000</color>
+    <color name="onboarding_overlay">#80000000</color>
+    <color name="gradient_start">#40000000</color>
+    <color name="gradient_end">#CC000000</color>
+    
+    <!-- Button Colors -->
+    <color name="button_primary">#1DB954</color>
+    <color name="button_primary_pressed">#1AA34A</color>
+    <color name="button_secondary">#FFFFFF</color>
+    <color name="button_secondary_pressed">#F0F0F0</color>
+    <color name="button_transparent">#00FFFFFF</color>
+    <color name="button_border">#727272</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B3B3B3</color>
+    <color name="text_on_primary">#000000</color>
+    <color name="text_link">#FFFFFF</color>
+</resources>
