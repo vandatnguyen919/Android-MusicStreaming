@@ -35,7 +35,6 @@ public class AlbumFragment extends Fragment implements
     private AlbumViewModel viewModel;
 
     // Views
-    private ImageButton btnBack;
     private ImageView ivAlbumCover;
     private TextView tvAlbumTitle;
     private ImageView ivArtistAvatar;
@@ -71,6 +70,7 @@ public class AlbumFragment extends Fragment implements
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(AlbumViewModel.class);
 
         initViews(view);
         setupRecyclerView();
@@ -81,14 +81,7 @@ public class AlbumFragment extends Fragment implements
         viewModel.loadAlbum("1");
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(AlbumViewModel.class);
-    }
-
     private void initViews(View view) {
-        btnBack = view.findViewById(R.id.btn_back);
         ivAlbumCover = view.findViewById(R.id.iv_album_cover);
         tvAlbumTitle = view.findViewById(R.id.tv_album_title);
         ivArtistAvatar = view.findViewById(R.id.iv_artist_avatar);
@@ -114,11 +107,6 @@ public class AlbumFragment extends Fragment implements
     }
 
     private void setupClickListeners() {
-        btnBack.setOnClickListener(v -> {
-            if (getActivity() != null) {
-                getActivity().onBackPressed();
-            }
-        });
 
         btnLike.setOnClickListener(v -> viewModel.toggleLike());
 

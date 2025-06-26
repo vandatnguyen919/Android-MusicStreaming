@@ -12,9 +12,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.prm.common.Navigator;
+
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class SearchFragment extends Fragment {
 
     private SearchViewModel mViewModel;
+
+    @Inject
+    Navigator navigator;
 
     public static SearchFragment newInstance() {
         return new SearchFragment();

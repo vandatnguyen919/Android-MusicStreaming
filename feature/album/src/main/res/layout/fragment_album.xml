@@ -18,24 +18,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Header with Back Button -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="8dp">
-
-                <ImageButton
-                    android:id="@+id/btn_back"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_centerVertical="true"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_back"
-                    android:contentDescription="Back" />
-
-            </RelativeLayout>
-
             <!-- Album Cover Section -->
             <LinearLayout
                 android:layout_width="match_parent"
