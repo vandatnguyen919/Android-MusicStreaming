@@ -8,5 +8,6 @@
     <string name="route_album">route_album</string>
     <string name="route_profile">route_profile</string>
     <string name="route_login">route_login</string>
+    <string name="route_search_result">route_search_result</string>
     <!-- End Destination/Route -->
 </resources>

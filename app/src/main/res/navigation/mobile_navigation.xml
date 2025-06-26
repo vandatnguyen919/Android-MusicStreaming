@@ -47,4 +47,11 @@
         android:label="LoginFragment"
         app:route="@string/route_login"
         tools:layout="@layout/fragment_login"/>
+
+    <fragment
+        android:id="@+id/navigation_search_result"
+        android:name="com.prm.search.SearchResultsFragment"
+        android:label="SearchResultsFragment"
+        app:route="@string/route_search_result"
+        tools:layout="@layout/fragment_search_result"/>
 </navigation>
