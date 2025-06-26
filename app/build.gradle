@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id 'dagger.hilt.android.plugin'
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -46,9 +47,18 @@ dependencies {
     implementation(project(":feature:profile"))
     implementation(project(":feature:search"))
 
-    // Hilt core dependency
+    // Hilt
     implementation libs.hilt.android
     annotationProcessor libs.hilt.android.compiler
+
+    // Firebase
+//    implementation libs.firebase.database
+    implementation platform(libs.firebase.bom)
+    implementation libs.firebase.firestore
+
+    // RxJava
+    implementation libs.rxjava
+    implementation libs.rxandroid
 
     implementation libs.appcompat
     implementation libs.material

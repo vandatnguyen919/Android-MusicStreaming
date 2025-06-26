@@ -41,6 +41,10 @@ dependencies {
     annotationProcessor libs.hilt.android.compiler
     kapt libs.hilt.android.compiler
 
+    // RxJava
+    implementation libs.rxjava
+    implementation libs.rxandroid
+
     implementation libs.appcompat
     implementation libs.material
     implementation libs.legacy.support.v4
