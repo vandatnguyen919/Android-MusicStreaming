@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Landscape specific dimensions -->
+    <dimen name="content_margin_top">40dp</dimen>
+    <dimen name="logo_margin_bottom">24dp</dimen>
+    <dimen name="onboarding_margin_bottom">24dp</dimen>
+</resources>
