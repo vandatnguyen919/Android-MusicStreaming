@@ -57,7 +57,7 @@
             android:orientation="vertical">
 
             <!-- Sign Up Free Button -->
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_sign_up_free"
                 style="@style/OnboardingButton.Primary"
                 android:text="@string/button_sign_up_free" />
