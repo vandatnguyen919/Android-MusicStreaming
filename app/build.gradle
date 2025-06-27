@@ -46,6 +46,7 @@ dependencies {
     implementation(project(":feature:onboarding"))
     implementation(project(":feature:profile"))
     implementation(project(":feature:search"))
+    implementation(project(":feature:payment"))
 
     // Hilt
     implementation libs.hilt.android
