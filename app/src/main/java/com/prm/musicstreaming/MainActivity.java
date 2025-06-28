@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private BottomNavigationView navView;
     private Toolbar toolbar;
+    private View miniPlayer;
     private NavController navController;
 
     private boolean isNavigatingFromDestinationListener = false;
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        miniPlayer = findViewById(R.id.mini_player);
+
         // Add a listener to handle navigation from child fragment back to parent fragment
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             // Check if current destination is login fragment
@@ -66,12 +69,15 @@ public class MainActivity extends AppCompatActivity {
                 // Hide toolbar and bottom navigation when on login screen
                 toolbar.setVisibility(View.GONE);
                 navView.setVisibility(View.GONE);
+                miniPlayer.setVisibility(View.GONE);
             } else {
                 // Show toolbar and bottom navigation for all other
                 boolean showToolbar = destination.getId() != R.id.navigation_membership_plan;
                 boolean showBottomNav = destination.getId() != R.id.navigation_payment_success;
+                boolean showMiniPlayer = destination.getId() != R.id.navigation_payment_success;
                 toolbar.setVisibility(showToolbar ? View.VISIBLE : View.GONE);
                 navView.setVisibility(showBottomNav? View.VISIBLE : View.GONE);
+                miniPlayer.setVisibility(showMiniPlayer? View.VISIBLE : View.GONE);
 
                 // Determine if we're on a top-level destination
                 isTopLevelDestination = appBarConfiguration.getTopLevelDestinations()
