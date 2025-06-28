@@ -72,7 +72,7 @@
     <fragment
         android:id="@+id/navigation_payment_success"
         android:name="com.prm.payment.result.PaymentSuccessFragment"
-        android:label="Payment Success"
+        android:label=""
         app:route="@string/route_payment_success"
         tools:layout="@layout/fragment_payment_success"/>
 

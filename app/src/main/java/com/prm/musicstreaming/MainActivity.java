@@ -69,8 +69,9 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 // Show toolbar and bottom navigation for all other
                 boolean showToolbar = destination.getId() != R.id.navigation_membership_plan;
+                boolean showBottomNav = destination.getId() != R.id.navigation_payment_success;
                 toolbar.setVisibility(showToolbar ? View.VISIBLE : View.GONE);
-                navView.setVisibility(View.VISIBLE);
+                navView.setVisibility(showBottomNav? View.VISIBLE : View.GONE);
 
                 // Determine if we're on a top-level destination
                 isTopLevelDestination = appBarConfiguration.getTopLevelDestinations()
