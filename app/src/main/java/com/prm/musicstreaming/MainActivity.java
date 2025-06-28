@@ -1,5 +1,6 @@
 package com.prm.musicstreaming;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import vn.zalopay.sdk.ZaloPaySDK;
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         // Set up the bottom navigation view
         navView = findViewById(R.id.nav_view);
         appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_search, R.id.navigation_library)
+                R.id.navigation_home, R.id.navigation_search, R.id.navigation_library, R.id.navigation_membership_plan)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -65,8 +67,9 @@ public class MainActivity extends AppCompatActivity {
                 toolbar.setVisibility(View.GONE);
                 navView.setVisibility(View.GONE);
             } else {
-                // Show toolbar and bottom navigation for all other fragments
-                toolbar.setVisibility(View.VISIBLE);
+                // Show toolbar and bottom navigation for all other
+                boolean showToolbar = destination.getId() != R.id.navigation_membership_plan;
+                toolbar.setVisibility(showToolbar ? View.VISIBLE : View.GONE);
                 navView.setVisibility(View.VISIBLE);
 
                 // Determine if we're on a top-level destination
@@ -92,6 +95,10 @@ public class MainActivity extends AppCompatActivity {
                     isNavigatingFromDestinationListener = true;
                     navView.setSelectedItemId(R.id.navigation_home);
                     isNavigatingFromDestinationListener = false;
+                } else if (destination.getId() == R.id.navigation_checkout && !isNavigatingFromDestinationListener) {
+                    isNavigatingFromDestinationListener = true;
+                    navView.setSelectedItemId(R.id.navigation_membership_plan);
+                    isNavigatingFromDestinationListener = false;
                 }
             }
         });
@@ -109,5 +116,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ZaloPaySDK.getInstance().onResult(intent);
     }
 }

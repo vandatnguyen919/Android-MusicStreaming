@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:background="#121212"
     android:paddingHorizontal="14dp"
+    android:scrollbars="none"
     tools:context=".membershipplan.MembershipPlanFragment">
 
     <LinearLayout
@@ -30,5 +31,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical" />
+
+        <include
+            layout="@layout/student_card_membership_plan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_vertical" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="100dp" />
     </LinearLayout>
 </ScrollView>

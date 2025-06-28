@@ -40,8 +40,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Individual"
-        android:textColor="#E1BEE7"
+        android:text="Student"
+        android:textColor="#D1C4E9"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +61,7 @@
             android:id="@+id/promotional_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="₫59,000 for 3 months"
+            android:text="₫29,500 for 2 months"
             android:textColor="#ffffff"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -70,7 +70,7 @@
             android:id="@+id/regular_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="₫59,000 / month after"
+            android:text="₫29,500 / month after"
             android:textColor="#999999"
             android:textSize="14sp" />
 
@@ -116,7 +116,29 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1 Premium account"
+                android:text="1 verified Premium account"
+                android:textColor="#ffffff"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="4dp"
+                android:layout_height="4dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/ic_add_circle" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Discount for eligible students"
                 android:textColor="#ffffff"
                 android:textSize="16sp" />
 
@@ -174,8 +196,8 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="24dp"
-        android:background="@drawable/primary_button_background"
-        android:text="Try 3 months for ₫59,000"
+        android:background="@drawable/primary_button_background_2"
+        android:text="Try 2 months for ₫29,500"
         android:textAllCaps="false"
         android:textColor="#000000"
         android:textSize="16sp"
@@ -185,22 +207,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/features_container" />
 
-    <!-- Secondary Button -->
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_one_time_payment"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/secondary_button_background"
-        android:text="One-time payment"
-        android:textAllCaps="false"
-        android:textColor="#ffffff"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_try_premium" />
+<!--    &lt;!&ndash; Secondary Button &ndash;&gt;-->
+<!--    <androidx.appcompat.widget.AppCompatButton-->
+<!--        android:id="@+id/btn_one_time_payment"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="56dp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:background="@drawable/secondary_button_background"-->
+<!--        android:text="One-time payment"-->
+<!--        android:textAllCaps="false"-->
+<!--        android:textColor="#ffffff"-->
+<!--        android:textSize="16sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:gravity="center"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/btn_try_premium" />-->
 
     <!-- Terms Text -->
     <TextView
@@ -209,14 +231,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
+        android:gravity="center"
         android:lineSpacingExtra="1dp"
-        android:text="₫59,000 for 3 months, then ₫59,000 per month after. Offer only available if you haven't tried Premium before and you subscribe via Spotify. Offers via Google Play may differ. Terms apply.\nOffer ends July 15, 2025."
+        android:text="₫29,500 for 2 months, then ₫29,500 per month after. Offer only available if you haven't tried Premium before and you subscribe via Spotify. Offers via Google Play may differ. Terms apply.\nOffer ends July 15, 2025."
         android:textColor="#999999"
         android:textSize="11sp"
-        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_one_time_payment" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_try_premium" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

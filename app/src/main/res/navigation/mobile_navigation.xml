@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/navigation_membership_plan">
+    app:startDestination="@id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_home"
@@ -58,14 +58,22 @@
     <fragment
         android:id="@+id/navigation_membership_plan"
         android:name="com.prm.payment.membershipplan.MembershipPlanFragment"
-        android:label="MembershipPlanFragment"
+        android:label="Membership Plan"
         app:route="@string/route_membership_plan"
         tools:layout="@layout/fragment_membership_plan"/>
 
     <fragment
         android:id="@+id/navigation_checkout"
         android:name="com.prm.payment.checkout.CheckoutFragment"
-        android:label="CheckoutFragment"
+        android:label="Checkout"
         app:route="@string/route_checkout"
         tools:layout="@layout/fragment_checkout"/>
+
+    <fragment
+        android:id="@+id/navigation_payment_success"
+        android:name="com.prm.payment.result.PaymentSuccessFragment"
+        android:label="Payment Success"
+        app:route="@string/route_payment_success"
+        tools:layout="@layout/fragment_payment_success"/>
+
 </navigation>

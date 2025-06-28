@@ -35,6 +35,16 @@ dependencies {
     implementation libs.hilt.android
     annotationProcessor libs.hilt.android.compiler
 
+    // ZaloPay SDK
+    implementation files("${rootProject.projectDir}/libs/zpdk-release-v3.1.aar")
+
+    // OkHttp
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+    implementation "commons-codec:commons-codec:1.18.0"
+
+    // Lottie for animations
+    implementation 'com.airbnb.android:lottie:6.6.7'
+
     implementation libs.appcompat
     implementation libs.material
     implementation libs.legacy.support.v4

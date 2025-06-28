@@ -11,5 +11,6 @@
     <string name="route_search_result">route_search_result</string>
     <string name="route_membership_plan">route_membership_plan</string>
     <string name="route_checkout">route_checkout</string>
+    <string name="route_payment_success">route_payment_success</string>
     <!-- End Destination/Route -->
 </resources>
