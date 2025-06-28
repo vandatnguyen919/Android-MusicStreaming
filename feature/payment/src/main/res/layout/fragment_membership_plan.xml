@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#121212"
-    android:paddingHorizontal="14dp"
     android:scrollbars="none"
     tools:context=".membershipplan.MembershipPlanFragment">
 
@@ -15,9 +14,37 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_membership_plan"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@drawable/bg_gradient"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="14dp"
             android:text="Available plans"
             android:textColor="@android:color/white"
             android:textSize="20sp"
@@ -30,12 +57,15 @@
             layout="@layout/card_membership_plan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="14dp"
+            android:paddingHorizontal="14dp"
             android:layout_gravity="center_vertical" />
 
         <include
             layout="@layout/student_card_membership_plan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="14dp"
             android:layout_marginTop="16dp"
             android:layout_gravity="center_vertical" />
 
