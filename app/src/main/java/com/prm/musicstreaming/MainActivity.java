@@ -110,7 +110,10 @@ public class MainActivity extends AppCompatActivity {
                 // Show toolbar and bottom navigation for all other
                 boolean showToolbar = destination.getId() != R.id.navigation_membership_plan;
                 boolean showBottomNav = destination.getId() != R.id.navigation_payment_success;
-                boolean showMiniPlayer = destination.getId() != R.id.navigation_payment_success;
+                boolean showMiniPlayer = destination.getId() == R.id.navigation_home ||
+                        destination.getId() == R.id.navigation_search ||
+                        destination.getId() == R.id.navigation_library ||
+                        destination.getId() == R.id.navigation_membership_plan;
                 toolbar.setVisibility(showToolbar ? View.VISIBLE : View.GONE);
                 navView.setVisibility(showBottomNav? View.VISIBLE : View.GONE);
                 miniPlayer.setVisibility(showMiniPlayer? View.VISIBLE : View.GONE);

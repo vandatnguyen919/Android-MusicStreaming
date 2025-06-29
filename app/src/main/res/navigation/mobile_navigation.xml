@@ -76,4 +76,18 @@
         app:route="@string/route_payment_success"
         tools:layout="@layout/fragment_payment_success"/>
 
+    <fragment
+        android:id="@+id/navigation_plan_management"
+        android:name="com.prm.payment.management.PlanManagementFragment"
+        android:label="Your Plan"
+        app:route="route_plan_management"
+        tools:layout="@layout/fragment_plan_management"/>
+
+    <fragment
+        android:id="@+id/navigation_plan_management_details"
+        android:name="com.prm.payment.management.PlanManagementDetailsFragment"
+        android:label="Manage Your Plan"
+        app:route="route_plan_management_details"
+        tools:layout="@layout/fragment_plan_management_details" />
+
 </navigation>
