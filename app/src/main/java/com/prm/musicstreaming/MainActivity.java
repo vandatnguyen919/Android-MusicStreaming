@@ -1,33 +1,62 @@
 package com.prm.musicstreaming;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.os.Handler;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.media3.common.util.UnstableApi;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.prm.common.Navigator;
+import com.prm.common.util.SampleSongs;
+import com.prm.domain.model.Song;
+import com.prm.common.MiniPlayerViewModel;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import vn.zalopay.sdk.ZaloPaySDK;
 
+@UnstableApi
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private BottomNavigationView navView;
     private Toolbar toolbar;
+    private View miniPlayer;
     private NavController navController;
+    private MiniPlayerViewModel miniPlayerViewModel;
+
+    @Inject
+    Navigator navigator;
+
+    // Mini player UI components
+    private ImageView ivMiniPlayerCover;
+    private TextView tvMiniPlayerTitle;
+    private TextView tvMiniPlayerArtist;
+    private ImageButton btnMiniPlayerPlayPause;
+
+    private final Handler progressHandler = new Handler();
+    private Runnable progressRunnable;
 
     private boolean isNavigatingFromDestinationListener = false;
     private boolean isTopLevelDestination = true;
@@ -36,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.app_background, null));
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -43,18 +73,30 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Initialize ViewModel
+        miniPlayerViewModel = new ViewModelProvider(this).get(MiniPlayerViewModel.class);
+
         // Set up the toolbar
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Initialize mini player components
+        initializeMiniPlayer();
+
         // Set up the bottom navigation view
         navView = findViewById(R.id.nav_view);
         appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_search, R.id.navigation_library)
+                R.id.navigation_home, R.id.navigation_search, R.id.navigation_library, R.id.navigation_membership_plan)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        // Set up observers for mini player
+        setupMiniPlayerObservers();
+
+        // Connect to music service
+        miniPlayerViewModel.connect();
 
         // Add a listener to handle navigation from child fragment back to parent fragment
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
@@ -63,10 +105,18 @@ public class MainActivity extends AppCompatActivity {
                 // Hide toolbar and bottom navigation when on login screen
                 toolbar.setVisibility(View.GONE);
                 navView.setVisibility(View.GONE);
+                miniPlayer.setVisibility(View.GONE);
             } else {
-                // Show toolbar and bottom navigation for all other fragments
-                toolbar.setVisibility(View.VISIBLE);
-                navView.setVisibility(View.VISIBLE);
+                // Show toolbar and bottom navigation for all other
+                boolean showToolbar = destination.getId() != R.id.navigation_membership_plan;
+                boolean showBottomNav = destination.getId() != R.id.navigation_payment_success;
+                boolean showMiniPlayer = destination.getId() == R.id.navigation_home ||
+                        destination.getId() == R.id.navigation_search ||
+                        destination.getId() == R.id.navigation_library ||
+                        destination.getId() == R.id.navigation_membership_plan;
+                toolbar.setVisibility(showToolbar ? View.VISIBLE : View.GONE);
+                navView.setVisibility(showBottomNav? View.VISIBLE : View.GONE);
+                miniPlayer.setVisibility(showMiniPlayer? View.VISIBLE : View.GONE);
 
                 // Determine if we're on a top-level destination
                 isTopLevelDestination = appBarConfiguration.getTopLevelDestinations()
@@ -91,6 +141,10 @@ public class MainActivity extends AppCompatActivity {
                     isNavigatingFromDestinationListener = true;
                     navView.setSelectedItemId(R.id.navigation_home);
                     isNavigatingFromDestinationListener = false;
+                } else if (destination.getId() == R.id.navigation_checkout && !isNavigatingFromDestinationListener) {
+                    isNavigatingFromDestinationListener = true;
+                    navView.setSelectedItemId(R.id.navigation_membership_plan);
+                    isNavigatingFromDestinationListener = false;
                 }
             }
         });
@@ -104,9 +158,96 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void initializeMiniPlayer() {
+        miniPlayer = findViewById(R.id.mini_player);
+        ivMiniPlayerCover = miniPlayer.findViewById(R.id.iv_mini_player_cover);
+        tvMiniPlayerTitle = miniPlayer.findViewById(R.id.tv_mini_player_title);
+        tvMiniPlayerArtist = miniPlayer.findViewById(R.id.tv_mini_player_artist);
+        btnMiniPlayerPlayPause = miniPlayer.findViewById(R.id.btn_mini_player_play_pause);
+
+        btnMiniPlayerPlayPause.setOnClickListener(v -> miniPlayerViewModel.playPause());
+
+        miniPlayer.setOnClickListener(v -> {
+            NavOptions navOptions = new NavOptions.Builder()
+                    .setPopUpTo(R.id.navigation_home, false)
+                    .build();
+            navController.navigate(R.id.navigation_album, null, navOptions);
+        });
+    }
+
+    private void setupMiniPlayerObservers() {
+        miniPlayerViewModel.getCurrentSong().observe(this, this::updateMiniPlayerSong);
+        miniPlayerViewModel.getIsPlaying().observe(this, this::updatePlayPauseButton);
+
+        // Start progress updates when playing
+        miniPlayerViewModel.getIsPlaying().observe(this, isPlaying -> {
+            if (isPlaying) {
+                startProgressUpdates();
+            } else {
+                stopProgressUpdates();
+            }
+        });
+    }
+
+    private void updateMiniPlayerSong(Song song) {
+        if (song != null) {
+            tvMiniPlayerTitle.setText(song.getTitle());
+            tvMiniPlayerArtist.setText(song.getArtistId()); // You might want to resolve artist name
+            miniPlayer.setVisibility(View.VISIBLE);
+
+            // Load album cover using your preferred image loading library (Glide, Picasso, etc.)
+            // For now, using a placeholder
+            ivMiniPlayerCover.setImageResource(com.prm.common.R.drawable.ic_music_note);
+        } else {
+            miniPlayer.setVisibility(View.GONE);
+        }
+    }
+
+    private void updatePlayPauseButton(Boolean isPlaying) {
+        if (isPlaying != null && isPlaying) {
+            btnMiniPlayerPlayPause.setImageResource(com.prm.common.R.drawable.ic_pause);
+        } else {
+            btnMiniPlayerPlayPause.setImageResource(com.prm.common.R.drawable.ic_play);
+        }
+    }
+
+    private void startProgressUpdates() {
+        if (progressRunnable == null) {
+            progressRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    miniPlayerViewModel.updateProgress();
+                    progressHandler.postDelayed(this, 1000); // Update every second
+                }
+            };
+        }
+        progressHandler.post(progressRunnable);
+    }
+
+    private void stopProgressUpdates() {
+        if (progressRunnable != null) {
+            progressHandler.removeCallbacks(progressRunnable);
+        }
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ZaloPaySDK.getInstance().onResult(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopProgressUpdates();
+        if (miniPlayerViewModel != null) {
+            miniPlayerViewModel.disconnect();
+        }
     }
 }

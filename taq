@@ -1,0 +1,217 @@
+[33mcommit 26167dd7431debef5cd383cf0ab583a7e24cdb95[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/payment[m[33m, [m[1;31morigin/feature/payment[m[33m)[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Fri Jun 27 23:17:17 2025 +0700
+
+    Add Membership and Checkout View
+
+[33mcommit 9d767129938b6e188aed48cfc6afe393171c60c4[m[33m ([m[1;31morigin/faeture/fixButton[m[33m, [m[1;32mmain[m[33m, [m[1;32mfaeture/fixButton[m[33m)[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Thu Jun 26 22:48:59 2025 +0700
+
+    Fixed Login Buttons
+
+[33mcommit 60aa2eb4c3123756279510e458e2302052925e60[m
+Merge: 5321d94 b3a6ab9
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Thu Jun 26 22:46:16 2025 +0700
+
+    Merge branch 'main' of https://github.com/vandatnguyen919/Android-MusicStreaming
+
+[33mcommit b3a6ab93370ebe5adda85d6c3e5b88664e62e3c6[m[33m ([m[1;31morigin/main[m[33m)[m
+Merge: 5446b9e 0ed8d9a
+Author: Dat Nguyen <112632332+vandatnguyen919@users.noreply.github.com>
+Date:   Thu Jun 26 22:32:08 2025 +0700
+
+    Merge pull request #7 from vandatnguyen919/develop
+    
+    Develop
+
+[33mcommit 0ed8d9a050f3444bb4193cfa83294355718c20a7[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Thu Jun 26 22:30:29 2025 +0700
+
+    Change button color
+
+[33mcommit fe4fc69225dddab7373aa75b7fdca2e2c472e9c6[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Thu Jun 26 22:27:25 2025 +0700
+
+    Set the click event for search bar
+
+[33mcommit f475fb9898ab4bc4827d3f1bac62b91eec9a562f[m[33m ([m[1;32mfeature/login-view[m[33m)[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Thu Jun 26 22:20:57 2025 +0700
+
+    Fixed dev conflict
+
+[33mcommit eec6a8c07703fc4f15cec8a9d199fb356a09c33a[m
+Merge: 2dabc4e 07eaba0
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Thu Jun 26 22:02:47 2025 +0700
+
+    Merge branch 'refs/heads/develop' into feature/login-view
+    
+    # Conflicts:
+    #       app/src/main/java/com/prm/musicstreaming/MainActivity.java
+    #       app/src/main/res/layout/activity_main.xml
+
+[33mcommit 5446b9e73eb23e1214ce33e2a6a0fd3fd0be4725[m
+Merge: 191a2a3 07eaba0
+Author: Dat Nguyen <112632332+vandatnguyen919@users.noreply.github.com>
+Date:   Thu Jun 26 21:45:07 2025 +0700
+
+    Merge pull request #6 from vandatnguyen919/develop
+    
+    Develop
+
+[33mcommit 2dabc4e70f770882bfc9114c86e578e5179ff677[m[33m ([m[1;31morigin/feature/login-view[m[33m)[m
+Author: trtien05 <trantien100700@gmail.com>
+Date:   Thu Jun 26 21:43:41 2025 +0700
+
+    feat: create login view
+
+[33mcommit 07eaba051669b875b5eae1086b6de02abaff9c90[m[33m ([m[1;32mphuoc_test_album[m[33m)[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Thu Jun 26 21:43:41 2025 +0700
+
+    Merge dev into album
+
+[33mcommit 22fa379d95a10fe5d6ad66228ea56ff05fceee68[m
+Merge: 7f49a18 e79e643
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Thu Jun 26 21:25:58 2025 +0700
+
+    Merge branch 'develop' into phuoc_test_album
+    
+    # Conflicts:
+    #       build.gradle
+    #       gradle/libs.versions.toml
+
+[33mcommit e79e643238791f608693b430d13129f8fc86fa1e[m[33m ([m[1;32mfeature/searching[m[33m)[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Thu Jun 26 21:17:22 2025 +0700
+
+    Add profile button
+
+[33mcommit 93c948bbfa03d9fce7949ebc5b2fa7e84ce1398d[m
+Merge: fd81890 6c50609
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Thu Jun 26 20:16:10 2025 +0700
+
+    Merge branch 'develop' into feature/searching
+
+[33mcommit 6c506096c000a3445f913c8b06f658b734b91ea8[m[33m ([m[1;32mfeature/profile[m[33m)[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Thu Jun 26 20:15:13 2025 +0700
+
+    merge feature/profile
+
+[33mcommit eddeb383f9980163b541ef45cccb32d9d2210cfc[m
+Merge: af59a36 63aa89e
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Thu Jun 26 19:57:24 2025 +0700
+
+    Merge branch 'develop' into feature/profile
+
+[33mcommit fd81890ded04c2fe4e4c9cd81b235a5cc83bc674[m[33m ([m[1;31morigin/feature/searching[m[33m)[m
+Author: Dat <datntse180123@fpt.edu.vn>
+Date:   Wed Jun 25 03:55:20 2025 +0700
+
+    feat: add searching feature
+
+[33mcommit 7f49a187d164b7617985cb94bcce6859b0889e63[m[33m ([m[1;31morigin/phuoc_test_album[m[33m)[m
+Merge: 66e5f06 2440587
+Author: HCM24_CPL_NET14_LeVanPhuoc <phuoclvse173407@fpt.edu.vn>
+Date:   Wed Jun 25 01:02:14 2025 +0700
+
+    Merge remote-tracking branch 'origin/phuoc_test_album' into phuoc_test_album
+
+[33mcommit 66e5f06e36a732b2b0756c321bd2b77feecd56c1[m
+Author: HCM24_CPL_NET14_LeVanPhuoc <phuoclvse173407@fpt.edu.vn>
+Date:   Wed Jun 25 00:42:20 2025 +0700
+
+    add radio album song
+
+[33mcommit 244058719a321b79f921180738583d960a956440[m
+Author: HCM24_CPL_NET14_LeVanPhuoc <phuoclvse173407@fpt.edu.vn>
+Date:   Wed Jun 25 00:42:20 2025 +0700
+
+    delete .vscode
+
+[33mcommit c0f2087133c08d249d6ef5ad08ddc68078e02ae3[m
+Author: HCM24_CPL_NET14_LeVanPhuoc <phuoclvse173407@fpt.edu.vn>
+Date:   Wed Jun 25 00:33:41 2025 +0700
+
+    Track View and track
+
+[33mcommit 118edc7f6b19a7b70afc157b83c7409cc5fdd572[m
+Author: HCM24_CPL_NET14_LeVanPhuoc <phuoclvse173407@fpt.edu.vn>
+Date:   Tue Jun 24 23:53:28 2025 +0700
+
+    loi intial layout
+
+[33mcommit 63aa89e4c5f875f17623d41f170e1777f2e75f91[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Tue Jun 24 23:36:54 2025 +0700
+
+    Connect Firebase
+
+[33mcommit af59a36d7acd75d4c1abd9fcab492ee787598c56[m[33m ([m[1;31morigin/feature/profile[m[33m)[m
+Author: Vo Thi Mai Hoa <vothimaihoa123@gmail.com>
+Date:   Tue Jun 24 21:52:55 2025 +0700
+
+    [ADD] profile layouts
+
+[33mcommit 191a2a374761493124447e3df173b8cb5c5769b6[m
+Merge: ff61dc6 a1a9868
+Author: Dat Nguyen <112632332+vandatnguyen919@users.noreply.github.com>
+Date:   Sun Jun 22 11:25:12 2025 +0700
+
+    Merge pull request #2 from vandatnguyen919/develop
+    
+    Add Models
+
+[33mcommit a1a9868689827bbdc732461b0a836a5f13f4f682[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Sun Jun 22 11:23:55 2025 +0700
+
+    Add Models
+
+[33mcommit ff61dc6b35303de0d8e5b92127f6fa70e78026b2[m
+Merge: 8c64c0d fb35543
+Author: Dat Nguyen <112632332+vandatnguyen919@users.noreply.github.com>
+Date:   Sun Jun 22 01:29:07 2025 +0700
+
+    Merge pull request #1 from vandatnguyen919/develop
+    
+    Make navController Global
+
+[33mcommit fb355435ec6b900cdfd90eb055245c91e2cc53cf[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Sun Jun 22 01:26:37 2025 +0700
+
+    Make navController Global
+
+[33mcommit 5321d9406b0a718848f86bc694c1255d93ee124d[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Sun Jun 22 01:09:02 2025 +0700
+
+    test
+
+[33mcommit 8c64c0d6cbfd619c55c574d147204b937ebe4076[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Sun Jun 22 01:04:12 2025 +0700
+
+    Fixed Navigation Up button & Refactor route destination
+
+[33mcommit 60515bf591ba361c9ce8bc45fdee7c21ebb737b8[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Fri Jun 20 01:21:04 2025 +0700
+
+    init project
+
+[33mcommit 62dff856d7cbf279dae8064e34c10ff295bdfd1f[m
+Author: vandatnguyen919 <vandatnguyen919@gmail.com>
+Date:   Fri Jun 20 01:20:11 2025 +0700
+
+    first commit

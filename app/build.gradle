@@ -46,6 +46,7 @@ dependencies {
     implementation(project(":feature:onboarding"))
     implementation(project(":feature:profile"))
     implementation(project(":feature:search"))
+    implementation(project(":feature:payment"))
 
     // Hilt
     implementation libs.hilt.android
@@ -60,6 +61,12 @@ dependencies {
     implementation libs.rxjava
     implementation libs.rxandroid
 
+    // ZaloPay SDK
+    implementation files("${rootProject.projectDir}/libs/zpdk-release-v3.1.aar")
+
+    //
+    implementation libs.media3.common
+    
     implementation libs.appcompat
     implementation libs.material
     implementation libs.activity

@@ -1,8 +1,15 @@
 package com.prm.common;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.StringRes;
+
 public interface Navigator {
 
-    void navigate(int route);
+    void navigate(@StringRes int route);
 
     void navigate(String route);
+
+    void navigate(@IdRes int route, boolean inclusive);
+
+    void navigate(String route, boolean inclusive);
 }
