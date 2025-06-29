@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.prm.common.Navigator;
+import com.prm.common.util.MusicPlayerHelper;
+import com.prm.common.util.SampleSongs;
 import com.prm.domain.model.Artist;
 import com.prm.domain.model.Song;
 
@@ -31,6 +33,9 @@ public class HomeFragment extends Fragment {
     @Inject
     Navigator navigator;
 
+    @Inject
+    MusicPlayerHelper musicPlayerHelper;
+
     public static HomeFragment newInstance() {
         return new HomeFragment();
     }
@@ -41,7 +46,10 @@ public class HomeFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
         Button button = view.findViewById(R.id.btn);
-        button.setOnClickListener(v -> navigator.navigate(com.prm.common.R.string.route_album));
+        button.setOnClickListener(v -> {
+            Song testSong = SampleSongs.getSampleSong();
+            musicPlayerHelper.playSong(testSong);
+        });
 
         return view;
     }
