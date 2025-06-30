@@ -23,6 +23,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.prm.common.Navigator;
 import com.prm.common.util.SampleSongs;
 import com.prm.domain.model.Song;
@@ -64,6 +66,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Check authentication status
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            // User not authenticated, redirect to AuthActivity
+            navigator.navigateToAuth(this);
+            return;
+        }
+
         EdgeToEdge.enable(this);
         getWindow().setStatusBarColor(getResources().getColor(R.color.app_background, null));
         setContentView(R.layout.activity_main);

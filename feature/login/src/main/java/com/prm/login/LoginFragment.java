@@ -20,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.prm.common.Navigator;
 
 import javax.inject.Inject;
@@ -76,7 +78,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setupClickListeners() {
-        btnSignUpFree.setOnClickListener(v -> navigator.navigate(com.prm.common.R.string.route_home));
+        btnSignUpFree.setOnClickListener(this);
         btnContinueGoogle.setOnClickListener(this);
         btnContinueFacebook.setOnClickListener(this);
         btnContinueApple.setOnClickListener(this);
@@ -102,42 +104,83 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private void handleSignUpFree() {
         Log.d(TAG, "Sign up free clicked");
-        showToast("Sign up free clicked");
-        // Simulate successful login for demonstration
-        simulateSuccessfulLogin();
+
+        // Navigate to signup form
+        SignupFragment signupFragment = SignupFragment.newInstance();
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, signupFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void handleContinueWithGoogle() {
         Log.d(TAG, "Continue with Google clicked");
-        showToast("Continue with Google clicked");
-        // Simulate successful login for demonstration
-        simulateSuccessfulLogin();
+        showToast("Signing in...");
+        signInAnonymously();
     }
 
     private void handleContinueWithFacebook() {
         Log.d(TAG, "Continue with Facebook clicked");
-        showToast("Continue with Facebook clicked");
-        // Simulate successful login for demonstration
-        simulateSuccessfulLogin();
+        showToast("Signing in...");
+        signInAnonymously();
     }
 
     private void handleContinueWithApple() {
         Log.d(TAG, "Continue with Apple clicked");
-        showToast("Continue with Apple clicked");
-        // Simulate successful login for demonstration
-        simulateSuccessfulLogin();
+        showToast("Signing in...");
+        signInAnonymously();
     }
 
     private void handleLogIn() {
         Log.d(TAG, "Log in clicked");
-        showToast("Log in clicked");
-        // Simulate successful login for demonstration
-        simulateSuccessfulLogin();
+
+        // Navigate to login form
+        LoginFormFragment loginFormFragment = LoginFormFragment.newInstance();
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, loginFormFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
-    private void simulateSuccessfulLogin() {
-        // Notify the activity that login was successful
-        navigator.navigate(com.prm.common.R.string.route_home);
+    private void signInAnonymously() {
+        FirebaseAuth.getInstance().signInAnonymously()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "Anonymous sign in successful");
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            Log.d(TAG, "User ID: " + user.getUid());
+                            Log.d(TAG, "Is anonymous: " + user.isAnonymous());
+                            showToast("Login successful!");
+                            navigateToHome();
+                        }
+                    } else {
+                        Log.e(TAG, "Anonymous sign in failed", task.getException());
+                        String errorMsg = task.getException() != null ? task.getException().getMessage() : "Unknown error";
+                        showToast("Login failed: " + errorMsg);
+                    }
+                });
+    }
+
+    private void navigateToHome() {
+        try {
+            // Check if fragment is still attached to avoid crashes
+            if (isAdded() && getContext() != null) {
+                navigator.navigateToHome(getContext());
+                // Use a small delay before finishing activity to ensure navigation completes
+                new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                    if (getActivity() != null && !getActivity().isFinishing()) {
+                        getActivity().finish();
+                    }
+                }, 100);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error navigating to home", e);
+            // Fallback: just finish the current activity
+            if (getActivity() != null && !getActivity().isFinishing()) {
+                getActivity().finish();
+            }
+        }
     }
 
     private void setupAnimations() {

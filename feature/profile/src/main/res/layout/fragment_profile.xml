@@ -30,16 +30,62 @@
             android:background="@drawable/circle_background"
             android:scaleType="centerCrop" />
 
-        <!-- Edit Profile Button -->
-        <Button
+        <!-- Buttons Row -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit Profile"
-            android:textColor="@color/white"
-            android:background="@drawable/rounded_button_transparent"
+            android:orientation="horizontal"
             android:layout_marginTop="16dp"
-            android:paddingHorizontal="24dp"
-            android:paddingVertical="8dp" />
+            android:gravity="center">
+
+            <!-- Edit Profile Button -->
+            <Button
+                android:id="@+id/btn_edit_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit Profile"
+                android:textColor="@color/white"
+                android:background="@drawable/rounded_button_transparent"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="8dp"
+                android:layout_marginEnd="12dp" />
+
+            <!-- Add Song Button -->
+            <Button
+                android:id="@+id/btn_add_song"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Song"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#1DB954"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="8dp" />
+
+        </LinearLayout>
+
+        <!-- Authentication Status -->
+        <TextView
+            android:id="@+id/tv_auth_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Checking authentication..."
+            android:textColor="@color/gray_text"
+            android:textSize="12sp"
+            android:gravity="center" />
+
+        <!-- Manual Authentication Button -->
+        <Button
+            android:id="@+id/btn_authenticate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Authenticate Now"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#FF9800"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="4dp"
+            android:textSize="12sp" />
 
         <!-- Stats -->
         <LinearLayout
