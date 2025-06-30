@@ -47,8 +47,15 @@ public class HomeFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
         Button button = view.findViewById(R.id.btn);
         button.setOnClickListener(v -> {
-            Song testSong = SampleSongs.getSampleSong();
-            musicPlayerHelper.playSong(testSong);
+            try {
+                Log.d(TAG, "Play button clicked");
+                Song testSong = SampleSongs.getSampleSong();
+                Log.d(TAG, "Sample song created: " + testSong.getTitle() + " - " + testSong.getUrl());
+                musicPlayerHelper.playSong(testSong);
+                Log.d(TAG, "Play song called successfully");
+            } catch (Exception e) {
+                Log.e(TAG, "Error playing song", e);
+            }
         });
 
         return view;
