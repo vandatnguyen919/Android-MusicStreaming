@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MusicStreaming</string>
     <string name="title_home">Home</string>
+    <string name="client_id">585106703577-aopj0mck5l6h4cgh2d4omu36mj8irnu8.apps.googleusercontent.com</string>
 </resources>

@@ -56,7 +56,13 @@ dependencies {
 //    implementation libs.firebase.database
     implementation platform(libs.firebase.bom)
     implementation libs.firebase.firestore
-
+    implementation libs.google.firebase.analytics
+    implementation libs.play.services.auth
+    implementation libs.google.firebase.auth
+    implementation libs.credentials
+    implementation libs.credentials.play.services.auth.v150
+    implementation libs.googleid
+    implementation libs.com.google.firebase.firebase.auth
     // RxJava
     implementation libs.rxjava
     implementation libs.rxandroid

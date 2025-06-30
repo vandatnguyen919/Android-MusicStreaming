@@ -19,18 +19,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.prm.common.Navigator;
-
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import com.google.android.*;
 
 @AndroidEntryPoint
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "LoginFragment";
-
+    private static final int RC_SIGN_IN = 1001;
     @Inject
     Navigator navigator;
 
@@ -52,6 +51,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
+        // Instantiate a Google sign-in request
+
         initViews(view);
         setupClickListeners();
         setupAnimations();

@@ -9,10 +9,23 @@
       "client_info": {
         "mobilesdk_app_id": "1:585106703577:android:2a4b7ca0ddba80dc1eaac8",
         "android_client_info": {
-          "package_name": "com.prm.musicstreaming"
+          "package_name": "com.prm"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "585106703577-50rtlc13ts7lh2k3fod41nl363emd4as.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.prm",
+            "certificate_hash": "bffd97c560c8e7e74862f47569a53808cd650928"
+          }
+        },
+        {
+          "client_id": "585106703577-aopj0mck5l6h4cgh2d4omu36mj8irnu8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDSurqWNhxFgz8tW1ONGPq9kJ1X-4DLE3M"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "585106703577-aopj0mck5l6h4cgh2d4omu36mj8irnu8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
