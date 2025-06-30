@@ -36,6 +36,7 @@ public class AddSongFragment extends Fragment {
     private EditText etAlbumId;
     private EditText etDuration;
     private EditText etSongUrl;
+    private EditText etImageUrl;
     private Button btnAddSong;
     private Button btnCancel;
     private ProgressBar progressBar;
@@ -69,6 +70,7 @@ public class AddSongFragment extends Fragment {
         etAlbumId = view.findViewById(R.id.et_album_id);
         etDuration = view.findViewById(R.id.et_duration);
         etSongUrl = view.findViewById(R.id.et_song_url);
+        etImageUrl = view.findViewById(R.id.et_image_url);
         btnAddSong = view.findViewById(R.id.btn_add_song);
         btnCancel = view.findViewById(R.id.btn_cancel);
         progressBar = view.findViewById(R.id.progress_bar);
@@ -110,6 +112,7 @@ public class AddSongFragment extends Fragment {
         String albumId = etAlbumId.getText().toString().trim();
         String durationStr = etDuration.getText().toString().trim();
         String url = etSongUrl.getText().toString().trim();
+        String imageUrl = etImageUrl.getText().toString().trim();
 
         // Validate inputs
         if (TextUtils.isEmpty(title)) {
@@ -141,9 +144,10 @@ public class AddSongFragment extends Fragment {
             return;
         }
 
-        // Create song object
-        Song song = new Song(title, artistId, albumId, duration, url);
-        
+        // Create song object (imageUrl is optional, can be null or empty)
+        Song song = new Song(title, artistId, albumId, duration, url,
+                           TextUtils.isEmpty(imageUrl) ? null : imageUrl);
+
         // Add song via ViewModel
         viewModel.addSong(song);
     }

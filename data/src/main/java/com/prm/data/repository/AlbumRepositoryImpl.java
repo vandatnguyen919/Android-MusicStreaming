@@ -35,10 +35,10 @@ public class AlbumRepositoryImpl implements AlbumRepository {
     public List<Song> getSongsByAlbumId(String albumId) {
         // Mock data - replace with actual API call
         List<Song> songs = new ArrayList<>();
-        songs.add(new Song("song_1", "Love Me Do - Mono / Remastered", "artist_1", albumId, 143, "url1"));
-        songs.add(new Song("song_2", "From Me to You - Mono / Remastered", "artist_1", albumId, 116, "url2"));
-        songs.add(new Song("song_3", "She Loves You - Mono / Remastered", "artist_1", albumId, 122, "url3"));
-        songs.add(new Song("song_4", "I Want To Hold Your Hand - Remastered 2015", "artist_1", albumId, 145, "url4"));
+        songs.add(new Song("Love Me Do - Mono / Remastered", "artist_1", albumId, 143, "url1", "https://picsum.photos/300/300?random=10"));
+        songs.add(new Song("From Me to You - Mono / Remastered", "artist_1", albumId, 116, "url2", "https://picsum.photos/300/300?random=11"));
+        songs.add(new Song("She Loves You - Mono / Remastered", "artist_1", albumId, 122, "url3", "https://picsum.photos/300/300?random=12"));
+        songs.add(new Song("I Want To Hold Your Hand - Remastered 2015", "artist_1", albumId, 145, "url4", "https://picsum.photos/300/300?random=13"));
         return songs;
     }
 

@@ -42,8 +42,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:hint="Song Title"
-        app:hintTextColor="@color/gray_text"
+        app:hintTextColor="#B3FFFFFF"
         app:boxStrokeColor="@color/green_accent"
+        app:boxBackgroundColor="#1A1A1A"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -51,7 +52,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textColorHint="@color/gray_text"
+            android:textColorHint="#80FFFFFF"
+            android:hint="Enter song title..."
             tools:text="Sample Song Title" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -62,8 +64,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:hint="Artist ID"
-        app:hintTextColor="@color/gray_text"
+        app:hintTextColor="#B3FFFFFF"
         app:boxStrokeColor="@color/green_accent"
+        app:boxBackgroundColor="#1A1A1A"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -71,7 +74,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textColorHint="@color/gray_text"
+            android:textColorHint="#80FFFFFF"
+            android:hint="Enter artist ID..."
             tools:text="artist_123" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -82,8 +86,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:hint="Album ID"
-        app:hintTextColor="@color/gray_text"
+        app:hintTextColor="#B3FFFFFF"
         app:boxStrokeColor="@color/green_accent"
+        app:boxBackgroundColor="#1A1A1A"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -91,7 +96,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textColorHint="@color/gray_text"
+            android:textColorHint="#80FFFFFF"
+            android:hint="Enter album ID..."
             tools:text="album_456" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -102,8 +108,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:hint="Duration (seconds)"
-        app:hintTextColor="@color/gray_text"
+        app:hintTextColor="#B3FFFFFF"
         app:boxStrokeColor="@color/green_accent"
+        app:boxBackgroundColor="#1A1A1A"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -112,7 +119,8 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:textColor="@color/white"
-            android:textColorHint="@color/gray_text"
+            android:textColorHint="#80FFFFFF"
+            android:hint="Enter duration in seconds..."
             tools:text="180" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -123,8 +131,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:hint="Song URL"
-        app:hintTextColor="@color/gray_text"
+        app:hintTextColor="#B3FFFFFF"
         app:boxStrokeColor="@color/green_accent"
+        app:boxBackgroundColor="#1A1A1A"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -133,8 +142,32 @@
             android:layout_height="wrap_content"
             android:inputType="textUri"
             android:textColor="@color/white"
-            android:textColorHint="@color/gray_text"
+            android:textColorHint="#80FFFFFF"
+            android:hint="Enter audio file URL..."
             tools:text="https://example.com/song.mp3" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Image URL -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Image URL (Optional)"
+        app:hintTextColor="#B3FFFFFF"
+        app:boxStrokeColor="@color/green_accent"
+        app:boxBackgroundColor="#1A1A1A"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_image_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textUri"
+            android:textColor="@color/white"
+            android:textColorHint="#80FFFFFF"
+            android:hint="Enter cover image URL..."
+            tools:text="https://example.com/cover.jpg" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
