@@ -35,6 +35,9 @@ dependencies {
     implementation platform(libs.firebase.bom)
     implementation libs.firebase.auth
 
+    // Google Sign-In
+    implementation libs.google.signin
+
     // Hilt core dependency
     implementation libs.hilt.android
     annotationProcessor libs.hilt.android.compiler

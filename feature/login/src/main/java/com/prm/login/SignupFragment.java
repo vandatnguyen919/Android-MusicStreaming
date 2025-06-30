@@ -1,5 +1,6 @@
 package com.prm.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -34,6 +35,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     @Inject
     Navigator navigator;
 
+    private GoogleSignInHelper googleSignInHelper;
+
     // UI Components
     private ImageView ivBack;
     private TextInputLayout tilEmail, tilPassword, tilConfirmPassword;
@@ -56,6 +59,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
         setupClickListeners();
+        setupGoogleSignIn();
     }
 
     private void initViews(View view) {
@@ -116,8 +120,11 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     }
 
     private void handleContinueWithGoogle() {
-        showToast("Google sign-in coming soon!");
-        // TODO: Implement Google Sign-In
+        Log.d(TAG, "Continue with Google clicked");
+        showToast("Signing in with Google...");
+        if (googleSignInHelper != null) {
+            googleSignInHelper.signIn(getActivity());
+        }
     }
 
     private void handleGoToLogin() {
@@ -194,21 +201,98 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
     private void navigateToHome() {
         try {
+            Log.d(TAG, "navigateToHome() called");
             // Check if fragment is still attached to avoid crashes
             if (isAdded() && getContext() != null) {
-                navigator.navigateToHome(getContext());
-                // Use a small delay before finishing activity to ensure navigation completes
-                new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                    if (getActivity() != null && !getActivity().isFinishing()) {
-                        getActivity().finish();
+                Log.d(TAG, "Fragment is attached and context is not null");
+                Log.d(TAG, "Navigator instance: " + (navigator != null ? "not null" : "null"));
+
+                boolean navigationSuccess = false;
+
+                // Try using injected navigator first
+                if (navigator != null) {
+                    try {
+                        Log.d(TAG, "Calling navigator.navigateToHome()");
+                        navigator.navigateToHome(getContext());
+                        Log.d(TAG, "navigator.navigateToHome() completed");
+                        navigationSuccess = true;
+                    } catch (Exception e) {
+                        Log.e(TAG, "Navigator failed", e);
                     }
-                }, 100);
+                }
+
+                // Fallback: direct navigation
+                if (!navigationSuccess) {
+                    Log.d(TAG, "Using fallback navigation");
+                    try {
+                        Class<?> mainActivityClass = Class.forName("com.prm.musicstreaming.MainActivity");
+                        android.content.Intent intent = new android.content.Intent(getContext(), mainActivityClass);
+                        intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        Log.d(TAG, "Fallback navigation successful");
+                        navigationSuccess = true;
+                    } catch (Exception e) {
+                        Log.e(TAG, "Fallback navigation failed", e);
+                    }
+                }
+
+                if (navigationSuccess) {
+                    // Use a small delay before finishing activity to ensure navigation completes
+                    new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                        Log.d(TAG, "Finishing AuthActivity");
+                        if (getActivity() != null && !getActivity().isFinishing()) {
+                            getActivity().finish();
+                        }
+                    }, 500);
+                }
+            } else {
+                Log.e(TAG, "Fragment not attached or context is null");
             }
         } catch (Exception e) {
             Log.e(TAG, "Error navigating to home", e);
-            // Fallback: just finish the current activity
+            // Last resort: just finish the current activity
             if (getActivity() != null && !getActivity().isFinishing()) {
                 getActivity().finish();
+            }
+        }
+    }
+
+    private void setupGoogleSignIn() {
+        if (getContext() != null) {
+            googleSignInHelper = new GoogleSignInHelper(getContext());
+            googleSignInHelper.setListener(new GoogleSignInHelper.GoogleSignInListener() {
+                @Override
+                public void onSignInSuccess(FirebaseUser user) {
+                    Log.d(TAG, "Google sign in successful: " + user.getUid());
+                    Log.d(TAG, "User display name: " + user.getDisplayName());
+                    Log.d(TAG, "User email: " + user.getEmail());
+                    showToast("Welcome " + (user.getDisplayName() != null ? user.getDisplayName() : user.getEmail()) + "!");
+                    Log.d(TAG, "About to call navigateToHome()");
+                    navigateToHome();
+                }
+
+                @Override
+                public void onSignInFailure(String error) {
+                    Log.e(TAG, "Google sign in failed: " + error);
+                    showToast("Google sign in failed: " + error);
+                }
+
+                @Override
+                public void onSignInCancelled() {
+                    Log.d(TAG, "Google sign in cancelled");
+                    showToast("Sign in cancelled");
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == GoogleSignInHelper.getRequestCode()) {
+            if (googleSignInHelper != null) {
+                googleSignInHelper.handleSignInResult(data);
             }
         }
     }

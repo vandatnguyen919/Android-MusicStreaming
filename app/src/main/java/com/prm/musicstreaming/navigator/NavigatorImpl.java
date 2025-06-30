@@ -52,9 +52,14 @@ public class NavigatorImpl implements Navigator {
 
     @Override
     public void navigateToHome(Context context) {
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        context.startActivity(intent);
+        try {
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            // Log error for debugging
+            android.util.Log.e("NavigatorImpl", "Error navigating to home", e);
+        }
     }
 
     @Override

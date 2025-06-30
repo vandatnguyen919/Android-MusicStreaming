@@ -1,9 +1,11 @@
 package com.prm.login;
 
-import androidx.lifecycle.ViewModelProvider;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -41,7 +43,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Inject
     Navigator navigator;
 
-    private LoginViewModel mViewModel;
+    private GoogleSignInHelper googleSignInHelper;
+    private ActivityResultLauncher<Intent> googleSignInLauncher;
     // UI Components
     private ImageView ivLogo;
     private TextView tvTitle;
@@ -58,18 +61,21 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        // Setup Google Sign-In launcher first
+        setupGoogleSignInLauncher();
+
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         initViews(view);
         setupClickListeners();
         setupAnimations();
+        setupGoogleSignIn();
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-        // TODO: Use the ViewModel
+        // ViewModel removed
     }
     
     private void initViews(View view) {
@@ -114,8 +120,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private void handleContinueWithGoogle() {
         Log.d(TAG, "Continue with Google clicked");
-        showToast("Signing in...");
-        signInAnonymously();
+        showToast("Signing in with Google...");
+        if (googleSignInHelper != null && googleSignInLauncher != null) {
+            googleSignInHelper.signInWithLauncher(googleSignInLauncher);
+        } else {
+            Log.e(TAG, "GoogleSignInHelper or launcher is null");
+            showToast("Google Sign-In not properly initialized");
+        }
     }
 
     private void handleContinueWithFacebook() {
@@ -133,6 +144,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private void handleLogIn() {
         Log.d(TAG, "Log in clicked");
         showLoginDialog();
+
     }
 
     private void signInAnonymously() {
@@ -157,19 +169,56 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private void navigateToHome() {
         try {
+            Log.d(TAG, "navigateToHome() called");
             // Check if fragment is still attached to avoid crashes
             if (isAdded() && getContext() != null) {
-                navigator.navigateToHome(getContext());
-                // Use a small delay before finishing activity to ensure navigation completes
-                new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                    if (getActivity() != null && !getActivity().isFinishing()) {
-                        getActivity().finish();
+                Log.d(TAG, "Fragment is attached and context is not null");
+                Log.d(TAG, "Navigator instance: " + (navigator != null ? "not null" : "null"));
+
+                boolean navigationSuccess = false;
+
+                // Try using injected navigator first
+                if (navigator != null) {
+                    try {
+                        Log.d(TAG, "Calling navigator.navigateToHome()");
+                        navigator.navigateToHome(getContext());
+                        Log.d(TAG, "navigator.navigateToHome() completed");
+                        navigationSuccess = true;
+                    } catch (Exception e) {
+                        Log.e(TAG, "Navigator failed", e);
                     }
-                }, 100);
+                }
+
+                // Fallback: direct navigation
+                if (!navigationSuccess) {
+                    Log.d(TAG, "Using fallback navigation");
+                    try {
+                        Class<?> mainActivityClass = Class.forName("com.prm.musicstreaming.MainActivity");
+                        android.content.Intent intent = new android.content.Intent(getContext(), mainActivityClass);
+                        intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        Log.d(TAG, "Fallback navigation successful");
+                        navigationSuccess = true;
+                    } catch (Exception e) {
+                        Log.e(TAG, "Fallback navigation failed", e);
+                    }
+                }
+
+                if (navigationSuccess) {
+                    // Use a small delay before finishing activity to ensure navigation completes
+                    new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                        Log.d(TAG, "Finishing AuthActivity");
+                        if (getActivity() != null && !getActivity().isFinishing()) {
+                            getActivity().finish();
+                        }
+                    }, 500);
+                }
+            } else {
+                Log.e(TAG, "Fragment not attached or context is null");
             }
         } catch (Exception e) {
             Log.e(TAG, "Error navigating to home", e);
-            // Fallback: just finish the current activity
+            // Last resort: just finish the current activity
             if (getActivity() != null && !getActivity().isFinishing()) {
                 getActivity().finish();
             }
@@ -398,6 +447,50 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         showToast("Sign up failed: " + errorMsg);
                     }
                 });
+    }
+
+    private void setupGoogleSignInLauncher() {
+        Log.d(TAG, "Setting up Google Sign-In launcher");
+        googleSignInLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                Log.d(TAG, "Google Sign-In activity result received");
+                if (googleSignInHelper != null) {
+                    googleSignInHelper.handleSignInResult(result.getData());
+                } else {
+                    Log.e(TAG, "GoogleSignInHelper is null in activity result");
+                }
+            }
+        );
+    }
+
+    private void setupGoogleSignIn() {
+        if (getContext() != null) {
+            googleSignInHelper = new GoogleSignInHelper(getContext());
+            googleSignInHelper.setListener(new GoogleSignInHelper.GoogleSignInListener() {
+                @Override
+                public void onSignInSuccess(FirebaseUser user) {
+                    Log.d(TAG, "Google sign in successful: " + user.getUid());
+                    Log.d(TAG, "User display name: " + user.getDisplayName());
+                    Log.d(TAG, "User email: " + user.getEmail());
+                    showToast("Welcome " + (user.getDisplayName() != null ? user.getDisplayName() : user.getEmail()) + "!");
+                    Log.d(TAG, "About to call navigateToHome()");
+                    navigateToHome();
+                }
+
+                @Override
+                public void onSignInFailure(String error) {
+                    Log.e(TAG, "Google sign in failed: " + error);
+                    showToast("Google sign in failed: " + error);
+                }
+
+                @Override
+                public void onSignInCancelled() {
+                    Log.d(TAG, "Google sign in cancelled");
+                    showToast("Sign in cancelled");
+                }
+            });
+        }
     }
 
     private void showToast(String message) {
