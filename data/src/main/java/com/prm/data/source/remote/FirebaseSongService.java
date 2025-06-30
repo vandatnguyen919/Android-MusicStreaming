@@ -24,9 +24,7 @@ public class FirebaseSongService {
         this.songsCollection = firestore.collection(COLLECTION_NAME);
     }
 
-    /**
-     * Retrieve all songs as Single
-     */
+
     public Single<List<Song>> getAllSongs() {
         return Single.create(emitter -> {
             songsCollection.get()
@@ -38,9 +36,7 @@ public class FirebaseSongService {
         });
     }
 
-    /**
-     * Retrieve all songs as Observable (real-time updates)
-     */
+
     public Observable<List<Song>> getAllSongsObservable() {
         return Observable.create(emitter -> {
             songsCollection.addSnapshotListener((queryDocumentSnapshots, error) -> {
@@ -57,9 +53,7 @@ public class FirebaseSongService {
         });
     }
 
-    /**
-     * Retrieve song by ID
-     */
+
     public Single<Song> getSongById(String songId) {
         return Single.create(emitter -> {
             songsCollection.document(songId).get()
@@ -75,9 +69,7 @@ public class FirebaseSongService {
         });
     }
 
-    /**
-     * Retrieve song by ID as Observable (real-time updates)
-     */
+
     public Observable<Song> getSongByIdObservable(String songId) {
         return Observable.create(emitter -> {
             songsCollection.document(songId).addSnapshotListener((documentSnapshot, error) -> {
@@ -96,9 +88,7 @@ public class FirebaseSongService {
         });
     }
 
-    /**
-     * Retrieve songs by artist ID
-     */
+
     public Single<List<Song>> getSongsByArtistId(String artistId) {
         return Single.create(emitter -> {
             songsCollection.whereEqualTo("artist_id", artistId).get()
@@ -110,9 +100,7 @@ public class FirebaseSongService {
         });
     }
 
-    /**
-     * Retrieve songs by artist ID as Observable (real-time updates)
-     */
+
     public Observable<List<Song>> getSongsByArtistIdObservable(String artistId) {
         return Observable.create(emitter -> {
             songsCollection.whereEqualTo("artist_id", artistId)
@@ -130,9 +118,7 @@ public class FirebaseSongService {
         });
     }
 
-    /**
-     * Retrieve songs by album ID
-     */
+
     public Single<List<Song>> getSongsByAlbumId(String albumId) {
         return Single.create(emitter -> {
             songsCollection.whereEqualTo("album_id", albumId).get()
@@ -144,9 +130,7 @@ public class FirebaseSongService {
         });
     }
 
-    /**
-     * Retrieve songs by album ID as Observable (real-time updates)
-     */
+
     public Observable<List<Song>> getSongsByAlbumIdObservable(String albumId) {
         return Observable.create(emitter -> {
             songsCollection.whereEqualTo("album_id", albumId)
@@ -164,9 +148,7 @@ public class FirebaseSongService {
         });
     }
 
-    /**
-     * Add a new song
-     */
+
     public Single<String> addSong(Song song) {
         return Single.create(emitter -> {
             songsCollection.add(song)
@@ -177,9 +159,7 @@ public class FirebaseSongService {
         });
     }
 
-    /**
-     * Update existing song
-     */
+
     public Completable updateSong(Song song) {
         return Completable.create(emitter -> {
             if (song.getId() == null) {
@@ -193,9 +173,7 @@ public class FirebaseSongService {
         });
     }
 
-    /**
-     * Delete song by ID
-     */
+
     public Completable deleteSong(String songId) {
         return Completable.create(emitter -> {
             songsCollection.document(songId).delete()
@@ -204,9 +182,7 @@ public class FirebaseSongService {
         });
     }
 
-    /**
-     * Search songs by title (case-insensitive partial match)
-     */
+
     public Single<List<Song>> searchSongsByTitle(String searchTerm) {
         return Single.create(emitter -> {
             // Note: Firestore doesn't support case-insensitive queries directly
@@ -224,9 +200,7 @@ public class FirebaseSongService {
         });
     }
 
-    /**
-     * Get songs with pagination
-     */
+
     public Single<List<Song>> getSongsWithPagination(int limit, Song lastSong) {
         return Single.create(emitter -> {
             Query query = songsCollection.orderBy("title").limit(limit);
