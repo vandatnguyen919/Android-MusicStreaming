@@ -16,4 +16,8 @@
     <string name="route_plan_management_details">route_plan_management_details</string>
 
     <!-- End Destination/Route -->
+
+    <!-- Notification -->
+    <string name="notification_channel_name">Music Player</string>
+    <string name="notification_channel_description">Controls for currently playing music</string>
 </resources>

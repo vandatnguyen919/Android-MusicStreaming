@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.prm.domain.model.Song;
+import com.prm.profile.utils.NotificationHelper;
 
 import javax.inject.Inject;
 
@@ -90,7 +91,11 @@ public class AddSongFragment extends Fragment {
         });
 
         viewModel.getAddSongResult().observe(getViewLifecycleOwner(), result -> {
+            android.util.Log.d("AddSongFragment", "Add song result received: success=" + result.isSuccess());
             if (result.isSuccess()) {
+                android.util.Log.d("AddSongFragment", "Showing success toast");
+                String artistId = etArtistId.getText().toString().trim();
+                NotificationHelper.showSongAddedNotification(requireContext(), artistId);
                 Toast.makeText(getContext(), "Song added successfully!", Toast.LENGTH_SHORT).show();
                 Navigation.findNavController(requireView()).navigateUp();
             } else {
@@ -162,4 +167,5 @@ public class AddSongFragment extends Fragment {
                 .setNegativeButton("Cancel", null)
                 .show();
     }
+
 }

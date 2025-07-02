@@ -58,10 +58,12 @@ public class AddSongViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     songId -> {
+                        android.util.Log.d("AddSongViewModel", "Song added successfully with ID: " + songId);
                         _isLoading.setValue(false);
                         _addSongResult.setValue(AddSongResult.success(songId));
                     },
                     error -> {
+                        android.util.Log.e("AddSongViewModel", "Error adding song: " + error.getMessage(), error);
                         _isLoading.setValue(false);
                         String errorMessage = getFormattedErrorMessage(error);
                         _addSongResult.setValue(AddSongResult.error(errorMessage));

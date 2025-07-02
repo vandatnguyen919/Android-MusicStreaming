@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
@@ -15,6 +16,7 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import androidx.media3.ui.PlayerNotificationManager.MediaDescriptionAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -101,6 +103,71 @@ public class MusicService extends MediaBrowserServiceCompat {
     private void initializePlayer() {
         exoPlayer = new ExoPlayer.Builder(this).build();
         exoPlayer.addListener(new PlayerEventListener());
+        
+        // Initialize PlayerNotificationManager
+        playerNotificationManager = new PlayerNotificationManager.Builder(this, NOTIFICATION_ID, NOTIFICATION_CHANNEL_ID)
+            .setChannelNameResourceId(R.string.notification_channel_name)
+            .setChannelDescriptionResourceId(R.string.notification_channel_description)
+            .setMediaDescriptionAdapter(new MediaDescriptionAdapter() {
+                @Override
+                public CharSequence getCurrentContentTitle(Player player) {
+                    return currentSong != null ? currentSong.getTitle() : "Music Player";
+                }
+
+                @Nullable
+                @Override
+                public CharSequence getCurrentContentText(Player player) {
+                    return currentSong != null ? currentSong.getArtistId() : "";
+                }
+
+                @Nullable
+                @Override
+                public CharSequence getCurrentSubText(Player player) {
+                    return null;
+                }
+
+                @Nullable
+                @Override
+                public Bitmap getCurrentLargeIcon(Player player, PlayerNotificationManager.BitmapCallback callback) {
+                    return null;
+                }
+
+                @Nullable
+                @Override
+                public PendingIntent createCurrentContentIntent(Player player) {
+                    Intent intent;
+                    try {
+                        intent = new Intent(MusicService.this, Class.forName(MAIN_ACTIVITY_CLASS_NAME));
+                    } catch (ClassNotFoundException e) {
+                        intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    }
+                    return PendingIntent.getActivity(MusicService.this, 0, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                }
+            })
+            .setNotificationListener(new PlayerNotificationManager.NotificationListener() {
+                @Override
+                public void onNotificationCancelled(int notificationId, boolean dismissedByUser) {
+                    stopForeground(true);
+                }
+
+                @Override
+                public void onNotificationPosted(int notificationId, Notification notification, boolean ongoing) {
+                    if (ongoing) {
+                        startForeground(notificationId, notification);
+                    } else {
+                        stopForeground(false);
+                    }
+                }
+            })
+            .build();
+
+        playerNotificationManager.setPlayer(exoPlayer);
+        playerNotificationManager.setPriority(NotificationCompat.PRIORITY_HIGH);
+        playerNotificationManager.setUseNextAction(true);
+        playerNotificationManager.setUsePreviousAction(true);
+        playerNotificationManager.setUsePlayPauseActions(true);
     }
 
     @Nullable
@@ -163,7 +230,8 @@ public class MusicService extends MediaBrowserServiceCompat {
 
         updateMetadata();
         updatePlaybackState(PlaybackStateCompat.STATE_PLAYING);
-        startForeground(NOTIFICATION_ID, createNotification());
+        
+        // The notification will be automatically shown by PlayerNotificationManager
     }
 
     public void playPlaylist(List<Song> songs, int startIndex) {
@@ -332,12 +400,17 @@ public class MusicService extends MediaBrowserServiceCompat {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        if (playerNotificationManager != null) {
+            playerNotificationManager.setPlayer(null);
+        }
         if (exoPlayer != null) {
             exoPlayer.release();
+            exoPlayer = null;
         }
         if (mediaSession != null) {
             mediaSession.release();
+            mediaSession = null;
         }
+        super.onDestroy();
     }
 }

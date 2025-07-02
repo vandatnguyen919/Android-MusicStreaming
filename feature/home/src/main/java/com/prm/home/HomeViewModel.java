@@ -1,5 +1,6 @@
 package com.prm.home;
 
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -27,9 +28,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @HiltViewModel
 public class HomeViewModel extends ViewModel {
-
-    private final SongRepository songRepository;
-    private final ArtistRepository artistRepository;
+    private SongRepository songRepository;
+    private ArtistRepository artistRepository;
     private final CompositeDisposable disposables = new CompositeDisposable();
 
     // LiveData for UI states
@@ -205,6 +205,16 @@ public class HomeViewModel extends ViewModel {
 
     public LiveData<List<Artist>> getArtists() {
         return artists;
+    }
+
+    public void refreshSongs() {
+        songRepository.getAllSongs()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                updatedSongs -> songs.setValue(updatedSongs),
+                error -> Log.e("HomeViewModel", "Error refreshing songs", error)
+            );
     }
 
     public LiveData<Boolean> getIsLoading() {

@@ -27,11 +27,14 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
+import android.util.Log;
 import com.prm.common.Navigator;
 import com.prm.common.util.SampleSongs;
 import com.prm.domain.model.Song;
 import com.prm.common.MiniPlayerViewModel;
 import com.prm.payment.result.PaymentSuccessFragment;
+import com.prm.domain.repository.SongRepository;
 
 import java.util.List;
 
@@ -54,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     Navigator navigator;
 
+    @Inject
+    SongRepository songRepository;
+
     // Mini player UI components
     private ImageView ivMiniPlayerCover;
     private TextView tvMiniPlayerTitle;
@@ -68,6 +74,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Subscribe to FCM topic for new songs
+        FirebaseMessaging.getInstance().subscribeToTopic("new_songs")
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d("MainActivity", "Subscribed to new songs notifications");
+                } else {
+                    Log.e("MainActivity", "Failed to subscribe to notifications", task.getException());
+                }
+            });
         super.onCreate(savedInstanceState);
 
         // Force dark theme for this activity
@@ -274,6 +289,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         ZaloPaySDK.getInstance().onResult(intent);
+    }
+
+    // Test method to add a new song and trigger notification
+    private void testAddNewSong() {
+        Song testSong = new Song();
+        testSong.setId("test_" + System.currentTimeMillis());
+        testSong.setTitle("Test Song");
+        testSong.setArtistId("Test Artist");
+        testSong.setUrl("https://example.com/test.mp3");
+        testSong.setDuration(180); // 3 minutes
+
+        songRepository.addSong(testSong)
+            .subscribe(
+                songId -> Log.d("MainActivity", "Test song added successfully with ID: " + songId),
+                throwable -> Log.e("MainActivity", "Error adding test song", throwable)
+            );
     }
 
     @Override
