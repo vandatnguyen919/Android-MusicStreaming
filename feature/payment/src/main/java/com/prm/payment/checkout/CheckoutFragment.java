@@ -2,8 +2,11 @@ package com.prm.payment.checkout;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,12 +65,24 @@ public class CheckoutFragment extends Fragment {
             try {
                 JSONObject data = orderApi.createOrder("59000");
                 String code = data.getString("return_code");
+                String token = data.getString("zp_trans_token");
+
+                Log.d("ZaloPay", "Create Order Response: " + data.toString());
+                Log.d("ZaloPay", "Return Code: " + code);
+                Log.d("ZaloPay", "Trans Token: " + token);
+
                 Toast.makeText(requireActivity(), "return_code: " + code, Toast.LENGTH_LONG).show();
 
                 if (code.equals("1")) {
-                    processPayment(data.getString("zp_trans_token"));
+                    Log.d("ZaloPay", "Starting payment process...");
+                    processPayment(token);
+                } else {
+                    Log.e("ZaloPay", "Create order failed with code: " + code);
+                    Toast.makeText(requireActivity(), "Create order failed: " + code, Toast.LENGTH_LONG).show();
                 }
             } catch (Exception e) {
+                Log.e("ZaloPay", "Error creating order", e);
+                Toast.makeText(requireActivity(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
         });
@@ -76,6 +91,9 @@ public class CheckoutFragment extends Fragment {
     }
 
     private void processPayment(String token) {
+        Log.d("ZaloPay", "Processing payment with token: " + token);
+        Log.d("ZaloPay", "Deep link: demozpdk://app");
+
         ZaloPaySDK.getInstance().payOrder(requireActivity(), token, "demozpdk://app", new PayOrderListener() {
             @Override
             public void onPaymentSucceeded(final String transactionId, final String transToken, final String appTransID) {
@@ -103,15 +121,34 @@ public class CheckoutFragment extends Fragment {
 
             @Override
             public void onPaymentError(ZaloPayError zaloPayError, String zpTransToken, String appTransID) {
+                String errorMessage;
+                if (zaloPayError == ZaloPayError.PAYMENT_APP_NOT_FOUND) {
+                    errorMessage = "ZaloPay app not found. Please install ZaloPay app from Google Play Store to continue payment.";
+                } else {
+                    errorMessage = String.format("ZaloPayErrorCode: %s \nTransToken: %s", zaloPayError.toString(), zpTransToken);
+                }
+
                 new AlertDialog.Builder(requireActivity())
                         .setTitle("Payment Fail")
-                        .setMessage(String.format("ZaloPayErrorCode: %s \nTransToken: %s", zaloPayError.toString(), zpTransToken))
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        .setMessage(errorMessage)
+                        .setPositiveButton("Install ZaloPay", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                // Open Google Play Store to install ZaloPay
+                                try {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.setData(Uri.parse("market://details?id=com.vng.zalopay"));
+                                    startActivity(intent);
+                                } catch (Exception e) {
+                                    // Fallback to web browser
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.vng.zalopay"));
+                                    startActivity(intent);
+                                }
                             }
                         })
-                        .setNegativeButton("Cancel", null).show();
+                        .setNegativeButton("Cancel", null)
+                        .show();
             }
         });
     }

@@ -36,7 +36,7 @@ dependencies {
     annotationProcessor libs.hilt.android.compiler
 
     // ZaloPay SDK
-    implementation files("${rootProject.projectDir}/libs/zpdk-release-v3.1.aar")
+    compileOnly files("${rootProject.projectDir}/libs/zpdk-release-v3.1.aar")
 
     // OkHttp
     implementation libs.okhttp

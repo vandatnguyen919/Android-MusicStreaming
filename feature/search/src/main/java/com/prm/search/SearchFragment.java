@@ -22,7 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class SearchFragment extends Fragment {
 
-    private SearchViewModel mViewModel;
+    private SearchViewModel viewModel;
 
     @Inject
     Navigator navigator;
@@ -45,7 +45,7 @@ public class SearchFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
+        viewModel = new ViewModelProvider(this).get(SearchViewModel.class);
 
     }
 }

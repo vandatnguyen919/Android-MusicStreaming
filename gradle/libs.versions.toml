@@ -26,6 +26,7 @@ navigationFragment = "2.6.0"
 navigationUi = "2.6.0"
 googleGmsGoogleServices = "4.4.2"
 firebaseDatabase = "21.0.0"
+googleSignIn = "21.2.0"
 okhttp = "4.12.0"
 rxandroid = "3.0.2"
 rxjava = "3.1.10"
@@ -40,6 +41,7 @@ exoplayer = { module = "com.google.android.exoplayer:exoplayer", version.ref = "
 exoplayer-ui = { module = "com.google.android.exoplayer:exoplayer-ui", version.ref = "exoplayer" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
@@ -62,6 +64,7 @@ media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Ui" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+google-signin = { module = "com.google.android.gms:play-services-auth", version.ref = "googleSignIn" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }
 rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }

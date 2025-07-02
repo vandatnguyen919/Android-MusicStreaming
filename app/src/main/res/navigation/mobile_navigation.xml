@@ -39,7 +39,19 @@
         android:name="com.prm.profile.ProfileFragment"
         android:label="ProfileFragment"
         app:route="@string/route_profile"
-        tools:layout="@layout/fragment_profile"/>
+        tools:layout="@layout/fragment_profile">
+
+        <action
+            android:id="@+id/action_profile_to_add_song"
+            app:destination="@id/navigation_add_song" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_add_song"
+        android:name="com.prm.profile.AddSongFragment"
+        android:label="Add Song"
+        tools:layout="@layout/fragment_add_song" />
 
     <fragment
         android:id="@+id/navigation_login"

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/dark_background"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Add New Song"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textColor="@color/gray_text"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <!-- Song Title -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Song Title"
+        app:hintTextColor="#B3FFFFFF"
+        app:boxStrokeColor="@color/green_accent"
+        app:boxBackgroundColor="#1A1A1A"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_song_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textColorHint="#80FFFFFF"
+            android:hint="Enter song title..."
+            tools:text="Sample Song Title" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Artist ID -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Artist ID"
+        app:hintTextColor="#B3FFFFFF"
+        app:boxStrokeColor="@color/green_accent"
+        app:boxBackgroundColor="#1A1A1A"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_artist_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textColorHint="#80FFFFFF"
+            android:hint="Enter artist ID..."
+            tools:text="artist_123" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Album ID -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Album ID"
+        app:hintTextColor="#B3FFFFFF"
+        app:boxStrokeColor="@color/green_accent"
+        app:boxBackgroundColor="#1A1A1A"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_album_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textColorHint="#80FFFFFF"
+            android:hint="Enter album ID..."
+            tools:text="album_456" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Duration -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Duration (seconds)"
+        app:hintTextColor="#B3FFFFFF"
+        app:boxStrokeColor="@color/green_accent"
+        app:boxBackgroundColor="#1A1A1A"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_duration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textColor="@color/white"
+            android:textColorHint="#80FFFFFF"
+            android:hint="Enter duration in seconds..."
+            tools:text="180" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Song URL -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Song URL"
+        app:hintTextColor="#B3FFFFFF"
+        app:boxStrokeColor="@color/green_accent"
+        app:boxBackgroundColor="#1A1A1A"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_song_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textUri"
+            android:textColor="@color/white"
+            android:textColorHint="#80FFFFFF"
+            android:hint="Enter audio file URL..."
+            tools:text="https://example.com/song.mp3" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Image URL -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Image URL (Optional)"
+        app:hintTextColor="#B3FFFFFF"
+        app:boxStrokeColor="@color/green_accent"
+        app:boxBackgroundColor="#1A1A1A"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_image_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textUri"
+            android:textColor="@color/white"
+            android:textColorHint="#80FFFFFF"
+            android:hint="Enter cover image URL..."
+            tools:text="https://example.com/cover.jpg" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <!-- Progress Bar -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone" />
+
+    <!-- Add Song Button -->
+    <Button
+        android:id="@+id/btn_add_song"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Song"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/green_accent"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+</LinearLayout>

@@ -16,19 +16,22 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
 
-rootProject.name = "MusicStreaming"
+rootProject.name = "Android-MusicStreaming"
 include ':app'
-include ':domain'
-include ':data'
-include ':feature:onboarding'
-include ':feature:home'
-include ':feature:search'
-include ':feature:profile'
-include ':feature:login'
-include ':feature:album'
-include ':feature:library'
 include ':common'
+include ':data'
+include ':domain'
+include ':feature:album'
+include ':feature:home'
+include ':feature:library'
+include ':feature:login'
+include ':feature:onboarding'
 include ':feature:payment'
+include ':feature:profile'
+include ':feature:search'

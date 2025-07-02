@@ -7,6 +7,7 @@ import com.prm.domain.model.Artist;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.Completable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,9 +23,7 @@ public class FirebaseArtistService {
         this.artistsCollection = firestore.collection(COLLECTION_NAME);
     }
 
-    /**
-     * Retrieve all artists as Single
-     */
+
     public Single<List<Artist>> getAllArtists() {
         return Single.create(emitter -> {
             artistsCollection.get()
@@ -36,9 +35,7 @@ public class FirebaseArtistService {
         });
     }
 
-    /**
-     * Retrieve all artists as Observable (real-time updates)
-     */
+
     public Observable<List<Artist>> getAllArtistsObservable() {
         return Observable.create(emitter -> {
             artistsCollection.addSnapshotListener((queryDocumentSnapshots, error) -> {
@@ -55,9 +52,7 @@ public class FirebaseArtistService {
         });
     }
 
-    /**
-     * Retrieve artist by ID
-     */
+
     public Single<Artist> getArtistById(String artistId) {
         return Single.create(emitter -> {
             artistsCollection.document(artistId).get()
@@ -73,9 +68,7 @@ public class FirebaseArtistService {
         });
     }
 
-    /**
-     * Retrieve artist by ID as Observable (real-time updates)
-     */
+
     public Observable<Artist> getArtistByIdObservable(String artistId) {
         return Observable.create(emitter -> {
             artistsCollection.document(artistId).addSnapshotListener((documentSnapshot, error) -> {
@@ -94,9 +87,7 @@ public class FirebaseArtistService {
         });
     }
 
-    /**
-     * Add a new artist
-     */
+
     public Single<String> addArtist(Artist artist) {
         return Single.create(emitter -> {
             artistsCollection.add(artist)
@@ -107,9 +98,7 @@ public class FirebaseArtistService {
         });
     }
 
-    /**
-     * Update existing artist
-     */
+
     public Completable updateArtist(Artist artist) {
         return Completable.create(emitter -> {
             if (artist.getId() == null) {
@@ -123,9 +112,7 @@ public class FirebaseArtistService {
         });
     }
 
-    /**
-     * Delete artist by ID
-     */
+
     public Completable deleteArtist(String artistId) {
         return Completable.create(emitter -> {
             artistsCollection.document(artistId).delete()
@@ -134,28 +121,34 @@ public class FirebaseArtistService {
         });
     }
 
-    /**
-     * Search artists by name (case-insensitive partial match)
-     */
+
     public Single<List<Artist>> searchArtistsByName(String searchTerm) {
         return Single.create(emitter -> {
-            // Note: Firestore doesn't support case-insensitive queries directly
+            // Thực hiện tìm kiếm với contains logic
+            String lowercaseQuery = searchTerm.toLowerCase();
             artistsCollection
-                    .orderBy("name")
-                    .startAt(searchTerm.toLowerCase())
-                    .endAt(searchTerm.toLowerCase() + "\uf8ff")
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
-                        List<Artist> artists = queryDocumentSnapshots.toObjects(Artist.class);
+                        List<Artist> artists = new ArrayList<>();
+                        for (var doc : queryDocumentSnapshots.getDocuments()) {
+                            Artist artist = doc.toObject(Artist.class);
+                            // Kiểm tra xem tên nghệ sĩ có chứa chuỗi tìm kiếm không (contains search)
+                            if (artist != null && artist.getName() != null && 
+                                artist.getName().toLowerCase().contains(lowercaseQuery)) {
+                                artists.add(artist);
+                            }
+                        }
+                        // Giới hạn kết quả trả về nếu cần
+                        if (artists.size() > 20) {
+                            artists = artists.subList(0, 20);
+                        }
                         emitter.onSuccess(artists);
                     })
                     .addOnFailureListener(emitter::onError);
         });
     }
 
-    /**
-     * Get artists with pagination
-     */
+
     public Single<List<Artist>> getArtistsWithPagination(int limit, Artist lastArtist) {
         return Single.create(emitter -> {
             Query query = artistsCollection.orderBy("name").limit(limit);
