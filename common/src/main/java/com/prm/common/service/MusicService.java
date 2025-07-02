@@ -138,7 +138,25 @@ public class MusicService extends MediaBrowserServiceCompat {
 
     public void playMusic(Song song) {
         currentSong = song;
-        MediaItem mediaItem = MediaItem.fromUri(Uri.parse(song.getUrl()));
+        String url = song.getUrl();
+        
+        // Debug log to see the actual URL
+        android.util.Log.d("MusicService", "Playing song: " + song.getTitle());
+        android.util.Log.d("MusicService", "Song URL: " + url);
+        
+        // Kiểm tra và sửa URL nếu cần
+        if (url == null || url.isEmpty()) {
+            android.util.Log.e("MusicService", "Song URL is null or empty!");
+            return;
+        }
+        
+        // Đối với các URL từ Firebase Storage, đảm bảo chúng có định dạng đúng
+        if (url.contains("firebasestorage.googleapis.com") && !url.startsWith("https://")) {
+            url = "https://" + url;
+            android.util.Log.d("MusicService", "Corrected URL: " + url);
+        }
+        
+        MediaItem mediaItem = MediaItem.fromUri(Uri.parse(url));
         exoPlayer.setMediaItem(mediaItem);
         exoPlayer.prepare();
         exoPlayer.play();

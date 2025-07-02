@@ -24,7 +24,7 @@ public abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    public abstract SongRepository bindMusicRepository(SongRepositoryImpl impl);
+    public abstract SongRepository bindSongRepository(SongRepositoryImpl impl);
 
     @Binds
     @Singleton

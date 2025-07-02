@@ -7,6 +7,7 @@ import com.prm.domain.model.Artist;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.Completable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -123,14 +124,24 @@ public class FirebaseArtistService {
 
     public Single<List<Artist>> searchArtistsByName(String searchTerm) {
         return Single.create(emitter -> {
-            // Note: Firestore doesn't support case-insensitive queries directly
+            // Thực hiện tìm kiếm với contains logic
+            String lowercaseQuery = searchTerm.toLowerCase();
             artistsCollection
-                    .orderBy("name")
-                    .startAt(searchTerm.toLowerCase())
-                    .endAt(searchTerm.toLowerCase() + "\uf8ff")
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
-                        List<Artist> artists = queryDocumentSnapshots.toObjects(Artist.class);
+                        List<Artist> artists = new ArrayList<>();
+                        for (var doc : queryDocumentSnapshots.getDocuments()) {
+                            Artist artist = doc.toObject(Artist.class);
+                            // Kiểm tra xem tên nghệ sĩ có chứa chuỗi tìm kiếm không (contains search)
+                            if (artist != null && artist.getName() != null && 
+                                artist.getName().toLowerCase().contains(lowercaseQuery)) {
+                                artists.add(artist);
+                            }
+                        }
+                        // Giới hạn kết quả trả về nếu cần
+                        if (artists.size() > 20) {
+                            artists = artists.subList(0, 20);
+                        }
                         emitter.onSuccess(artists);
                     })
                     .addOnFailureListener(emitter::onError);
