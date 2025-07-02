@@ -1,11 +1,13 @@
 package com.prm.search;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -99,9 +101,7 @@ public class SearchResultsFragment extends Fragment implements
         playlistAdapter = new PlaylistAdapter(this);
         rvPlaylists.setAdapter(playlistAdapter);
         
-        tvCancel.setOnClickListener(v -> {
-            requireActivity().onBackPressed();
-        });
+        tvCancel.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
         
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -117,8 +117,15 @@ public class SearchResultsFragment extends Fragment implements
                 viewModel.onSearchQueryChanged(s.toString());
             }
         });
-        
+
+        // Automatically focus and show keyboard when fragment is created
         etSearch.requestFocus();
+        etSearch.post(() -> {
+            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
     }
 
     @Override

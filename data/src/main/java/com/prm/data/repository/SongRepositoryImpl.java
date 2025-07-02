@@ -1,6 +1,6 @@
 package com.prm.data.repository;
 
-import com.prm.data.firebase.FirebaseSongService;
+import com.prm.data.source.remote.FirebaseSongService;
 import com.prm.domain.model.Song;
 import com.prm.domain.repository.SongRepository;
 import io.reactivex.rxjava3.core.Observable;
