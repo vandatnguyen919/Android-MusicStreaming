@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
 import androidx.navigation.NavController;
@@ -27,6 +28,7 @@ import com.prm.common.Navigator;
 import com.prm.common.util.SampleSongs;
 import com.prm.domain.model.Song;
 import com.prm.common.MiniPlayerViewModel;
+import com.prm.payment.result.PaymentSuccessFragment;
 
 import java.util.List;
 
@@ -132,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                     invalidateOptionsMenu();
                 } else {
                     toolbar.setNavigationIcon(R.drawable.ic_back);
-                    toolbar.setNavigationOnClickListener(v -> navController.navigateUp());
+                    toolbar.setNavigationOnClickListener(v -> onSupportNavigateUp());
                     invalidateOptionsMenu();
                 }
 
@@ -232,6 +234,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
+        // Get the current fragment
+        Fragment currentFragment = getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment_activity_main)
+                .getChildFragmentManager()
+                .getPrimaryNavigationFragment();
+
+        // Handle special cases
+        if (currentFragment instanceof PaymentSuccessFragment) {
+            navigator.navigate(com.prm.common.R.string.route_plan_management);
+            return true;
+        }
+
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                || super.onSupportNavigateUp();
     }

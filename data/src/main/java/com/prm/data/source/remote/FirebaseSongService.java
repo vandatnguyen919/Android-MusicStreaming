@@ -1,16 +1,18 @@
-package com.prm.data.firebase;
+package com.prm.data.source.remote;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.prm.domain.model.Song;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.subjects.PublishSubject;
+
 import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 
 @Singleton
 public class FirebaseSongService {
