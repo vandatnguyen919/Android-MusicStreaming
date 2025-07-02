@@ -29,13 +29,22 @@ public class Song {
     
     @PropertyName("url")
     private String url; // URL for the audio file
-    
+
+    @PropertyName("image_url")
+    private String imageUrl; // URL for the song cover image
+
     // Constructor without ID (for creating new songs)
-    public Song(String title, String artistId, String albumId, int duration, String url) {
+    public Song(String title, String artistId, String albumId, int duration, String url, String imageUrl) {
         this.title = title;
         this.artistId = artistId;
         this.albumId = albumId;
         this.duration = duration;
         this.url = url;
+        this.imageUrl = imageUrl;
+    }
+
+    // Constructor without ID and imageUrl (for backward compatibility)
+    public Song(String title, String artistId, String albumId, int duration, String url) {
+        this(title, artistId, albumId, duration, url, null);
     }
 }

@@ -1,11 +1,15 @@
 package com.prm.musicstreaming.navigator;
 
+import android.content.Context;
+import android.content.Intent;
+
 import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import com.prm.common.Navigator;
+import com.prm.musicstreaming.MainActivity;
 import com.prm.musicstreaming.R;
 
 import javax.inject.Inject;
@@ -44,6 +48,31 @@ public class NavigatorImpl implements Navigator {
                 .setPopUpTo(route, inclusive)
                 .build();
         getNavController().navigate(route, navOptions);
+    }
+
+    @Override
+    public void navigateToHome(Context context) {
+        try {
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            // Log error for debugging
+            android.util.Log.e("NavigatorImpl", "Error navigating to home", e);
+        }
+    }
+
+    @Override
+    public void navigateToAuth(Context context) {
+        try {
+            Class<?> authActivityClass = Class.forName("com.prm.login.AuthActivity");
+            Intent intent = new Intent(context, authActivityClass);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+        } catch (ClassNotFoundException e) {
+            // Fallback to login fragment navigation if AuthActivity not found
+            getNavController().navigate(R.id.navigation_login);
+        }
     }
 
     private NavController getNavController() {

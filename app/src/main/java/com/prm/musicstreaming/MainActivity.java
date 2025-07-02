@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
 import androidx.navigation.NavController;
@@ -23,10 +24,13 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.prm.common.Navigator;
 import com.prm.common.util.SampleSongs;
 import com.prm.domain.model.Song;
 import com.prm.common.MiniPlayerViewModel;
+import com.prm.payment.result.PaymentSuccessFragment;
 
 import java.util.List;
 
@@ -64,6 +68,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Check authentication status
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            // User not authenticated, redirect to AuthActivity
+            navigator.navigateToAuth(this);
+            return;
+        }
+
         EdgeToEdge.enable(this);
         getWindow().setStatusBarColor(getResources().getColor(R.color.app_background, null));
         setContentView(R.layout.activity_main);
@@ -100,52 +113,54 @@ public class MainActivity extends AppCompatActivity {
 
         // Add a listener to handle navigation from child fragment back to parent fragment
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            // Check if current destination is login fragment
-            if (destination.getId() == R.id.navigation_login) {
-                // Hide toolbar and bottom navigation when on login screen
-                toolbar.setVisibility(View.GONE);
-                navView.setVisibility(View.GONE);
-                miniPlayer.setVisibility(View.GONE);
+            boolean showToolbar = destination.getId() != R.id.navigation_membership_plan &&
+                    destination.getId() != R.id.navigation_search_result &&
+                    destination.getId() != R.id.navigation_login;
+
+            boolean showBottomNav = destination.getId() != R.id.navigation_payment_success &&
+                    destination.getId() != R.id.navigation_search_result &&
+                    destination.getId() != R.id.navigation_login;
+
+            boolean showMiniPlayer = destination.getId() == R.id.navigation_home ||
+                    destination.getId() == R.id.navigation_search ||
+                    destination.getId() == R.id.navigation_library ||
+                    destination.getId() == R.id.navigation_membership_plan;
+
+            toolbar.setVisibility(showToolbar ? View.VISIBLE : View.GONE);
+            navView.setVisibility(showBottomNav? View.VISIBLE : View.GONE);
+            miniPlayer.setVisibility(showMiniPlayer? View.VISIBLE : View.GONE);
+
+            // Determine if we're on a top-level destination
+            isTopLevelDestination = appBarConfiguration.getTopLevelDestinations()
+                    .contains(destination.getId());
+
+            // Set profile icon for top-level destinations except search, back button for others
+            if (destination.getId() == R.id.navigation_search) {
+                toolbar.setNavigationIcon(null);
+                invalidateOptionsMenu();
+            } else if (isTopLevelDestination) {
+                toolbar.setNavigationIcon(R.drawable.ic_profile);
+                toolbar.setNavigationOnClickListener(v -> navController.navigate(R.id.navigation_profile));
+                invalidateOptionsMenu();
             } else {
-                // Show toolbar and bottom navigation for all other
-                boolean showToolbar = destination.getId() != R.id.navigation_membership_plan;
-                boolean showBottomNav = destination.getId() != R.id.navigation_payment_success;
-                boolean showMiniPlayer = destination.getId() == R.id.navigation_home ||
-                        destination.getId() == R.id.navigation_search ||
-                        destination.getId() == R.id.navigation_library ||
-                        destination.getId() == R.id.navigation_membership_plan;
-                toolbar.setVisibility(showToolbar ? View.VISIBLE : View.GONE);
-                navView.setVisibility(showBottomNav? View.VISIBLE : View.GONE);
-                miniPlayer.setVisibility(showMiniPlayer? View.VISIBLE : View.GONE);
+                toolbar.setNavigationIcon(R.drawable.ic_back);
+                toolbar.setNavigationOnClickListener(v -> onSupportNavigateUp());
+                invalidateOptionsMenu();
+            }
 
-                // Determine if we're on a top-level destination
-                isTopLevelDestination = appBarConfiguration.getTopLevelDestinations()
-                        .contains(destination.getId());
-
-                // Set profile icon for top-level destinations except search, back button for others
-                if (destination.getId() == R.id.navigation_search) {
-                    toolbar.setNavigationIcon(null);
-                    invalidateOptionsMenu();
-                } else if (isTopLevelDestination) {
-                    toolbar.setNavigationIcon(R.drawable.ic_profile);
-                    toolbar.setNavigationOnClickListener(v -> navController.navigate(R.id.navigation_profile));
-                    invalidateOptionsMenu();
-                } else {
-                    toolbar.setNavigationIcon(R.drawable.ic_back);
-                    toolbar.setNavigationOnClickListener(v -> navController.navigateUp());
-                    invalidateOptionsMenu();
-                }
-
-                // Existing destination changed logic
-                if (destination.getId() == R.id.navigation_album && !isNavigatingFromDestinationListener) {
-                    isNavigatingFromDestinationListener = true;
-                    navView.setSelectedItemId(R.id.navigation_home);
-                    isNavigatingFromDestinationListener = false;
-                } else if (destination.getId() == R.id.navigation_checkout && !isNavigatingFromDestinationListener) {
-                    isNavigatingFromDestinationListener = true;
-                    navView.setSelectedItemId(R.id.navigation_membership_plan);
-                    isNavigatingFromDestinationListener = false;
-                }
+            // Existing destination changed logic
+            if (destination.getId() == R.id.navigation_album && !isNavigatingFromDestinationListener) {
+                isNavigatingFromDestinationListener = true;
+                navView.setSelectedItemId(R.id.navigation_home);
+                isNavigatingFromDestinationListener = false;
+            } else if (destination.getId() == R.id.navigation_checkout && !isNavigatingFromDestinationListener) {
+                isNavigatingFromDestinationListener = true;
+                navView.setSelectedItemId(R.id.navigation_membership_plan);
+                isNavigatingFromDestinationListener = false;
+            } else if (destination.getId() == R.id.navigation_search_result && !isNavigatingFromDestinationListener) {
+                isNavigatingFromDestinationListener = true;
+                navView.setSelectedItemId(R.id.navigation_search);
+                isNavigatingFromDestinationListener = false;
             }
         });
 
@@ -232,6 +247,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
+        // Get the current fragment
+        Fragment currentFragment = getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment_activity_main)
+                .getChildFragmentManager()
+                .getPrimaryNavigationFragment();
+
+        // Handle special cases
+        if (currentFragment instanceof PaymentSuccessFragment) {
+            navigator.navigate(com.prm.common.R.string.route_plan_management);
+            return true;
+        }
+
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                || super.onSupportNavigateUp();
     }

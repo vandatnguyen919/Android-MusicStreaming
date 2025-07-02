@@ -6,6 +6,8 @@
     <color name="gray_background">#2A2A2A</color>
     <color name="divider_color">#2A2A2A</color>
     <color name="green_accent">#1DB954</color>
+    <color name="primary_green">#1DB954</color>
+    <color name="background_black">#121212</color>
     <color name="teal_gradient_start">#1E3A8A</color>
     <color name="teal_gradient_end">#0891B2</color>
 </resources>

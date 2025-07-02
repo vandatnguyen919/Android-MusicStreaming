@@ -35,6 +35,18 @@ dependencies {
     implementation libs.hilt.android
     annotationProcessor libs.hilt.android.compiler
 
+    // Firebase
+    implementation platform(libs.firebase.bom)
+    implementation libs.firebase.auth
+
+    // RxJava
+    implementation libs.rxjava
+    implementation libs.rxandroid
+
+    // Navigation
+    implementation libs.navigation.fragment
+    implementation libs.navigation.ui
+
     implementation libs.appcompat
     implementation libs.material
     implementation libs.legacy.support.v4
