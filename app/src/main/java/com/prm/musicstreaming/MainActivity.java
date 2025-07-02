@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -69,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Force dark theme for this activity
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
         // Check authentication status
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
@@ -113,15 +117,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Add a listener to handle navigation from child fragment back to parent fragment
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            boolean showToolbar = destination.getId() != R.id.navigation_membership_plan &&
+            boolean showToolbar =
+                    destination.getId() != R.id.navigation_membership_plan &&
                     destination.getId() != R.id.navigation_search_result &&
                     destination.getId() != R.id.navigation_login;
 
-            boolean showBottomNav = destination.getId() != R.id.navigation_payment_success &&
+            boolean showBottomNav =
+                    destination.getId() != R.id.navigation_payment_success &&
                     destination.getId() != R.id.navigation_search_result &&
                     destination.getId() != R.id.navigation_login;
 
-            boolean showMiniPlayer = destination.getId() == R.id.navigation_home ||
+            boolean showMiniPlayer =
+                    destination.getId() == R.id.navigation_home ||
                     destination.getId() == R.id.navigation_search ||
                     destination.getId() == R.id.navigation_library ||
                     destination.getId() == R.id.navigation_membership_plan;
