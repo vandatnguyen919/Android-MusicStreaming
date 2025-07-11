@@ -6,4 +6,8 @@
     <!-- Replace with actual Web Client ID from Google Cloud Console -->
     <string name="default_web_client_id" translatable="false">585106703577-XXXXXXXXXXXXXXXXXXXXXXXXXX.apps.googleusercontent.com</string>
     <!-- Note: Replace XXXXXXXXXXXXXXXXXXXXXXXXXX with actual client ID -->
+
+    <!-- Profile Placeholders -->
+    <string name="placeholder_username">User Name</string>
+    <string name="placeholder_email">user.email@example.com</string>
 </resources>

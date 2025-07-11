@@ -75,10 +75,26 @@ public class NavigatorImpl implements Navigator {
         }
     }
 
+    @Override
+    public void navigateToLibrary() {
+        getNavController().navigate(R.id.navigation_library);
+    }
+
+    @Override
+    public void navigateToProfile() {
+        getNavController().navigate(R.id.navigation_profile);
+    }
+
     private NavController getNavController() {
         if (navController == null) {
             navController = Navigation.findNavController(activity, R.id.nav_host_fragment_activity_main);
         }
         return navController;
+    }
+
+    @Override
+    public void navigateBack() {
+        NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_activity_main);
+        navController.popBackStack();
     }
 }

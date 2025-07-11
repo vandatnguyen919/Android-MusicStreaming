@@ -1,0 +1,7 @@
+<resources>
+    <string name="profile_image_description">Profile Image</string>
+    <string name="change_image">Change Image</string>
+    <string name="name_hint">Name</string>
+    <string name="email_hint">Email</string>
+    <string name="save_profile">Save Profile</string>
+</resources>

@@ -1,7 +1,9 @@
 package com.prm.data.di;
 
 import com.prm.data.repository.MusicRepositoryImpl;
+import com.prm.data.repository.PlaylistRepositoryImpl;
 import com.prm.domain.repository.MusicRepository;
+import com.prm.domain.repository.PlaylistRepository;
 
 import dagger.Binds;
 import dagger.Module;
@@ -18,5 +20,7 @@ public abstract class DataRepositoryModule {
     @Singleton
     public abstract MusicRepository bindMusicRepository(MusicRepositoryImpl musicRepositoryImpl);
     
-    // Thêm các repository binding khác
+    @Binds
+    @Singleton
+    public abstract PlaylistRepository bindPlaylistRepository(PlaylistRepositoryImpl playlistRepositoryImpl);
 }

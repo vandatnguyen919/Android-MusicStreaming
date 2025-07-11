@@ -30,6 +30,23 @@
             android:background="@drawable/circle_background"
             android:scaleType="centerCrop" />
 
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/gray_text"
+            android:textSize="16sp" />
+
         <!-- Buttons Row -->
         <LinearLayout
             android:layout_width="wrap_content"

@@ -40,6 +40,7 @@ dependencies {
 
     // Hilt core dependency
     implementation libs.hilt.android
+    implementation libs.rxandroid
     annotationProcessor libs.hilt.android.compiler
 
     implementation libs.appcompat

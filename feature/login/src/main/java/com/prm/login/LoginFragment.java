@@ -30,6 +30,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.prm.common.Navigator;
+import com.prm.domain.usecase.user.CreateUserUseCase;
 
 import javax.inject.Inject;
 
@@ -42,6 +43,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     @Inject
     Navigator navigator;
+
+    @Inject
+    CreateUserUseCase createUserUseCase;
 
     private GoogleSignInHelper googleSignInHelper;
     private ActivityResultLauncher<Intent> googleSignInLauncher;
@@ -344,10 +348,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private void showSignUpDialog() {
-        if (getContext() == null) return;
+        // Use requireContext() to ensure the dialog inflates with the correct theme context
+        // if (getContext() == null) return;
 
         // Create dialog layout
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_signup, null);
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_signup, null);
 
         // Get references to dialog views
         TextInputLayout tilEmail = dialogView.findViewById(R.id.til_email);
@@ -358,7 +363,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         TextInputEditText etConfirmPassword = dialogView.findViewById(R.id.et_confirm_password);
 
         // Create and show dialog
-        AlertDialog dialog = new AlertDialog.Builder(getContext())
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
                 .setTitle("Create Free Account")
                 .setView(dialogView)
                 .setPositiveButton("Create Account", null)
@@ -466,7 +471,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private void setupGoogleSignIn() {
         if (getContext() != null) {
-            googleSignInHelper = new GoogleSignInHelper(getContext());
+            googleSignInHelper = new GoogleSignInHelper(getContext(), createUserUseCase);
             googleSignInHelper.setListener(new GoogleSignInHelper.GoogleSignInListener() {
                 @Override
                 public void onSignInSuccess(FirebaseUser user) {

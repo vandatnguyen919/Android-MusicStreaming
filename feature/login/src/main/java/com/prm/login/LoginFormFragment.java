@@ -22,6 +22,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.prm.common.Navigator;
+import com.prm.domain.usecase.user.CreateUserUseCase;
 
 import javax.inject.Inject;
 
@@ -43,6 +44,9 @@ public class LoginFormFragment extends Fragment implements View.OnClickListener 
     private TextInputEditText etEmail, etPassword;
     private Button btnLogin, btnContinueGoogle;
     private TextView tvForgotPassword, tvSignUp;
+
+    @Inject
+    CreateUserUseCase createUserUseCase;
 
     public static LoginFormFragment newInstance() {
         return new LoginFormFragment();
@@ -248,7 +252,7 @@ public class LoginFormFragment extends Fragment implements View.OnClickListener 
 
     private void setupGoogleSignIn() {
         if (getContext() != null) {
-            googleSignInHelper = new GoogleSignInHelper(getContext());
+            googleSignInHelper = new GoogleSignInHelper(getContext(), createUserUseCase);
             googleSignInHelper.setListener(new GoogleSignInHelper.GoogleSignInListener() {
                 @Override
                 public void onSignInSuccess(FirebaseUser user) {
