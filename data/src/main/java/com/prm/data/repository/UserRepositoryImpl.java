@@ -27,6 +27,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Completable createUser(User user) {
+        return firebaseUserService.createUser(user);
+    }
+
+    @Override
     public Single<User> getCurrentUser() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String userId = auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : null;

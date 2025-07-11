@@ -21,6 +21,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.prm.domain.model.User;
+import com.prm.domain.usecase.user.CreateUserUseCase; // Change to CreateUserUseCase
+
+import javax.inject.Inject; 
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class GoogleSignInHelper {
@@ -30,17 +38,21 @@ public class GoogleSignInHelper {
     private final Context context;
     private final GoogleSignInClient googleSignInClient;
     private final FirebaseAuth firebaseAuth;
+    private final CreateUserUseCase createUserUseCase; // Change to CreateUserUseCase
     private GoogleSignInListener listener;
-    
+    private final CompositeDisposable disposables = new CompositeDisposable(); 
+
     public interface GoogleSignInListener {
         void onSignInSuccess(FirebaseUser user);
         void onSignInFailure(String error);
         void onSignInCancelled();
     }
     
-    public GoogleSignInHelper(Context context) {
+    @Inject
+    public GoogleSignInHelper(Context context, CreateUserUseCase createUserUseCase) { // Change to CreateUserUseCase
         this.context = context;
         this.firebaseAuth = FirebaseAuth.getInstance();
+        this.createUserUseCase = createUserUseCase; // Change to createUserUseCase
 
         Log.d(TAG, "Initializing GoogleSignInHelper");
 
@@ -131,14 +143,41 @@ public class GoogleSignInHelper {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success
+                            // Firebase authentication successful
                             Log.d(TAG, "Firebase authentication successful");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-                            if (listener != null && user != null) {
-                                listener.onSignInSuccess(user);
+                            if (user != null) {
+                                // Now, save/update user in Firestore using CreateUserUseCase
+                                User appUser = new User(
+                                        user.getUid(),
+                                        user.getDisplayName() != null ? user.getDisplayName() : "",
+                                        user.getEmail() != null ? user.getEmail() : "",
+                                        user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : ""
+                                );
+
+                                disposables.add(createUserUseCase.execute(appUser)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(() -> {
+                                            Log.d(TAG, "User data created/updated in Firestore successfully");
+                                            if (listener != null) {
+                                                listener.onSignInSuccess(user);
+                                            }
+                                        }, throwable -> {
+                                            Log.e(TAG, "Failed to create/update user data in Firestore: " + throwable.getMessage(), throwable);
+                                            if (listener != null) {
+                                                listener.onSignInFailure("Failed to save user data: " + throwable.getMessage());
+                                            }
+                                        })
+                                );
+                            } else {
+                                Log.e(TAG, "Firebase user is null after successful authentication");
+                                if (listener != null) {
+                                    listener.onSignInFailure("Firebase user is null after authentication.");
+                                }
                             }
                         } else {
-                            // Sign in failed
+                            // Firebase sign in failed
                             Log.w(TAG, "Firebase authentication failed", task.getException());
                             if (listener != null) {
                                 String errorMsg = task.getException() != null ? 
@@ -162,6 +201,7 @@ public class GoogleSignInHelper {
                 Log.d(TAG, "Google sign out completed");
             }
         });
+        disposables.clear(); // Clear disposables on sign out
     }
     
 
@@ -176,6 +216,7 @@ public class GoogleSignInHelper {
                 Log.d(TAG, "Google access revoked");
             }
         });
+        disposables.clear(); // Clear disposables on revoke access
     }
     
 

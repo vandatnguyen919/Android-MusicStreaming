@@ -22,10 +22,16 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.prm.common.Navigator;
+import com.prm.domain.usecase.user.CreateUserUseCase;
+import com.prm.domain.model.User;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
+
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @AndroidEntryPoint
 public class SignupFragment extends Fragment implements View.OnClickListener {
@@ -35,6 +41,9 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     @Inject
     Navigator navigator;
 
+    @Inject
+    CreateUserUseCase createUserUseCase; // Inject CreateUserUseCase
+
     private GoogleSignInHelper googleSignInHelper;
 
     // UI Components
@@ -43,6 +52,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private TextInputEditText etEmail, etPassword, etConfirmPassword;
     private Button btnSignUp, btnContinueGoogle;
     private TextView tvLogin;
+
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     public static SignupFragment newInstance() {
         return new SignupFragment();
@@ -187,8 +198,34 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         if (user != null) {
                             Log.d(TAG, "User ID: " + user.getUid());
                             Log.d(TAG, "User email: " + user.getEmail());
-                            showToast("Account created successfully!");
-                            navigateToHome();
+
+                            // Create an AppUser object and save to Firestore
+                            User appUser = new User(
+                                    user.getUid(),
+                                    user.getDisplayName() != null ? user.getDisplayName() : "",
+                                    user.getEmail() != null ? user.getEmail() : "",
+                                    user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : ""
+                            );
+
+                            disposables.add(createUserUseCase.execute(appUser)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(() -> {
+                                        Log.d(TAG, "User data created/updated in Firestore successfully");
+                                        showToast("Account created successfully!");
+                                        navigateToHome();
+                                    }, throwable -> {
+                                        Log.e(TAG, "Failed to create/update user data in Firestore: " + throwable.getMessage(), throwable);
+                                        showToast("Sign up failed: Failed to save user data.");
+                                        // Still navigate home even if Firestore save fails for now, or handle differently
+                                        navigateToHome();
+                                    })
+                            );
+
+                        } else {
+                            Log.e(TAG, "Firebase user is null after successful creation");
+                            showToast("Account created, but user data could not be saved.");
+                            navigateToHome(); // Still navigate home
                         }
                     } else {
                         Log.e(TAG, "Account creation failed", task.getException());
@@ -259,7 +296,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
     private void setupGoogleSignIn() {
         if (getContext() != null) {
-            googleSignInHelper = new GoogleSignInHelper(getContext());
+            googleSignInHelper = new GoogleSignInHelper(getContext(), createUserUseCase); // Pass createUserUseCase
             googleSignInHelper.setListener(new GoogleSignInHelper.GoogleSignInListener() {
                 @Override
                 public void onSignInSuccess(FirebaseUser user) {
@@ -295,6 +332,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 googleSignInHelper.handleSignInResult(data);
             }
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        disposables.clear();
     }
 
     private void showToast(String message) {

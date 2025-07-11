@@ -51,4 +51,16 @@ public class FirebaseUserService {
                 .addOnFailureListener(e -> emitter.onError(e));
         });
     }
+
+    public Completable createUser(User user) {
+        return Completable.create(emitter -> {
+            if (user.getId() == null || user.getId().isEmpty()) {
+                emitter.onError(new IllegalArgumentException("User ID cannot be null or empty for create."));
+                return;
+            }
+            db.collection(COLLECTION_NAME).document(user.getId()).set(user)
+                .addOnSuccessListener(aVoid -> emitter.onComplete())
+                .addOnFailureListener(e -> emitter.onError(e));
+        });
+    }
 } 

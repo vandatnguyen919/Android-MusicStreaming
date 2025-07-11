@@ -7,5 +7,6 @@ import io.reactivex.rxjava3.core.Single;
 
 public interface UserRepository {
     Completable updateUser(User user);
+    Completable createUser(User user);
     Single<User> getCurrentUser();
 }
