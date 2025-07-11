@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class Playlist {
     private String id;
     private String name;
-    private String userId; // Creator of the playlist
+    private String userId;
     private List<String> songIds;
     private String coverImageUrl;
 }
