@@ -344,10 +344,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private void showSignUpDialog() {
-        if (getContext() == null) return;
+        // Use requireContext() to ensure the dialog inflates with the correct theme context
+        // if (getContext() == null) return;
 
         // Create dialog layout
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_signup, null);
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_signup, null);
 
         // Get references to dialog views
         TextInputLayout tilEmail = dialogView.findViewById(R.id.til_email);
@@ -358,7 +359,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         TextInputEditText etConfirmPassword = dialogView.findViewById(R.id.et_confirm_password);
 
         // Create and show dialog
-        AlertDialog dialog = new AlertDialog.Builder(getContext())
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
                 .setTitle("Create Free Account")
                 .setView(dialogView)
                 .setPositiveButton("Create Account", null)
