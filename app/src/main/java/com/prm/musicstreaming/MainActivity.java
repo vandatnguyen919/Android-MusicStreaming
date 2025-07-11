@@ -1,9 +1,12 @@
 package com.prm.musicstreaming;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -89,21 +92,18 @@ public class MainActivity extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
         // Check authentication status
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser == null) {
-            // User not authenticated, redirect to AuthActivity
-            navigator.navigateToAuth(this);
-            return;
-        }
+//        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+//        if (currentUser == null) {
+//            // User not authenticated, redirect to AuthActivity
+//            navigator.navigateToAuth(this);
+//            return;
+//        }
 
-        EdgeToEdge.enable(this);
-        getWindow().setStatusBarColor(getResources().getColor(R.color.app_background, null));
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        );
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         // Initialize ViewModel
         miniPlayerViewModel = new ViewModelProvider(this).get(MiniPlayerViewModel.class);
@@ -133,11 +133,14 @@ public class MainActivity extends AppCompatActivity {
         // Add a listener to handle navigation from child fragment back to parent fragment
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             boolean showToolbar =
+                    destination.getId() != R.id.navigation_notification_permission &&
                     destination.getId() != R.id.navigation_membership_plan &&
                     destination.getId() != R.id.navigation_search_result &&
                     destination.getId() != R.id.navigation_login;
 
             boolean showBottomNav =
+                    destination.getId() != R.id.navigation_notification_permission &&
+                    destination.getId() != R.id.navigation_profile &&
                     destination.getId() != R.id.navigation_payment_success &&
                     destination.getId() != R.id.navigation_search_result &&
                     destination.getId() != R.id.navigation_login;

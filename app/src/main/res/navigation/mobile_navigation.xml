@@ -102,4 +102,12 @@
         app:route="route_plan_management_details"
         tools:layout="@layout/fragment_plan_management_details" />
 
+    <fragment
+        android:id="@+id/navigation_notification_permission"
+        android:name="com.prm.onboarding.permission.NotificationPermissionFragment"
+        app:route="route_notification_permission"
+        android:label="NotificationPermissionFragment"
+        tools:layout="@layout/fragment_notification_permission"/>
+
+
 </navigation>
