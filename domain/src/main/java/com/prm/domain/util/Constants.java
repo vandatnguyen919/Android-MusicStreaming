@@ -20,7 +20,7 @@ public class Constants {
         public static final String COLLECTION_SONGS = "songs";
         public static final String COLLECTION_ALBUMS = "albums";
         public static final String COLLECTION_PLAYLISTS = "playlists";
-        
+        public static final String COLLECTION_USERS = "users";
         public static final String FIELD_ARTIST_ID = "artist_id";
         public static final String FIELD_ALBUM_ID = "album_id";
     }

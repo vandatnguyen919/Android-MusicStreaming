@@ -18,4 +18,10 @@ public interface Navigator {
     void navigateToHome(Context context);
 
     void navigateToAuth(Context context);
+
+    void navigateToLibrary();
+
+    void navigateToProfile();
+
+    void navigateBack();
 }

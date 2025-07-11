@@ -1,23 +1,28 @@
 package com.prm.profile;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.prm.common.Navigator;
+import com.prm.common.CommonRoutes;
+import com.prm.domain.model.User;
 
 import javax.inject.Inject;
 
@@ -26,7 +31,12 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class ProfileFragment extends Fragment {
 
+    private static final String TAG = "ProfileFragment";
     private ProfileViewModel mViewModel;
+    private ImageView ivProfile;
+    private TextView tvUsername;
+    private TextView tvEmail;
+    private Button btnEditProfile;
     private Button btnAddSong;
     private Button btnAuthenticate;
     private TextView tvAuthStatus;
@@ -44,13 +54,16 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         // Initialize views
+        ivProfile = view.findViewById(R.id.iv_profile);
+        tvUsername = view.findViewById(R.id.tv_username);
+        tvEmail = view.findViewById(R.id.tv_email);
+        btnEditProfile = view.findViewById(R.id.btn_edit_profile);
         btnAddSong = view.findViewById(R.id.btn_add_song);
         btnAuthenticate = view.findViewById(R.id.btn_authenticate);
         tvAuthStatus = view.findViewById(R.id.tv_auth_status);
 
         // Set click listeners
         btnAddSong.setOnClickListener(v -> {
-            // Check authentication before showing dialog
             if (isUserAuthenticated()) {
                 showAddSongDialog();
             } else {
@@ -62,20 +75,75 @@ public class ProfileFragment extends Fragment {
             authenticateUser();
         });
 
-        // Update authentication status
-        updateAuthenticationStatus();
-
-        // Set up authentication state listener
-        setupAuthStateListener();
+        btnEditProfile.setOnClickListener(v -> {
+            // if (isUserAuthenticated() && mViewModel.currentUser.getValue() != null) {
+                NavController navController = Navigation.findNavController(v);
+                navController.navigate(CommonRoutes.EDIT_PROFILE);
+            // } else {
+            //     showToast("Please login to edit profile.");
+            // }
+        });
 
         return view;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-        // TODO: Use the ViewModel
+
+        // Observe user data
+        mViewModel.currentUser.observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                tvUsername.setText(user.getUsername());
+                tvEmail.setText(user.getEmail());
+                // You might want to load the profile image here using Glide or Picasso
+                // ivProfile.setImageURI(Uri.parse(user.getProfileImageUrl()));
+                tvAuthStatus.setText("Authenticated: " + user.getEmail());
+                tvAuthStatus.setTextColor(getResources().getColor(android.R.color.holo_green_light));
+                btnEditProfile.setVisibility(View.VISIBLE);
+            } else {
+                tvUsername.setText(""); // Use empty string instead of placeholder
+                tvEmail.setText("");    // Use empty string instead of placeholder
+                tvAuthStatus.setText("Not authenticated");
+                tvAuthStatus.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                btnEditProfile.setVisibility(View.GONE);
+            }
+            Log.d(TAG, "Current User: " + (user != null ? user.getUsername() : "null"));
+        });
+
+        // Observe loading state
+        mViewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
+            // Show/hide loading indicator if you have one
+            // progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            Log.d(TAG, "Loading: " + isLoading);
+        });
+
+        // Observe error messages
+        mViewModel.error.observe(getViewLifecycleOwner(), error -> {
+            if (error != null && !error.isEmpty()) {
+                showToast(error);
+                Log.e(TAG, "Error: " + error);
+            }
+        });
+
+        // Refresh user data on view creation (optional, as it's already fetched in ViewModel's constructor)
+        // mViewModel.fetchCurrentUser();
+
+        // Set up authentication state listener using Firebase directly for immediate UI updates on auth changes
+        FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
+            Log.d(TAG, "Auth state changed");
+            if (firebaseAuth.getCurrentUser() != null) {
+                mViewModel.fetchCurrentUser(); // Re-fetch user data if auth state changes
+            } else {
+                // Clear UI if user logs out
+                tvUsername.setText("");
+                tvEmail.setText("");
+                tvAuthStatus.setText("Not authenticated");
+                tvAuthStatus.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                btnEditProfile.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void showAddSongDialog() {
@@ -87,37 +155,11 @@ public class ProfileFragment extends Fragment {
         return FirebaseAuth.getInstance().getCurrentUser() != null;
     }
 
-    private void updateAuthenticationStatus() {
-        if (tvAuthStatus != null) {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            android.util.Log.d("ProfileFragment", "Updating auth status. User: " + (user != null ? user.getUid() : "null"));
-
-            if (user != null) {
-                String statusText = "Authenticated: " + (user.isAnonymous() ? "Anonymous User" : user.getEmail());
-                tvAuthStatus.setText(statusText);
-                tvAuthStatus.setTextColor(getResources().getColor(android.R.color.holo_green_light));
-                android.util.Log.d("ProfileFragment", "Status: " + statusText);
-            } else {
-                tvAuthStatus.setText("Not authenticated");
-                tvAuthStatus.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-                android.util.Log.d("ProfileFragment", "Status: Not authenticated");
-            }
-        }
-    }
-
-    private void setupAuthStateListener() {
-        FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
-            android.util.Log.d("ProfileFragment", "Auth state changed");
-            updateAuthenticationStatus();
-        });
-    }
-
     private void showAuthenticationRequiredDialog() {
-        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+        new AlertDialog.Builder(requireContext())
                 .setTitle("Login Required")
                 .setMessage("You need to login to add songs. Please go to the login screen to sign in.")
                 .setPositiveButton("Go to Login", (dialog, which) -> {
-                    // Navigate to login screen
                     navigator.navigate(com.prm.common.R.string.route_login);
                 })
                 .setNegativeButton("Cancel", null)
@@ -125,9 +167,13 @@ public class ProfileFragment extends Fragment {
     }
 
     private void authenticateUser() {
-        // Redirect to login screen instead of trying to authenticate here
         Toast.makeText(getContext(), "Please login first", Toast.LENGTH_SHORT).show();
         navigator.navigate(com.prm.common.R.string.route_login);
     }
 
+    private void showToast(String message) {
+        if (getContext() != null) {
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        }
+    }
 }

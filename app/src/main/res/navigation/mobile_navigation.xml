@@ -45,7 +45,18 @@
             android:id="@+id/action_profile_to_add_song"
             app:destination="@id/navigation_add_song" />
 
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/navigation_edit_profile" />
+
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_edit_profile"
+        android:name="com.prm.profile.EditProfileFragment"
+        android:label="EditProfileFragment"
+        app:route="@string/route_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" />
 
     <fragment
         android:id="@+id/navigation_add_song"
