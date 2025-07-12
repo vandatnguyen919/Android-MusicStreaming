@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/navigation_home">
+    app:startDestination="@id/navigation_notification_permission">
 
     <fragment
         android:id="@+id/navigation_home"
@@ -37,7 +37,7 @@
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.prm.profile.ProfileFragment"
-        android:label="ProfileFragment"
+        android:label="Your Profile"
         app:route="@string/route_profile"
         tools:layout="@layout/fragment_profile">
 

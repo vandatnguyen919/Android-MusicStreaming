@@ -20,11 +20,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.prm.common.Navigator;
 import com.prm.onboarding.R;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class NotificationPermissionFragment extends Fragment {
 
     private NotificationPermissionViewModel mViewModel;
+
+    @Inject
+    Navigator navigator;
 
     public static NotificationPermissionFragment newInstance() {
         return new NotificationPermissionFragment();
@@ -72,9 +81,11 @@ public class NotificationPermissionFragment extends Fragment {
 
     private void onPermissionGranted() {
         Toast.makeText(requireContext(), "Notification permission granted!", Toast.LENGTH_SHORT).show();
+        navigator.clearAndNavigate(com.prm.common.R.string.route_home);
     }
 
     private void onPermissionDenied() {
-        Toast.makeText(requireContext(), "You can enable notifications later in Settings", Toast.LENGTH_LONG).show();
+        Toast.makeText(requireContext(), "Notification permission denied!", Toast.LENGTH_SHORT).show();
+        navigator.clearAndNavigate(com.prm.common.R.string.route_home);
     }
 }

@@ -24,4 +24,8 @@ public interface Navigator {
     void navigateToProfile();
 
     void navigateBack();
+
+    void clearAndNavigate(@StringRes int route);
+
+    void clearAndNavigate(String route);
 }

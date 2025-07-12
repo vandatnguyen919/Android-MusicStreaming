@@ -291,7 +291,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        ZaloPaySDK.getInstance().onResult(intent);
+        try {
+            ZaloPaySDK.getInstance().onResult(intent);
+        } catch (Exception e) {
+            Log.e("MainActivity", "Error handling ZaloPay result", e);
+        }
     }
 
     // Test method to add a new song and trigger notification
