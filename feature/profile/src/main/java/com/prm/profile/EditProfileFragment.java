@@ -54,9 +54,10 @@ public class EditProfileFragment extends Fragment {
 
         // Initialize UI elements
         etUsername = view.findViewById(R.id.et_edit_username);
-        etEmail = view.findViewById(R.id.et_edit_email);
         btnSaveProfile = view.findViewById(R.id.btn_save_profile);
         progressBar = view.findViewById(R.id.progress_bar);
+
+        etUsername.setText(currentUser.getDisplayName());
 
         return view;
     }

@@ -193,6 +193,10 @@ public class MainActivity extends AppCompatActivity {
             }
             return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
         });
+
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            navigator.clearAndNavigate(com.prm.common.R.string.route_home);
+        }
     }
 
     private void loadCircularAvatarFromUrl(String imageUrl) {

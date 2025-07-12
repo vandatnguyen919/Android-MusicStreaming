@@ -20,49 +20,17 @@
             android:padding="16dp">
 
             <!-- Username Input -->
-            <com.google.android.material.textfield.TextInputLayout
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_edit_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Display Name"
+                android:textColor="@color/white"
+                android:textColorHighlight="@color/white"
                 android:textColorHint="@color/gray_text"
-                app:hintTextColor="@color/white"
-                android:layout_marginBottom="16dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_edit_username"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Username"
-                    android:textColor="@color/white"
-                    android:textColorHighlight="@color/white"
-                    android:textColorHint="@color/gray_text"
-                    android:backgroundTint="@color/white"
-                    android:padding="12dp"
-                    android:singleLine="true" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Email Input -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="@color/gray_text"
-                app:hintTextColor="@color/white"
-                android:layout_marginBottom="16dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_edit_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Email"
-                    android:textColor="@color/white"
-                    android:textColorHighlight="@color/white"
-                    android:textColorHint="@color/gray_text"
-                    android:backgroundTint="@color/white"
-                    android:padding="12dp"
-                    android:inputType="textEmailAddress"
-                    android:singleLine="true" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+                android:backgroundTint="@color/white"
+                android:padding="12dp"
+                android:singleLine="true" />
 
             <!-- Save Button -->
             <androidx.appcompat.widget.AppCompatButton
