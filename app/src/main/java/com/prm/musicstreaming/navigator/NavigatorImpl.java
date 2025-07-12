@@ -70,32 +70,7 @@ public class NavigatorImpl implements Navigator {
                 .build();
         getNavController().navigate(route, navOptions);
     }
-
-    @Override
-    public void navigateToHome(Context context) {
-        try {
-            Intent intent = new Intent(context, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            context.startActivity(intent);
-        } catch (Exception e) {
-            // Log error for debugging
-            android.util.Log.e("NavigatorImpl", "Error navigating to home", e);
-        }
-    }
-
-    @Override
-    public void navigateToAuth(Context context) {
-        try {
-            Class<?> authActivityClass = Class.forName("com.prm.login.AuthActivity");
-            Intent intent = new Intent(context, authActivityClass);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            context.startActivity(intent);
-        } catch (ClassNotFoundException e) {
-            // Fallback to login fragment navigation if AuthActivity not found
-            getNavController().navigate(R.id.navigation_login);
-        }
-    }
-
+    
     @Override
     public void navigateToLibrary() {
         getNavController().navigate(R.id.navigation_library);

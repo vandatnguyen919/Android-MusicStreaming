@@ -98,7 +98,7 @@ public class LoginFormFragment extends Fragment implements View.OnClickListener 
         } else if (id == R.id.tv_forgot_password) {
             handleForgotPassword();
         } else if (id == R.id.tv_sign_up) {
-            handleGoToSignUp();
+//            handleGoToSignUp();
         }
     }
 
@@ -131,15 +131,6 @@ public class LoginFormFragment extends Fragment implements View.OnClickListener 
     private void handleForgotPassword() {
         showToast("Forgot password feature coming soon!");
         // TODO: Implement forgot password
-    }
-
-    private void handleGoToSignUp() {
-        // Navigate to signup form
-        SignupFragment signupFragment = SignupFragment.newInstance();
-        getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, signupFragment)
-                .addToBackStack(null)
-                .commit();
     }
 
     private boolean validateForm() {
@@ -206,7 +197,7 @@ public class LoginFormFragment extends Fragment implements View.OnClickListener 
                 if (navigator != null) {
                     try {
                         Log.d(TAG, "Calling navigator.navigateToHome()");
-                        navigator.navigateToHome(getContext());
+//                        navigator.navigateToHome(getContext());
                         Log.d(TAG, "navigator.navigateToHome() completed");
                         navigationSuccess = true;
                     } catch (Exception e) {

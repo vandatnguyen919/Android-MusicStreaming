@@ -1,23 +1,29 @@
 package com.prm.musicstreaming;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
@@ -28,18 +34,12 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
-import android.util.Log;
-import com.prm.common.Navigator;
-import com.prm.common.util.SampleSongs;
-import com.prm.domain.model.Song;
 import com.prm.common.MiniPlayerViewModel;
-import com.prm.payment.result.PaymentSuccessFragment;
+import com.prm.common.Navigator;
+import com.prm.domain.model.Song;
 import com.prm.domain.repository.SongRepository;
-
-import java.util.List;
+import com.prm.payment.result.PaymentSuccessFragment;
 
 import javax.inject.Inject;
 
@@ -164,7 +164,12 @@ public class MainActivity extends AppCompatActivity {
                 toolbar.setNavigationIcon(null);
                 invalidateOptionsMenu();
             } else if (isTopLevelDestination) {
-                toolbar.setNavigationIcon(R.drawable.ic_profile);
+                Drawable avatarDrawable = getCircularAvatarDrawable(R.drawable.avatar);
+                if (avatarDrawable != null) {
+                    toolbar.setNavigationIcon(avatarDrawable);
+                } else {
+                    toolbar.setNavigationIcon(R.drawable.ic_profile); // Fallback icon
+                }
                 toolbar.setNavigationOnClickListener(v -> navController.navigate(R.id.navigation_profile));
                 invalidateOptionsMenu();
             } else {
@@ -196,6 +201,34 @@ public class MainActivity extends AppCompatActivity {
             }
             return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
         });
+    }
+
+    private Drawable getCircularAvatarDrawable(@DrawableRes int id) {
+        Drawable avatarDrawable = ResourcesCompat.getDrawable(getResources(), id, null);
+        if (avatarDrawable != null) {
+            // Create a circular drawable with proper sizing
+            int iconSize = (int) (30 * getResources().getDisplayMetrics().density); // 24dp
+            Bitmap bitmap = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+
+            // Scale and draw the original drawable
+            avatarDrawable.setBounds(0, 0, iconSize, iconSize);
+            avatarDrawable.draw(canvas);
+
+            // Create circular bitmap
+            Bitmap circularBitmap = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
+            Canvas circularCanvas = new Canvas(circularBitmap);
+
+            Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setShader(new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+
+            float radius = iconSize / 2f;
+            circularCanvas.drawCircle(radius, radius, radius, paint);
+
+            return new BitmapDrawable(getResources(), circularBitmap);
+        }
+        return null;
     }
 
     private void initializeMiniPlayer() {

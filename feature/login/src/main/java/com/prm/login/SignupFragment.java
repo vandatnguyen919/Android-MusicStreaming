@@ -103,7 +103,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         } else if (id == R.id.btn_continue_google) {
             handleContinueWithGoogle();
         } else if (id == R.id.tv_login) {
-            handleGoToLogin();
         }
     }
 
@@ -136,15 +135,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         if (googleSignInHelper != null) {
             googleSignInHelper.signIn(getActivity());
         }
-    }
-
-    private void handleGoToLogin() {
-        // Navigate to login form
-        LoginFormFragment loginFormFragment = LoginFormFragment.newInstance();
-        getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, loginFormFragment)
-                .addToBackStack(null)
-                .commit();
     }
 
     private boolean validateForm() {
@@ -213,19 +203,19 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                                     .subscribe(() -> {
                                         Log.d(TAG, "User data created/updated in Firestore successfully");
                                         showToast("Account created successfully!");
-                                        navigateToHome();
+                                        navigator.clearAndNavigate(com.prm.common.R.string.route_home);
                                     }, throwable -> {
                                         Log.e(TAG, "Failed to create/update user data in Firestore: " + throwable.getMessage(), throwable);
                                         showToast("Sign up failed: Failed to save user data.");
                                         // Still navigate home even if Firestore save fails for now, or handle differently
-                                        navigateToHome();
+                                        navigator.clearAndNavigate(com.prm.common.R.string.route_home);
                                     })
                             );
 
                         } else {
                             Log.e(TAG, "Firebase user is null after successful creation");
                             showToast("Account created, but user data could not be saved.");
-                            navigateToHome(); // Still navigate home
+                            navigator.clearAndNavigate(com.prm.common.R.string.route_home);
                         }
                     } else {
                         Log.e(TAG, "Account creation failed", task.getException());
@@ -234,64 +224,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         showToast("Sign up failed: " + errorMsg);
                     }
                 });
-    }
-
-    private void navigateToHome() {
-        try {
-            Log.d(TAG, "navigateToHome() called");
-            // Check if fragment is still attached to avoid crashes
-            if (isAdded() && getContext() != null) {
-                Log.d(TAG, "Fragment is attached and context is not null");
-                Log.d(TAG, "Navigator instance: " + (navigator != null ? "not null" : "null"));
-
-                boolean navigationSuccess = false;
-
-                // Try using injected navigator first
-                if (navigator != null) {
-                    try {
-                        Log.d(TAG, "Calling navigator.navigateToHome()");
-                        navigator.navigateToHome(getContext());
-                        Log.d(TAG, "navigator.navigateToHome() completed");
-                        navigationSuccess = true;
-                    } catch (Exception e) {
-                        Log.e(TAG, "Navigator failed", e);
-                    }
-                }
-
-                // Fallback: direct navigation
-                if (!navigationSuccess) {
-                    Log.d(TAG, "Using fallback navigation");
-                    try {
-                        Class<?> mainActivityClass = Class.forName("com.prm.musicstreaming.MainActivity");
-                        android.content.Intent intent = new android.content.Intent(getContext(), mainActivityClass);
-                        intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        Log.d(TAG, "Fallback navigation successful");
-                        navigationSuccess = true;
-                    } catch (Exception e) {
-                        Log.e(TAG, "Fallback navigation failed", e);
-                    }
-                }
-
-                if (navigationSuccess) {
-                    // Use a small delay before finishing activity to ensure navigation completes
-                    new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                        Log.d(TAG, "Finishing AuthActivity");
-                        if (getActivity() != null && !getActivity().isFinishing()) {
-                            getActivity().finish();
-                        }
-                    }, 500);
-                }
-            } else {
-                Log.e(TAG, "Fragment not attached or context is null");
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error navigating to home", e);
-            // Last resort: just finish the current activity
-            if (getActivity() != null && !getActivity().isFinishing()) {
-                getActivity().finish();
-            }
-        }
     }
 
     private void setupGoogleSignIn() {
@@ -305,7 +237,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     Log.d(TAG, "User email: " + user.getEmail());
                     showToast("Welcome " + (user.getDisplayName() != null ? user.getDisplayName() : user.getEmail()) + "!");
                     Log.d(TAG, "About to call navigateToHome()");
-                    navigateToHome();
+                    navigator.clearAndNavigate(com.prm.common.R.string.route_home);
                 }
 
                 @Override

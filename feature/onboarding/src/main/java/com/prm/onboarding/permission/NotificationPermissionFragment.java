@@ -81,11 +81,11 @@ public class NotificationPermissionFragment extends Fragment {
 
     private void onPermissionGranted() {
         Toast.makeText(requireContext(), "Notification permission granted!", Toast.LENGTH_SHORT).show();
-        navigator.clearAndNavigate(com.prm.common.R.string.route_home);
+        navigator.clearAndNavigate(com.prm.common.R.string.route_login);
     }
 
     private void onPermissionDenied() {
         Toast.makeText(requireContext(), "Notification permission denied!", Toast.LENGTH_SHORT).show();
-        navigator.clearAndNavigate(com.prm.common.R.string.route_home);
+        navigator.clearAndNavigate(com.prm.common.R.string.route_login);
     }
 }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_gradient_blue"
+    android:background="@drawable/bg_gradient_blue_noti"
     android:padding="20dp"
     tools:context=".permission.NotificationPermissionFragment">
 
@@ -47,7 +47,7 @@
         android:background="@drawable/green_button_background"
         android:gravity="center"
         android:text="ALLOW NOTIFICATIONS"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/btn_maybe_later"

@@ -7,43 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:585106703577:android:2a4b7ca0ddba80dc1eaac8",
-        "android_client_info": {
-          "package_name": "com.prm"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "585106703577-50rtlc13ts7lh2k3fod41nl363emd4as.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.prm",
-            "certificate_hash": "bffd97c560c8e7e74862f47569a53808cd650928"
-          }
-        },
-        {
-          "client_id": "585106703577-aopj0mck5l6h4cgh2d4omu36mj8irnu8.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDSurqWNhxFgz8tW1ONGPq9kJ1X-4DLE3M"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "585106703577-aopj0mck5l6h4cgh2d4omu36mj8irnu8.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:585106703577:android:59dd2cacbeeb1cb11eaac8",
         "android_client_info": {
           "package_name": "com.prm.musicstreaming"
@@ -51,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "585106703577-s1rem7jevc6mesja3tigfiu1tbk26l35.apps.googleusercontent.com",
+          "client_id": "585106703577-pedtq784v31on2n6i53a8aqgvfs987rk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.prm.musicstreaming",
-            "certificate_hash": "b7997a0068433fc8d64f9e1c938f0e0a187f684f"
+            "certificate_hash": "ed1e0767a08beb5456ff006314960e0c73574de7"
           }
         },
         {

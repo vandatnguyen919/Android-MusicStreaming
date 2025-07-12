@@ -1,20 +1,11 @@
 package com.prm.login;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Patterns;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,21 +16,37 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialException;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.prm.common.Navigator;
 import com.prm.domain.usecase.user.CreateUserUseCase;
+
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class LoginFragment extends Fragment implements View.OnClickListener {
+public class LoginFragment extends Fragment {
 
     private static final String TAG = "LoginFragment";
+    private static final String WEB_CLIENT_ID = "585106703577-aopj0mck5l6h4cgh2d4omu36mj8irnu8.apps.googleusercontent.com";
 
     @Inject
     Navigator navigator;
@@ -47,108 +54,139 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Inject
     CreateUserUseCase createUserUseCase;
 
-    private GoogleSignInHelper googleSignInHelper;
-    private ActivityResultLauncher<Intent> googleSignInLauncher;
-    // UI Components
-    private ImageView ivLogo;
-    private TextView tvTitle;
-    private Button btnSignUpFree;
-    private Button btnContinueGoogle;
-    private Button btnContinueFacebook;
-    private Button btnContinueApple;
-    private TextView tvLogIn;
+    private CredentialManager credentialManager;
 
-    public static LoginFragment newInstance() {
-        return new LoginFragment();
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        credentialManager = CredentialManager.create(context);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // Setup Google Sign-In launcher first
-        setupGoogleSignInLauncher();
 
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-        initViews(view);
-        setupClickListeners();
-        setupAnimations();
-        setupGoogleSignIn();
+
+        // UI Components
+        ImageView ivLogo = view.findViewById(R.id.iv_logo);
+        TextView tvTitle = view.findViewById(R.id.tv_title);
+        Button btnSignUpFree = view.findViewById(R.id.btn_sign_up_free);
+        Button btnContinueGoogle = view.findViewById(R.id.btn_continue_google);
+        TextView tvLogIn = view.findViewById(R.id.tv_log_in);
+
+        btnSignUpFree.setOnClickListener(this::showSignUpDialog);
+        btnContinueGoogle.setOnClickListener(this::onGoogleSignInClick);
+        tvLogIn.setOnClickListener(this::showLoginDialog);
+
+        // Fade in animation for logo and title
+        Animation fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+        ivLogo.startAnimation(fadeIn);
+        tvTitle.startAnimation(fadeIn);
+
+        // Slide up animation for buttons with delay
+        Animation slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
+        slideUp.setStartOffset(300);
+        btnSignUpFree.startAnimation(slideUp);
+
+        slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
+        slideUp.setStartOffset(400);
+        btnContinueGoogle.startAnimation(slideUp);
+
+        slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
+        slideUp.setStartOffset(500);
+        tvLogIn.startAnimation(slideUp);
+
         return view;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        // ViewModel removed
-    }
-    
-    private void initViews(View view) {
-        ivLogo = view.findViewById(R.id.iv_logo);
-        tvTitle = view.findViewById(R.id.tv_title);
-        btnSignUpFree = view.findViewById(R.id.btn_sign_up_free);
-        btnContinueGoogle = view.findViewById(R.id.btn_continue_google);
-        btnContinueFacebook = view.findViewById(R.id.btn_continue_facebook);
-        btnContinueApple = view.findViewById(R.id.btn_continue_apple);
-        tvLogIn = view.findViewById(R.id.tv_log_in);
+    private void onGoogleSignInClick(View v) {
+
+        // Create Google ID option
+        GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(false)
+                .setServerClientId(WEB_CLIENT_ID)
+                .build();
+
+        // Create credential request
+        GetCredentialRequest request = new GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build();
+
+        // Make the credential request
+        credentialManager.getCredentialAsync(
+                requireContext(),
+                request,
+                null,
+                Executors.newSingleThreadExecutor(),
+                new CredentialManagerCallback<>() {
+                    @Override
+                    public void onResult(GetCredentialResponse result) {
+                        requireActivity().runOnUiThread(() -> handleGoogleSignInResult(result));
+                    }
+
+                    @Override
+                    public void onError(@NonNull GetCredentialException e) {
+                        requireActivity().runOnUiThread(() -> handleGoogleSignInError(e));
+                    }
+                }
+        );
     }
 
-    private void setupClickListeners() {
-        btnSignUpFree.setOnClickListener(this);
-        btnContinueGoogle.setOnClickListener(this);
-        btnContinueFacebook.setOnClickListener(this);
-        btnContinueApple.setOnClickListener(this);
-        tvLogIn.setOnClickListener(this);
+    private void handleGoogleSignInResult(GetCredentialResponse result) {
+        // Get the credential from the result
+        GoogleIdTokenCredential googleIdTokenCredential = GoogleIdTokenCredential
+                .createFrom(result.getCredential().getData());
+
+        // Extract the ID token
+        String idToken = googleIdTokenCredential.getIdToken();
+
+        // Log user information
+        Log.d(TAG, "Google Sign-In successful");
+        Log.d(TAG, "Display Name: " + googleIdTokenCredential.getDisplayName());
+        Log.d(TAG, "Email: " + googleIdTokenCredential.getId());
+
+        // Authenticate with Firebase using the ID token
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "Firebase authentication successful");
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            onGoogleSignInSuccess(user);
+                        }
+                    } else {
+                        Log.e(TAG, "Firebase authentication failed", task.getException());
+                        String errorMsg = task.getException() != null ?
+                                task.getException().getMessage() : "Authentication failed";
+                        showToast("Sign in failed: " + errorMsg);
+                    }
+                });
+
     }
 
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
+    private void handleGoogleSignInError(GetCredentialException e) {
+        Log.e(TAG, "Google Sign-In failed", e);
 
-        if (id == R.id.btn_sign_up_free) {
-            handleSignUpFree();
-        } else if (id == R.id.btn_continue_google) {
-            handleContinueWithGoogle();
-        } else if (id == R.id.btn_continue_facebook) {
-            handleContinueWithFacebook();
-        } else if (id == R.id.btn_continue_apple) {
-            handleContinueWithApple();
-        } else if (id == R.id.tv_log_in) {
-            handleLogIn();
+        String errorMessage = "Google sign in failed";
+        if (e.getMessage() != null) {
+            errorMessage += ": " + e.getMessage();
         }
+        showToast(errorMessage);
     }
 
-    private void handleSignUpFree() {
-        Log.d(TAG, "Sign up free clicked");
-        showSignUpDialog();
-    }
+    private void onGoogleSignInSuccess(FirebaseUser user) {
+        Log.d(TAG, "Google sign in successful: " + user.getUid());
+        Log.d(TAG, "User display name: " + user.getDisplayName());
+        Log.d(TAG, "User email: " + user.getEmail());
 
-    private void handleContinueWithGoogle() {
-        Log.d(TAG, "Continue with Google clicked");
-        showToast("Signing in with Google...");
-        if (googleSignInHelper != null && googleSignInLauncher != null) {
-            googleSignInHelper.signInWithLauncher(googleSignInLauncher);
-        } else {
-            Log.e(TAG, "GoogleSignInHelper or launcher is null");
-            showToast("Google Sign-In not properly initialized");
-        }
-    }
+        String welcomeMessage = "Welcome " +
+                (user.getDisplayName() != null ? user.getDisplayName() : user.getEmail()) + "!";
+        showToast(welcomeMessage);
 
-    private void handleContinueWithFacebook() {
-        Log.d(TAG, "Continue with Facebook clicked");
-        showToast("Signing in...");
-        signInAnonymously();
-    }
-
-    private void handleContinueWithApple() {
-        Log.d(TAG, "Continue with Apple clicked");
-        showToast("Signing in...");
-        signInAnonymously();
-    }
-
-    private void handleLogIn() {
-        Log.d(TAG, "Log in clicked");
-        showLoginDialog();
-
+        // Navigate to home
+        navigator.clearAndNavigate(com.prm.common.R.string.route_home);
     }
 
     private void signInAnonymously() {
@@ -161,105 +199,18 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             Log.d(TAG, "User ID: " + user.getUid());
                             Log.d(TAG, "Is anonymous: " + user.isAnonymous());
                             showToast("Login successful!");
-                            navigateToHome();
+                            navigator.clearAndNavigate(com.prm.common.R.string.route_home);
                         }
                     } else {
                         Log.e(TAG, "Anonymous sign in failed", task.getException());
-                        String errorMsg = task.getException() != null ? task.getException().getMessage() : "Unknown error";
+                        String errorMsg = task.getException() != null ?
+                                task.getException().getMessage() : "Unknown error";
                         showToast("Login failed: " + errorMsg);
                     }
                 });
     }
 
-    private void navigateToHome() {
-        try {
-            Log.d(TAG, "navigateToHome() called");
-            // Check if fragment is still attached to avoid crashes
-            if (isAdded() && getContext() != null) {
-                Log.d(TAG, "Fragment is attached and context is not null");
-                Log.d(TAG, "Navigator instance: " + (navigator != null ? "not null" : "null"));
-
-                boolean navigationSuccess = false;
-
-                // Try using injected navigator first
-                if (navigator != null) {
-                    try {
-                        Log.d(TAG, "Calling navigator.navigateToHome()");
-                        navigator.navigateToHome(getContext());
-                        Log.d(TAG, "navigator.navigateToHome() completed");
-                        navigationSuccess = true;
-                    } catch (Exception e) {
-                        Log.e(TAG, "Navigator failed", e);
-                    }
-                }
-
-                // Fallback: direct navigation
-                if (!navigationSuccess) {
-                    Log.d(TAG, "Using fallback navigation");
-                    try {
-                        Class<?> mainActivityClass = Class.forName("com.prm.musicstreaming.MainActivity");
-                        android.content.Intent intent = new android.content.Intent(getContext(), mainActivityClass);
-                        intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        Log.d(TAG, "Fallback navigation successful");
-                        navigationSuccess = true;
-                    } catch (Exception e) {
-                        Log.e(TAG, "Fallback navigation failed", e);
-                    }
-                }
-
-                if (navigationSuccess) {
-                    // Use a small delay before finishing activity to ensure navigation completes
-                    new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                        Log.d(TAG, "Finishing AuthActivity");
-                        if (getActivity() != null && !getActivity().isFinishing()) {
-                            getActivity().finish();
-                        }
-                    }, 500);
-                }
-            } else {
-                Log.e(TAG, "Fragment not attached or context is null");
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error navigating to home", e);
-            // Last resort: just finish the current activity
-            if (getActivity() != null && !getActivity().isFinishing()) {
-                getActivity().finish();
-            }
-        }
-    }
-
-    private void setupAnimations() {
-        if (getContext() != null) {
-            // Fade in animation for logo and title
-            Animation fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
-            ivLogo.startAnimation(fadeIn);
-            tvTitle.startAnimation(fadeIn);
-
-            // Slide up animation for buttons with delay
-            Animation slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
-            slideUp.setStartOffset(300);
-            btnSignUpFree.startAnimation(slideUp);
-
-            slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
-            slideUp.setStartOffset(400);
-            btnContinueGoogle.startAnimation(slideUp);
-
-            slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
-            slideUp.setStartOffset(500);
-            btnContinueFacebook.startAnimation(slideUp);
-
-            slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
-            slideUp.setStartOffset(600);
-            btnContinueApple.startAnimation(slideUp);
-
-            slideUp = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
-            slideUp.setStartOffset(700);
-            tvLogIn.startAnimation(slideUp);
-        }
-    }
-
-    private void showLoginDialog() {
+    private void showLoginDialog(View v) {
         if (getContext() == null) return;
 
         // Create dialog layout
@@ -281,7 +232,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         dialog.setOnShowListener(dialogInterface -> {
             Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            positiveButton.setOnClickListener(v -> {
+            positiveButton.setOnClickListener(view-> {
                 // Validate form
                 if (validateLoginForm(tilEmail, tilPassword, etEmail, etPassword)) {
                     String email = etEmail.getText().toString().trim();
@@ -298,7 +249,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private boolean validateLoginForm(TextInputLayout tilEmail, TextInputLayout tilPassword,
-                                    TextInputEditText etEmail, TextInputEditText etPassword) {
+                                      TextInputEditText etEmail, TextInputEditText etPassword) {
         boolean isValid = true;
 
         // Clear previous errors
@@ -336,20 +287,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             Log.d(TAG, "User ID: " + user.getUid());
                             Log.d(TAG, "User email: " + user.getEmail());
                             showToast("Login successful!");
-                            navigateToHome();
+                            navigator.clearAndNavigate(com.prm.common.R.string.route_home);
                         }
                     } else {
                         Log.e(TAG, "Email/Password sign in failed", task.getException());
                         String errorMsg = task.getException() != null ?
-                            task.getException().getMessage() : "Unknown error";
+                                task.getException().getMessage() : "Unknown error";
                         showToast("Login failed: " + errorMsg);
                     }
                 });
     }
 
-    private void showSignUpDialog() {
-        // Use requireContext() to ensure the dialog inflates with the correct theme context
-        // if (getContext() == null) return;
+    private void showSignUpDialog(View v) {
+        if (getContext() == null) return;
 
         // Create dialog layout
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_signup, null);
@@ -372,10 +322,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         dialog.setOnShowListener(dialogInterface -> {
             Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            positiveButton.setOnClickListener(v -> {
+            positiveButton.setOnClickListener(view -> {
                 // Validate form
                 if (validateSignUpForm(tilEmail, tilPassword, tilConfirmPassword,
-                                     etEmail, etPassword, etConfirmPassword)) {
+                        etEmail, etPassword, etConfirmPassword)) {
                     String email = etEmail.getText().toString().trim();
                     String password = etPassword.getText().toString().trim();
 
@@ -390,8 +340,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private boolean validateSignUpForm(TextInputLayout tilEmail, TextInputLayout tilPassword,
-                                     TextInputLayout tilConfirmPassword, TextInputEditText etEmail,
-                                     TextInputEditText etPassword, TextInputEditText etConfirmPassword) {
+                                       TextInputLayout tilConfirmPassword, TextInputEditText etEmail,
+                                       TextInputEditText etPassword, TextInputEditText etConfirmPassword) {
         boolean isValid = true;
 
         // Clear previous errors
@@ -443,65 +393,18 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             Log.d(TAG, "User ID: " + user.getUid());
                             Log.d(TAG, "User email: " + user.getEmail());
                             showToast("Account created successfully!");
-                            navigateToHome();
+                            navigator.clearAndNavigate(com.prm.common.R.string.route_home);
                         }
                     } else {
                         Log.e(TAG, "Account creation failed", task.getException());
                         String errorMsg = task.getException() != null ?
-                            task.getException().getMessage() : "Unknown error";
+                                task.getException().getMessage() : "Unknown error";
                         showToast("Sign up failed: " + errorMsg);
                     }
                 });
     }
 
-    private void setupGoogleSignInLauncher() {
-        Log.d(TAG, "Setting up Google Sign-In launcher");
-        googleSignInLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                Log.d(TAG, "Google Sign-In activity result received");
-                if (googleSignInHelper != null) {
-                    googleSignInHelper.handleSignInResult(result.getData());
-                } else {
-                    Log.e(TAG, "GoogleSignInHelper is null in activity result");
-                }
-            }
-        );
-    }
-
-    private void setupGoogleSignIn() {
-        if (getContext() != null) {
-            googleSignInHelper = new GoogleSignInHelper(getContext(), createUserUseCase);
-            googleSignInHelper.setListener(new GoogleSignInHelper.GoogleSignInListener() {
-                @Override
-                public void onSignInSuccess(FirebaseUser user) {
-                    Log.d(TAG, "Google sign in successful: " + user.getUid());
-                    Log.d(TAG, "User display name: " + user.getDisplayName());
-                    Log.d(TAG, "User email: " + user.getEmail());
-                    showToast("Welcome " + (user.getDisplayName() != null ? user.getDisplayName() : user.getEmail()) + "!");
-                    Log.d(TAG, "About to call navigateToHome()");
-                    navigateToHome();
-                }
-
-                @Override
-                public void onSignInFailure(String error) {
-                    Log.e(TAG, "Google sign in failed: " + error);
-                    showToast("Google sign in failed: " + error);
-                }
-
-                @Override
-                public void onSignInCancelled() {
-                    Log.d(TAG, "Google sign in cancelled");
-                    showToast("Sign in cancelled");
-                }
-            });
-        }
-    }
-
     private void showToast(String message) {
-        if (getContext() != null) {
-            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-        }
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
-
 }
