@@ -184,6 +184,14 @@ public class FirebaseSongService {
         });
     }
 
+    public Completable addNewSong(Song song) {
+        return Completable.create(emitter -> {
+            songsCollection.document(song.getId())
+                    .set(song)
+                    .addOnSuccessListener(aVoid -> emitter.onComplete())
+                    .addOnFailureListener(emitter::onError);
+        });
+    }
 
     public Single<List<Song>> searchSongsByTitle(String searchTerm) {
         return Single.create(emitter -> {

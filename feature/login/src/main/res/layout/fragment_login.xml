@@ -66,38 +66,20 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_continue_google"
                 style="@style/OnboardingButton.Social"
-                android:text="@string/button_continue_with_google"
                 android:drawableStart="@drawable/ic_google_logo"
                 android:drawablePadding="@dimen/button_icon_margin"
-                android:gravity="center" />
-
-            <!-- Continue with Facebook Button -->
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_continue_facebook"
-                style="@style/OnboardingButton.Social"
-                android:text="@string/button_continue_with_facebook"
-                android:drawableStart="@drawable/ic_facebook_logo"
-                android:drawablePadding="@dimen/button_icon_margin"
-                android:gravity="center" />
-
-            <!-- Continue with Apple Button -->
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_continue_apple"
-                style="@style/OnboardingButton.Social"
-                android:text="@string/button_continue_with_apple"
-                android:drawableStart="@drawable/ic_apple_logo"
-                android:drawablePadding="@dimen/button_icon_margin"
-                android:gravity="center" />
+                android:gravity="center"
+                android:text="@string/button_continue_with_google" />
 
             <!-- Log In Link -->
             <TextView
                 android:id="@+id/tv_log_in"
                 style="@style/OnboardingLink"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/spacing_large"
-                android:text="@string/button_log_in"
+                android:layout_marginTop="16dp"
                 android:clickable="true"
-                android:focusable="true" />
+                android:focusable="true"
+                android:text="@string/button_log_in" />
 
         </LinearLayout>
 

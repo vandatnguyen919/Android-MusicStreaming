@@ -14,6 +14,11 @@
     <string name="route_payment_success">route_payment_success</string>
     <string name="route_plan_management">route_plan_management</string>
     <string name="route_plan_management_details">route_plan_management_details</string>
+    <string name="route_edit_profile">edit_profile</string>
 
     <!-- End Destination/Route -->
+
+    <!-- Notification -->
+    <string name="notification_channel_name">Music Player</string>
+    <string name="notification_channel_description">Controls for currently playing music</string>
 </resources>

@@ -4,9 +4,14 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@android:color/background_dark"
+    android:background="#121212"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".SearchResultsFragment">
+
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="25dp"/>
 
     <!-- Search Header -->
     <LinearLayout
@@ -29,7 +34,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/ic_search"
-                android:tint="@android:color/darker_gray" />
+                app:tint="@android:color/darker_gray" />
 
             <EditText
                 android:id="@+id/et_search"

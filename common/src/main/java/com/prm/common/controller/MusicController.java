@@ -58,6 +58,7 @@ public class MusicController {
         new MediaBrowserCompat.ConnectionCallback() {
             @Override
             public void onConnected() {
+                isConnecting = false;
                 try {
                     mediaController = new MediaControllerCompat(context, mediaBrowser.getSessionToken());
                     mediaController.registerCallback(controllerCallback);
@@ -72,6 +73,7 @@ public class MusicController {
 
             @Override
             public void onConnectionFailed() {
+                isConnecting = false;
                 // Handle connection failure
             }
         };
@@ -121,13 +123,18 @@ public class MusicController {
         }
     };
 
+    private boolean isConnecting = false;
+
     public void connect() {
-        if (!mediaBrowser.isConnected()) {
+        if (!mediaBrowser.isConnected() && !isConnecting) {
+            isConnecting = true;
             mediaBrowser.connect();
         }
 
-        Intent intent = new Intent(context, MusicService.class);
-        context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        if (!isBound) {
+            Intent intent = new Intent(context, MusicService.class);
+            context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        }
     }
 
     public void disconnect() {

@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
     id 'dagger.hilt.android.plugin'
+    alias(libs.plugins.navigation.safe.args)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -24,6 +27,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
 }
 
 dependencies {
@@ -33,7 +39,9 @@ dependencies {
 
     // Hilt core dependency
     implementation libs.hilt.android
-    annotationProcessor libs.hilt.android.compiler
+    implementation libs.google.firebase.auth
+    implementation libs.lifecycle.viewmodel.android
+    kapt libs.hilt.android.compiler
 
     // Firebase
     implementation platform(libs.firebase.bom)
@@ -44,8 +52,11 @@ dependencies {
     implementation libs.rxandroid
 
     // Navigation
-    implementation libs.navigation.fragment
-    implementation libs.navigation.ui
+    implementation libs.navigation.fragment.ktx
+    implementation libs.navigation.ui.ktx
+
+    // Glide for image loading
+    implementation libs.glide
 
     implementation libs.appcompat
     implementation libs.material
@@ -55,4 +66,5 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+    implementation 'com.google.android.material:material:1.12.0'
 }

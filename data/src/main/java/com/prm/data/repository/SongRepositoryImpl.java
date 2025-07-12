@@ -70,6 +70,10 @@ public class SongRepositoryImpl implements SongRepository {
         return firebaseSongService.updateSong(song);
     }
 
+    public Completable addNewSong(Song song) {
+        return firebaseSongService.addNewSong(song);
+    }
+
     @Override
     public Completable deleteSong(String songId) {
         return firebaseSongService.deleteSong(songId);

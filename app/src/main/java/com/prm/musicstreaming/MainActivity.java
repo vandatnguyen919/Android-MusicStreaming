@@ -1,20 +1,29 @@
 package com.prm.musicstreaming;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
@@ -24,16 +33,18 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.prm.common.Navigator;
-import com.prm.common.util.SampleSongs;
-import com.prm.domain.model.Song;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.prm.common.MiniPlayerViewModel;
+import com.prm.common.Navigator;
+import com.prm.domain.model.Song;
+import com.prm.domain.repository.SongRepository;
 import com.prm.payment.result.PaymentSuccessFragment;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -54,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     Navigator navigator;
 
+    @Inject
+    SongRepository songRepository;
+
     // Mini player UI components
     private ImageView ivMiniPlayerCover;
     private TextView tvMiniPlayerTitle;
@@ -69,26 +83,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // Force dark theme for this activity
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-
-        // Check authentication status
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser == null) {
-            // User not authenticated, redirect to AuthActivity
-            navigator.navigateToAuth(this);
-            return;
-        }
-
-        EdgeToEdge.enable(this);
-        getWindow().setStatusBarColor(getResources().getColor(R.color.app_background, null));
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        );
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        // Subscribe to FCM topic for new songs
+        FirebaseMessaging.getInstance().subscribeToTopic("new_songs")
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("MainActivity", "Subscribed to new songs notifications");
+                    } else {
+                        Log.e("MainActivity", "Failed to subscribe to notifications", task.getException());
+                    }
+                });
 
         // Initialize ViewModel
         miniPlayerViewModel = new ViewModelProvider(this).get(MiniPlayerViewModel.class);
@@ -118,11 +129,15 @@ public class MainActivity extends AppCompatActivity {
         // Add a listener to handle navigation from child fragment back to parent fragment
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             boolean showToolbar =
+                    destination.getId() != R.id.navigation_notification_permission &&
                     destination.getId() != R.id.navigation_membership_plan &&
                     destination.getId() != R.id.navigation_search_result &&
                     destination.getId() != R.id.navigation_login;
 
             boolean showBottomNav =
+                    destination.getId() != R.id.navigation_edit_profile &&
+                    destination.getId() != R.id.navigation_notification_permission &&
+                    destination.getId() != R.id.navigation_profile &&
                     destination.getId() != R.id.navigation_payment_success &&
                     destination.getId() != R.id.navigation_search_result &&
                     destination.getId() != R.id.navigation_login;
@@ -146,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 toolbar.setNavigationIcon(null);
                 invalidateOptionsMenu();
             } else if (isTopLevelDestination) {
-                toolbar.setNavigationIcon(R.drawable.ic_profile);
+                this.loadCircularAvatarFromUrl(String.valueOf(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()));
                 toolbar.setNavigationOnClickListener(v -> navController.navigate(R.id.navigation_profile));
                 invalidateOptionsMenu();
             } else {
@@ -178,6 +193,33 @@ public class MainActivity extends AppCompatActivity {
             }
             return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
         });
+
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            navigator.clearAndNavigate(com.prm.common.R.string.route_home);
+        }
+    }
+
+    private void loadCircularAvatarFromUrl(String imageUrl) {
+        int iconSize = (int) (30 * getResources().getDisplayMetrics().density); // 30dp
+
+        Glide.with(this)
+                .asBitmap()
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_profile)
+                .error(R.drawable.ic_profile)
+                .override(iconSize, iconSize)
+                .circleCrop()
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        toolbar.setNavigationIcon(new BitmapDrawable(getResources(), resource));
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        toolbar.setNavigationIcon(R.drawable.ic_profile);
+                    }
+                });
     }
 
     private void initializeMiniPlayer() {
@@ -273,7 +315,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        ZaloPaySDK.getInstance().onResult(intent);
+        try {
+            ZaloPaySDK.getInstance().onResult(intent);
+        } catch (Exception e) {
+            Log.e("MainActivity", "Error handling ZaloPay result", e);
+        }
+    }
+
+    // Test method to add a new song and trigger notification
+    private void testAddNewSong() {
+        Song testSong = new Song();
+        testSong.setId("test_" + System.currentTimeMillis());
+        testSong.setTitle("Test Song");
+        testSong.setArtistId("Test Artist");
+        testSong.setUrl("https://example.com/test.mp3");
+        testSong.setDuration(180); // 3 minutes
+
+        songRepository.addSong(testSong)
+            .subscribe(
+                songId -> Log.d("MainActivity", "Test song added successfully with ID: " + songId),
+                throwable -> Log.e("MainActivity", "Error adding test song", throwable)
+            );
     }
 
     @Override

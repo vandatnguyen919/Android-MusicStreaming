@@ -15,7 +15,13 @@ public interface Navigator {
 
     void navigate(String route, boolean inclusive);
 
-    void navigateToHome(Context context);
+    void navigateToLibrary();
 
-    void navigateToAuth(Context context);
+    void navigateToProfile();
+
+    void navigateBack();
+
+    void clearAndNavigate(@StringRes int route);
+
+    void clearAndNavigate(String route);
 }

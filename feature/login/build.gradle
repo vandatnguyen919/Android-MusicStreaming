@@ -37,9 +37,13 @@ dependencies {
 
     // Google Sign-In
     implementation libs.google.signin
+    implementation libs.credentials.play.services.auth
+    implementation libs.credentials
+    implementation libs.googleid
 
     // Hilt core dependency
     implementation libs.hilt.android
+    implementation libs.rxandroid
     annotationProcessor libs.hilt.android.compiler
 
     implementation libs.appcompat

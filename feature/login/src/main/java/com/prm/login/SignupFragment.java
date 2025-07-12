@@ -22,10 +22,16 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.prm.common.Navigator;
+import com.prm.domain.usecase.user.CreateUserUseCase;
+import com.prm.domain.model.User;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
+
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @AndroidEntryPoint
 public class SignupFragment extends Fragment implements View.OnClickListener {
@@ -35,6 +41,9 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     @Inject
     Navigator navigator;
 
+    @Inject
+    CreateUserUseCase createUserUseCase; // Inject CreateUserUseCase
+
     private GoogleSignInHelper googleSignInHelper;
 
     // UI Components
@@ -43,6 +52,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private TextInputEditText etEmail, etPassword, etConfirmPassword;
     private Button btnSignUp, btnContinueGoogle;
     private TextView tvLogin;
+
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     public static SignupFragment newInstance() {
         return new SignupFragment();
@@ -92,7 +103,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         } else if (id == R.id.btn_continue_google) {
             handleContinueWithGoogle();
         } else if (id == R.id.tv_login) {
-            handleGoToLogin();
         }
     }
 
@@ -125,15 +135,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         if (googleSignInHelper != null) {
             googleSignInHelper.signIn(getActivity());
         }
-    }
-
-    private void handleGoToLogin() {
-        // Navigate to login form
-        LoginFormFragment loginFormFragment = LoginFormFragment.newInstance();
-        getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, loginFormFragment)
-                .addToBackStack(null)
-                .commit();
     }
 
     private boolean validateForm() {
@@ -187,8 +188,34 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         if (user != null) {
                             Log.d(TAG, "User ID: " + user.getUid());
                             Log.d(TAG, "User email: " + user.getEmail());
-                            showToast("Account created successfully!");
-                            navigateToHome();
+
+                            // Create an AppUser object and save to Firestore
+                            User appUser = new User(
+                                    user.getUid(),
+                                    user.getDisplayName() != null ? user.getDisplayName() : "",
+                                    user.getEmail() != null ? user.getEmail() : "",
+                                    user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : ""
+                            );
+
+                            disposables.add(createUserUseCase.execute(appUser)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(() -> {
+                                        Log.d(TAG, "User data created/updated in Firestore successfully");
+                                        showToast("Account created successfully!");
+                                        navigator.clearAndNavigate(com.prm.common.R.string.route_home);
+                                    }, throwable -> {
+                                        Log.e(TAG, "Failed to create/update user data in Firestore: " + throwable.getMessage(), throwable);
+                                        showToast("Sign up failed: Failed to save user data.");
+                                        // Still navigate home even if Firestore save fails for now, or handle differently
+                                        navigator.clearAndNavigate(com.prm.common.R.string.route_home);
+                                    })
+                            );
+
+                        } else {
+                            Log.e(TAG, "Firebase user is null after successful creation");
+                            showToast("Account created, but user data could not be saved.");
+                            navigator.clearAndNavigate(com.prm.common.R.string.route_home);
                         }
                     } else {
                         Log.e(TAG, "Account creation failed", task.getException());
@@ -199,67 +226,9 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 });
     }
 
-    private void navigateToHome() {
-        try {
-            Log.d(TAG, "navigateToHome() called");
-            // Check if fragment is still attached to avoid crashes
-            if (isAdded() && getContext() != null) {
-                Log.d(TAG, "Fragment is attached and context is not null");
-                Log.d(TAG, "Navigator instance: " + (navigator != null ? "not null" : "null"));
-
-                boolean navigationSuccess = false;
-
-                // Try using injected navigator first
-                if (navigator != null) {
-                    try {
-                        Log.d(TAG, "Calling navigator.navigateToHome()");
-                        navigator.navigateToHome(getContext());
-                        Log.d(TAG, "navigator.navigateToHome() completed");
-                        navigationSuccess = true;
-                    } catch (Exception e) {
-                        Log.e(TAG, "Navigator failed", e);
-                    }
-                }
-
-                // Fallback: direct navigation
-                if (!navigationSuccess) {
-                    Log.d(TAG, "Using fallback navigation");
-                    try {
-                        Class<?> mainActivityClass = Class.forName("com.prm.musicstreaming.MainActivity");
-                        android.content.Intent intent = new android.content.Intent(getContext(), mainActivityClass);
-                        intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        Log.d(TAG, "Fallback navigation successful");
-                        navigationSuccess = true;
-                    } catch (Exception e) {
-                        Log.e(TAG, "Fallback navigation failed", e);
-                    }
-                }
-
-                if (navigationSuccess) {
-                    // Use a small delay before finishing activity to ensure navigation completes
-                    new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                        Log.d(TAG, "Finishing AuthActivity");
-                        if (getActivity() != null && !getActivity().isFinishing()) {
-                            getActivity().finish();
-                        }
-                    }, 500);
-                }
-            } else {
-                Log.e(TAG, "Fragment not attached or context is null");
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error navigating to home", e);
-            // Last resort: just finish the current activity
-            if (getActivity() != null && !getActivity().isFinishing()) {
-                getActivity().finish();
-            }
-        }
-    }
-
     private void setupGoogleSignIn() {
         if (getContext() != null) {
-            googleSignInHelper = new GoogleSignInHelper(getContext());
+            googleSignInHelper = new GoogleSignInHelper(getContext(), createUserUseCase); // Pass createUserUseCase
             googleSignInHelper.setListener(new GoogleSignInHelper.GoogleSignInListener() {
                 @Override
                 public void onSignInSuccess(FirebaseUser user) {
@@ -268,7 +237,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     Log.d(TAG, "User email: " + user.getEmail());
                     showToast("Welcome " + (user.getDisplayName() != null ? user.getDisplayName() : user.getEmail()) + "!");
                     Log.d(TAG, "About to call navigateToHome()");
-                    navigateToHome();
+                    navigator.clearAndNavigate(com.prm.common.R.string.route_home);
                 }
 
                 @Override
@@ -295,6 +264,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 googleSignInHelper.handleSignInResult(data);
             }
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        disposables.clear();
     }
 
     private void showToast(String message) {
