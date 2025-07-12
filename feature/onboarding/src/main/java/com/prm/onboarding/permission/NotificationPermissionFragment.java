@@ -35,16 +35,14 @@ public class NotificationPermissionFragment extends Fragment {
     @Inject
     Navigator navigator;
 
-    public static NotificationPermissionFragment newInstance() {
-        return new NotificationPermissionFragment();
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notification_permission, container, false);
         Button btnAllow = view.findViewById(R.id.btn_allow);
         btnAllow.setOnClickListener(v -> requestNotificationPermission());
+        Button btnMaybeLater = view.findViewById(R.id.btn_maybe_later);
+        btnMaybeLater.setOnClickListener(v -> navigator.clearAndNavigate(com.prm.common.R.string.route_login));
         return view;
     }
 
