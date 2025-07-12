@@ -40,8 +40,7 @@ public class ProfileFragment extends Fragment {
     private TextView tvEmail;
     private Button btnEditProfile;
     private Button btnAddSong;
-    private Button btnAuthenticate;
-    private TextView tvAuthStatus;
+    private Button btnLogout;
 
     @Inject
     Navigator navigator;
@@ -65,8 +64,7 @@ public class ProfileFragment extends Fragment {
         tvEmail = view.findViewById(R.id.tv_email);
         btnEditProfile = view.findViewById(R.id.btn_edit_profile);
         btnAddSong = view.findViewById(R.id.btn_add_song);
-        btnAuthenticate = view.findViewById(R.id.btn_authenticate);
-        tvAuthStatus = view.findViewById(R.id.tv_auth_status);
+        btnLogout = view.findViewById(R.id.btnLogout);
 
         Glide.with(this)
                 .load(currentUser.getPhotoUrl())
@@ -74,6 +72,8 @@ public class ProfileFragment extends Fragment {
                 .error(R.drawable.ic_profile)
                 .circleCrop()
                 .into(ivProfile);
+        tvUsername.setText(currentUser.getDisplayName());
+        tvEmail.setText(currentUser.getEmail());
 
         // Set click listeners
         btnAddSong.setOnClickListener(v -> {
@@ -82,10 +82,6 @@ public class ProfileFragment extends Fragment {
             } else {
                 showAuthenticationRequiredDialog();
             }
-        });
-
-        btnAuthenticate.setOnClickListener(v -> {
-            authenticateUser();
         });
 
         btnEditProfile.setOnClickListener(v -> {
@@ -97,6 +93,12 @@ public class ProfileFragment extends Fragment {
             // }
         });
 
+        btnLogout.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Toast.makeText(requireContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
+            navigator.clearAndNavigate(com.prm.common.R.string.route_login);
+        });
+
         return view;
     }
 
@@ -104,26 +106,6 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-
-        // Observe user data
-        mViewModel.currentUser.observe(getViewLifecycleOwner(), user -> {
-            if (user != null) {
-                tvUsername.setText(user.getUsername());
-                tvEmail.setText(user.getEmail());
-                // You might want to load the profile image here using Glide or Picasso
-                // ivProfile.setImageURI(Uri.parse(user.getProfileImageUrl()));
-                tvAuthStatus.setText("Authenticated: " + user.getEmail());
-                tvAuthStatus.setTextColor(getResources().getColor(android.R.color.holo_green_light));
-                btnEditProfile.setVisibility(View.VISIBLE);
-            } else {
-                tvUsername.setText(""); // Use empty string instead of placeholder
-                tvEmail.setText("");    // Use empty string instead of placeholder
-                tvAuthStatus.setText("Not authenticated");
-                tvAuthStatus.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-                btnEditProfile.setVisibility(View.GONE);
-            }
-            Log.d(TAG, "Current User: " + (user != null ? user.getUsername() : "null"));
-        });
 
         // Observe loading state
         mViewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
@@ -135,7 +117,7 @@ public class ProfileFragment extends Fragment {
         // Observe error messages
         mViewModel.error.observe(getViewLifecycleOwner(), error -> {
             if (error != null && !error.isEmpty()) {
-                showToast(error);
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Error: " + error);
             }
         });
@@ -152,8 +134,6 @@ public class ProfileFragment extends Fragment {
                 // Clear UI if user logs out
                 tvUsername.setText("");
                 tvEmail.setText("");
-                tvAuthStatus.setText("Not authenticated");
-                tvAuthStatus.setTextColor(getResources().getColor(android.R.color.holo_red_light));
                 btnEditProfile.setVisibility(View.GONE);
             }
         });
@@ -177,16 +157,5 @@ public class ProfileFragment extends Fragment {
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
-    }
-
-    private void authenticateUser() {
-        Toast.makeText(getContext(), "Please login first", Toast.LENGTH_SHORT).show();
-        navigator.navigate(com.prm.common.R.string.route_login);
-    }
-
-    private void showToast(String message) {
-        if (getContext() != null) {
-            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-        }
     }
 }

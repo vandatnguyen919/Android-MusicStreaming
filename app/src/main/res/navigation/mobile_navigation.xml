@@ -54,7 +54,7 @@
     <fragment
         android:id="@+id/navigation_edit_profile"
         android:name="com.prm.profile.EditProfileFragment"
-        android:label="EditProfileFragment"
+        android:label="Edit Profile"
         app:route="@string/route_edit_profile"
         tools:layout="@layout/fragment_edit_profile" />
 

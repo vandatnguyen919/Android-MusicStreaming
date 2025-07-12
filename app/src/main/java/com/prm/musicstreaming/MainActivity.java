@@ -80,8 +80,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean isNavigatingFromDestinationListener = false;
     private boolean isTopLevelDestination = true;
 
-    private FirebaseUser currentUser;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,8 +100,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("MainActivity", "Failed to subscribe to notifications", task.getException());
                     }
                 });
-
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         // Initialize ViewModel
         miniPlayerViewModel = new ViewModelProvider(this).get(MiniPlayerViewModel.class);
@@ -139,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
                     destination.getId() != R.id.navigation_login;
 
             boolean showBottomNav =
+                    destination.getId() != R.id.navigation_edit_profile &&
                     destination.getId() != R.id.navigation_notification_permission &&
                     destination.getId() != R.id.navigation_profile &&
                     destination.getId() != R.id.navigation_payment_success &&
@@ -164,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 toolbar.setNavigationIcon(null);
                 invalidateOptionsMenu();
             } else if (isTopLevelDestination) {
-                this.loadCircularAvatarFromUrl(String.valueOf(currentUser.getPhotoUrl()));
+                this.loadCircularAvatarFromUrl(String.valueOf(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()));
                 toolbar.setNavigationOnClickListener(v -> navController.navigate(R.id.navigation_profile));
                 invalidateOptionsMenu();
             } else {

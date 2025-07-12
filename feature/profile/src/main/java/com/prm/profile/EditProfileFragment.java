@@ -1,5 +1,6 @@
 package com.prm.profile;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +17,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.prm.domain.model.User;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -33,8 +39,12 @@ public class EditProfileFragment extends Fragment {
     private Button btnSaveProfile;
     private ProgressBar progressBar;
 
-    public static EditProfileFragment newInstance() {
-        return new EditProfileFragment();
+    private FirebaseUser currentUser;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @Override
@@ -96,25 +106,40 @@ public class EditProfileFragment extends Fragment {
 
         btnSaveProfile.setOnClickListener(v -> {
             String username = etUsername.getText().toString().trim();
-            String email = etEmail.getText().toString().trim();
+//            String email = etEmail.getText().toString().trim();
+//
+//            if (username.isEmpty() || email.isEmpty()) {
+//                showToast("Username and Email cannot be empty.");
+//                return;
+//            }
+//
+//            User currentUser = mViewModel.userToEdit.getValue();
+//            if (currentUser != null) {
+//                User updatedUser = new User(
+//                        currentUser.getId(),
+//                        username,
+//                        email,
+//                        currentUser.getProfileImageUrl()
+//                );
+//                mViewModel.updateProfile(updatedUser);
+//            } else {
+//                showToast("User data not available for update.");
+//            }
 
-            if (username.isEmpty() || email.isEmpty()) {
-                showToast("Username and Email cannot be empty.");
-                return;
-            }
-
-            User currentUser = mViewModel.userToEdit.getValue();
             if (currentUser != null) {
-                User updatedUser = new User(
-                        currentUser.getId(),
-                        username,
-                        email,
-                        currentUser.getProfileImageUrl()
-                );
-                mViewModel.updateProfile(updatedUser);
-            } else {
-                showToast("User data not available for update.");
+                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                        .setDisplayName(username)
+                        .build();
+
+                currentUser.updateProfile(profileUpdates)
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("ProfileUpdate", "Display name updated");
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e("ProfileUpdate", "Failed to update display name", e);
+                        });
             }
+
         });
     }
 
