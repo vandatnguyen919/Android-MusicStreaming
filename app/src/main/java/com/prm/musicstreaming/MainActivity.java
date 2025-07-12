@@ -33,7 +33,12 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.prm.common.MiniPlayerViewModel;
 import com.prm.common.Navigator;
@@ -75,35 +80,30 @@ public class MainActivity extends AppCompatActivity {
     private boolean isNavigatingFromDestinationListener = false;
     private boolean isTopLevelDestination = true;
 
+    private FirebaseUser currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Subscribe to FCM topic for new songs
-        FirebaseMessaging.getInstance().subscribeToTopic("new_songs")
-            .addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Log.d("MainActivity", "Subscribed to new songs notifications");
-                } else {
-                    Log.e("MainActivity", "Failed to subscribe to notifications", task.getException());
-                }
-            });
         super.onCreate(savedInstanceState);
-
         // Force dark theme for this activity
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-
-        // Check authentication status
-//        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-//        if (currentUser == null) {
-//            // User not authenticated, redirect to AuthActivity
-//            navigator.navigateToAuth(this);
-//            return;
-//        }
-
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         );
         setContentView(R.layout.activity_main);
+
+        // Subscribe to FCM topic for new songs
+        FirebaseMessaging.getInstance().subscribeToTopic("new_songs")
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("MainActivity", "Subscribed to new songs notifications");
+                    } else {
+                        Log.e("MainActivity", "Failed to subscribe to notifications", task.getException());
+                    }
+                });
+
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         // Initialize ViewModel
         miniPlayerViewModel = new ViewModelProvider(this).get(MiniPlayerViewModel.class);
@@ -164,12 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 toolbar.setNavigationIcon(null);
                 invalidateOptionsMenu();
             } else if (isTopLevelDestination) {
-                Drawable avatarDrawable = getCircularAvatarDrawable(R.drawable.avatar);
-                if (avatarDrawable != null) {
-                    toolbar.setNavigationIcon(avatarDrawable);
-                } else {
-                    toolbar.setNavigationIcon(R.drawable.ic_profile); // Fallback icon
-                }
+                this.loadCircularAvatarFromUrl(String.valueOf(currentUser.getPhotoUrl()));
                 toolbar.setNavigationOnClickListener(v -> navController.navigate(R.id.navigation_profile));
                 invalidateOptionsMenu();
             } else {
@@ -203,32 +198,27 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private Drawable getCircularAvatarDrawable(@DrawableRes int id) {
-        Drawable avatarDrawable = ResourcesCompat.getDrawable(getResources(), id, null);
-        if (avatarDrawable != null) {
-            // Create a circular drawable with proper sizing
-            int iconSize = (int) (30 * getResources().getDisplayMetrics().density); // 24dp
-            Bitmap bitmap = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
+    private void loadCircularAvatarFromUrl(String imageUrl) {
+        int iconSize = (int) (30 * getResources().getDisplayMetrics().density); // 30dp
 
-            // Scale and draw the original drawable
-            avatarDrawable.setBounds(0, 0, iconSize, iconSize);
-            avatarDrawable.draw(canvas);
+        Glide.with(this)
+                .asBitmap()
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_profile)
+                .error(R.drawable.ic_profile)
+                .override(iconSize, iconSize)
+                .circleCrop()
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        toolbar.setNavigationIcon(new BitmapDrawable(getResources(), resource));
+                    }
 
-            // Create circular bitmap
-            Bitmap circularBitmap = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
-            Canvas circularCanvas = new Canvas(circularBitmap);
-
-            Paint paint = new Paint();
-            paint.setAntiAlias(true);
-            paint.setShader(new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
-
-            float radius = iconSize / 2f;
-            circularCanvas.drawCircle(radius, radius, radius, paint);
-
-            return new BitmapDrawable(getResources(), circularBitmap);
-        }
-        return null;
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        toolbar.setNavigationIcon(R.drawable.ic_profile);
+                    }
+                });
     }
 
     private void initializeMiniPlayer() {

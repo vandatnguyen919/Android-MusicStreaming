@@ -1,5 +1,6 @@
 package com.prm.profile;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.prm.common.Navigator;
@@ -44,8 +46,12 @@ public class ProfileFragment extends Fragment {
     @Inject
     Navigator navigator;
 
-    public static ProfileFragment newInstance() {
-        return new ProfileFragment();
+    private FirebaseUser currentUser;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @Override
@@ -61,6 +67,13 @@ public class ProfileFragment extends Fragment {
         btnAddSong = view.findViewById(R.id.btn_add_song);
         btnAuthenticate = view.findViewById(R.id.btn_authenticate);
         tvAuthStatus = view.findViewById(R.id.tv_auth_status);
+
+        Glide.with(this)
+                .load(currentUser.getPhotoUrl())
+                .placeholder(R.drawable.ic_profile)
+                .error(R.drawable.ic_profile)
+                .circleCrop()
+                .into(ivProfile);
 
         // Set click listeners
         btnAddSong.setOnClickListener(v -> {

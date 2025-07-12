@@ -69,9 +69,11 @@ dependencies {
     // ZaloPay SDK
     implementation files("${rootProject.projectDir}/libs/zpdk-release-v3.1.aar")
 
-
     // Media3 for audio playback
     implementation libs.media3.common
+
+    // Glide for image loading
+    implementation libs.glide
 
     implementation libs.appcompat
     implementation libs.material

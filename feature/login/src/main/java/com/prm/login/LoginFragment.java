@@ -141,11 +141,6 @@ public class LoginFragment extends Fragment {
         // Extract the ID token
         String idToken = googleIdTokenCredential.getIdToken();
 
-        // Log user information
-        Log.d(TAG, "Google Sign-In successful");
-        Log.d(TAG, "Display Name: " + googleIdTokenCredential.getDisplayName());
-        Log.d(TAG, "Email: " + googleIdTokenCredential.getId());
-
         // Authenticate with Firebase using the ID token
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         FirebaseAuth.getInstance().signInWithCredential(credential)
@@ -154,7 +149,19 @@ public class LoginFragment extends Fragment {
                         Log.d(TAG, "Firebase authentication successful");
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         if (user != null) {
-                            onGoogleSignInSuccess(user);
+                            // Log user information
+                            Log.d(TAG, "Google Sign-In successful");
+                            Log.d(TAG, "Email: " + googleIdTokenCredential.getId());
+                            Log.d(TAG, "Google sign in successful: " + user.getUid());
+                            Log.d(TAG, "User display name: " + user.getDisplayName());
+                            Log.d(TAG, "User email: " + user.getEmail());
+
+                            String welcomeMessage = "Welcome " +
+                                    (user.getDisplayName() != null ? user.getDisplayName() : user.getEmail()) + "!";
+                            showToast(welcomeMessage);
+
+                            // Navigate to home
+                            navigator.clearAndNavigate(com.prm.common.R.string.route_home);
                         }
                     } else {
                         Log.e(TAG, "Firebase authentication failed", task.getException());
@@ -174,19 +181,6 @@ public class LoginFragment extends Fragment {
             errorMessage += ": " + e.getMessage();
         }
         showToast(errorMessage);
-    }
-
-    private void onGoogleSignInSuccess(FirebaseUser user) {
-        Log.d(TAG, "Google sign in successful: " + user.getUid());
-        Log.d(TAG, "User display name: " + user.getDisplayName());
-        Log.d(TAG, "User email: " + user.getEmail());
-
-        String welcomeMessage = "Welcome " +
-                (user.getDisplayName() != null ? user.getDisplayName() : user.getEmail()) + "!";
-        showToast(welcomeMessage);
-
-        // Navigate to home
-        navigator.clearAndNavigate(com.prm.common.R.string.route_home);
     }
 
     private void signInAnonymously() {
