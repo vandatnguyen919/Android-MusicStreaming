@@ -3,7 +3,6 @@ package com.prm.domain.repository;
 import com.prm.domain.model.Song;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;

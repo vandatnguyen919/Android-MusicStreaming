@@ -2,7 +2,6 @@ package com.prm.profile;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +18,6 @@ import androidx.navigation.Navigation;
 
 import com.prm.domain.model.Song;
 import com.prm.profile.utils.NotificationHelper;
-
-import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 

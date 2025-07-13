@@ -1,8 +1,5 @@
 package com.prm.musicstreaming.navigator;
 
-import android.content.Context;
-import android.content.Intent;
-
 import androidx.annotation.StringRes;
 import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.NavController;
@@ -10,7 +7,6 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import com.prm.common.Navigator;
-import com.prm.musicstreaming.MainActivity;
 import com.prm.musicstreaming.R;
 
 import javax.inject.Inject;

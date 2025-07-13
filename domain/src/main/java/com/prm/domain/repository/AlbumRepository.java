@@ -1,8 +1,8 @@
 package com.prm.domain.repository;
 
 import com.prm.domain.model.Album;
-import com.prm.domain.model.Song;
 import com.prm.domain.model.Artist;
+import com.prm.domain.model.Song;
 
 import java.util.List;
 

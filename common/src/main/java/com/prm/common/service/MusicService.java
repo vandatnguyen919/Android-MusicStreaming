@@ -16,7 +16,6 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import androidx.media3.ui.PlayerNotificationManager.MediaDescriptionAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,19 +24,19 @@ import androidx.media.MediaBrowserServiceCompat;
 import androidx.media.session.MediaButtonReceiver;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.Player;
-import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.ui.PlayerNotificationManager;
+import androidx.media3.ui.PlayerNotificationManager.MediaDescriptionAdapter;
 
-import com.prm.domain.model.Song;
 import com.prm.common.R;
+import com.prm.domain.model.Song;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-@UnstableApi @AndroidEntryPoint
+@AndroidEntryPoint
 public class MusicService extends MediaBrowserServiceCompat {
 
     private static final String MEDIA_ROOT_ID = "media_root_id";

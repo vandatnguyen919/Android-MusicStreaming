@@ -6,8 +6,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.prm.album.model.AlbumUiState;
 import com.prm.album.model.SongUiModel;
-import com.prm.domain.model.Album;
-import com.prm.domain.model.Artist;
 import com.prm.domain.model.Song;
 import com.prm.domain.usecase.AlbumActionsUseCase;
 import com.prm.domain.usecase.GetAlbumDetailsUseCase;

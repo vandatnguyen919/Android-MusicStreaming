@@ -32,11 +32,6 @@
             android:textStyle="bold"
             android:layout_marginStart="12dp" />
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_add"
-            app:tint="@color/white" />
 
     </LinearLayout>
 

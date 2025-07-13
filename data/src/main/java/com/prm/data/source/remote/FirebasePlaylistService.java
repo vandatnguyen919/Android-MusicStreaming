@@ -13,7 +13,6 @@ import javax.inject.Singleton;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
 
 @Singleton
 public class FirebasePlaylistService {

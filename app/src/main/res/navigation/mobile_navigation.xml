@@ -23,7 +23,7 @@
     <fragment
         android:id="@+id/navigation_library"
         android:name="com.prm.library.LibraryFragment"
-        android:label="Library"
+        android:label="Your Library"
         app:route="@string/route_library"
         tools:layout="@layout/fragment_library" />
 

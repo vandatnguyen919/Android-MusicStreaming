@@ -3,12 +3,15 @@ package com.prm.data.repository;
 import com.prm.data.source.remote.FirebaseSongService;
 import com.prm.domain.model.Song;
 import com.prm.domain.repository.SongRepository;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.core.Completable;
+
 import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 
 @Singleton
 public class SongRepositoryImpl implements SongRepository {

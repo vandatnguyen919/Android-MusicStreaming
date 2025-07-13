@@ -2,10 +2,6 @@ package com.prm.musicstreaming;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -17,13 +13,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.common.util.UnstableApi;
@@ -38,7 +32,6 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.prm.common.MiniPlayerViewModel;
 import com.prm.common.Navigator;
@@ -320,22 +313,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("MainActivity", "Error handling ZaloPay result", e);
         }
-    }
-
-    // Test method to add a new song and trigger notification
-    private void testAddNewSong() {
-        Song testSong = new Song();
-        testSong.setId("test_" + System.currentTimeMillis());
-        testSong.setTitle("Test Song");
-        testSong.setArtistId("Test Artist");
-        testSong.setUrl("https://example.com/test.mp3");
-        testSong.setDuration(180); // 3 minutes
-
-        songRepository.addSong(testSong)
-            .subscribe(
-                songId -> Log.d("MainActivity", "Test song added successfully with ID: " + songId),
-                throwable -> Log.e("MainActivity", "Error adding test song", throwable)
-            );
     }
 
     @Override
