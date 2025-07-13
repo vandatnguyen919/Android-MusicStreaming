@@ -37,7 +37,7 @@ import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
-@UnstableApi @AndroidEntryPoint
+@AndroidEntryPoint
 public class MusicService extends MediaBrowserServiceCompat {
 
     private static final String MEDIA_ROOT_ID = "media_root_id";

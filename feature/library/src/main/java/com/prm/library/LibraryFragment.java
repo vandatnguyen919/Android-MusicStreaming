@@ -1,5 +1,7 @@
 package com.prm.library;
 
+import androidx.core.view.MenuProvider;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -12,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -37,21 +42,10 @@ public class LibraryFragment extends Fragment implements CreatePlaylistDialogFra
     @Inject
     Navigator navigator;
 
-    public static LibraryFragment newInstance() {
-        return new LibraryFragment();
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_library, container, false);
-
-        ImageView addPlaylistButton = view.findViewById(R.id.iv_add_playlist);
-        addPlaylistButton.setOnClickListener(v -> {
-            CreatePlaylistDialogFragment dialog = new CreatePlaylistDialogFragment();
-            dialog.setCreatePlaylistDialogListener(this);
-            dialog.show(getParentFragmentManager(), "CreatePlaylistDialog");
-        });
 
         playlistsRecyclerView = view.findViewById(R.id.rv_playlists);
         playlistsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -67,6 +61,26 @@ public class LibraryFragment extends Fragment implements CreatePlaylistDialogFra
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(LibraryViewModel.class);
+
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.library_menu, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+
+                if (id == R.id.action_add) {
+                    CreatePlaylistDialogFragment dialog = new CreatePlaylistDialogFragment();
+                    dialog.setCreatePlaylistDialogListener(LibraryFragment.this);
+                    dialog.show(getParentFragmentManager(), "CreatePlaylistDialog");
+                    return true;
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
 
         // Observe playlists data
         mViewModel.getPlaylists().observe(getViewLifecycleOwner(), playlists -> {

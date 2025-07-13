@@ -13,7 +13,6 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
-@UnstableApi
 @HiltViewModel
 public class MiniPlayerViewModel extends ViewModel {
 

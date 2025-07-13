@@ -24,7 +24,7 @@ import javax.inject.Singleton;
 
 import dagger.hilt.android.qualifiers.ApplicationContext;
 
-@UnstableApi @Singleton
+@Singleton
 public class MusicController {
 
     private final Context context;
