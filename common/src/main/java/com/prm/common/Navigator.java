@@ -1,7 +1,5 @@
 package com.prm.common;
 
-import android.content.Context;
-
 import androidx.annotation.IdRes;
 import androidx.annotation.StringRes;
 

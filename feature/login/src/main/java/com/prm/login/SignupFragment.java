@@ -22,15 +22,14 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.prm.common.Navigator;
-import com.prm.domain.usecase.user.CreateUserUseCase;
 import com.prm.domain.model.User;
+import com.prm.domain.usecase.user.CreateUserUseCase;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
-
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @AndroidEntryPoint

@@ -12,7 +12,6 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.prm.musicstreaming.MainActivity;
-import com.prm.musicstreaming.R;
 
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
     private static final String CHANNEL_ID = "new_song_notification";

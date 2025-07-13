@@ -5,12 +5,12 @@ import com.prm.domain.model.Playlist;
 import com.prm.domain.repository.PlaylistRepository;
 
 import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
 
 @Singleton
 public class PlaylistRepositoryImpl implements PlaylistRepository {

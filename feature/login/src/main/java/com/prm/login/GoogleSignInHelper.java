@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -22,9 +21,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.prm.domain.model.User;
-import com.prm.domain.usecase.user.CreateUserUseCase; // Change to CreateUserUseCase
+import com.prm.domain.usecase.user.CreateUserUseCase;
 
-import javax.inject.Inject; 
+import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;

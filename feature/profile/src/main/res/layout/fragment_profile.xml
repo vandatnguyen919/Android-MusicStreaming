@@ -2,7 +2,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@drawable/bg_gradient_pink"
     xmlns:tools="http://schemas.android.com/tools"
@@ -48,26 +47,26 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_edit_profile"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/rounded_button_transparent"
-            android:paddingHorizontal="24dp"
-            android:paddingVertical="8dp"
+            android:paddingHorizontal="20dp"
             android:textAllCaps="false"
             android:text="Edit Profile"
+            android:gravity="center"
             android:textColor="@color/white" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnLogout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_marginTop="16dp"
             android:text="Logout"
             android:textColor="@android:color/white"
             android:textAllCaps="false"
+            android:gravity="center"
             android:background="@drawable/rounded_button_transparent"
-            android:paddingHorizontal="24dp"
-            android:paddingVertical="8dp" />
+            android:paddingHorizontal="20dp"/>
 
     </LinearLayout>
 </ScrollView>

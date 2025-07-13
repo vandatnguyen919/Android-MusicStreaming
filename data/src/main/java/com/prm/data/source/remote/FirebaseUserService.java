@@ -4,11 +4,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.prm.domain.model.User;
 import com.prm.domain.util.Constants;
 
-import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.Single;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
 
 @Singleton
 public class FirebaseUserService {

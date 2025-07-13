@@ -27,9 +27,8 @@ import androidx.navigation.Navigation;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.prm.common.Navigator;
 import com.prm.common.CommonRoutes;
-import com.prm.domain.model.User;
+import com.prm.common.Navigator;
 
 import javax.inject.Inject;
 
