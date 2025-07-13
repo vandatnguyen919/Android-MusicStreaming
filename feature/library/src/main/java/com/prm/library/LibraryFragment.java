@@ -19,7 +19,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -65,14 +64,14 @@ public class LibraryFragment extends Fragment implements CreatePlaylistDialogFra
         requireActivity().addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.library_menu, menu);
+                menuInflater.inflate(com.prm.common.R.menu.add_menu, menu);
             }
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
 
-                if (id == R.id.action_add) {
+                if (id == com.prm.common.R.id.action_add) {
                     CreatePlaylistDialogFragment dialog = new CreatePlaylistDialogFragment();
                     dialog.setCreatePlaylistDialogListener(LibraryFragment.this);
                     dialog.show(getParentFragmentManager(), "CreatePlaylistDialog");

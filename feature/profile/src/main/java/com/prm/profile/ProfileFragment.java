@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -14,7 +17,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -39,18 +44,17 @@ public class ProfileFragment extends Fragment {
     private TextView tvUsername;
     private TextView tvEmail;
     private Button btnEditProfile;
-    private Button btnAddSong;
     private Button btnLogout;
 
     @Inject
     Navigator navigator;
 
-    private FirebaseUser currentUser;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -63,9 +67,9 @@ public class ProfileFragment extends Fragment {
         tvUsername = view.findViewById(R.id.tv_username);
         tvEmail = view.findViewById(R.id.tv_email);
         btnEditProfile = view.findViewById(R.id.btn_edit_profile);
-        btnAddSong = view.findViewById(R.id.btn_add_song);
         btnLogout = view.findViewById(R.id.btnLogout);
 
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         Glide.with(this)
                 .load(currentUser.getPhotoUrl())
                 .placeholder(R.drawable.ic_profile)
@@ -75,28 +79,22 @@ public class ProfileFragment extends Fragment {
         tvUsername.setText(currentUser.getDisplayName());
         tvEmail.setText(currentUser.getEmail());
 
-        // Set click listeners
-        btnAddSong.setOnClickListener(v -> {
-            if (isUserAuthenticated()) {
-                showAddSongDialog();
-            } else {
-                showAuthenticationRequiredDialog();
-            }
-        });
-
         btnEditProfile.setOnClickListener(v -> {
-            // if (isUserAuthenticated() && mViewModel.currentUser.getValue() != null) {
-                NavController navController = Navigation.findNavController(v);
-                navController.navigate(CommonRoutes.EDIT_PROFILE);
-            // } else {
-            //     showToast("Please login to edit profile.");
-            // }
+            NavController navController = Navigation.findNavController(v);
+            navController.navigate(CommonRoutes.EDIT_PROFILE);
         });
 
         btnLogout.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut();
-            Toast.makeText(requireContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
-            navigator.clearAndNavigate(com.prm.common.R.string.route_login);
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Confirm Logout")
+                    .setMessage("Are you sure you want to logout?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        firebaseAuth.signOut();
+                        Toast.makeText(requireContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
+                        navigator.clearAndNavigate(com.prm.common.R.string.route_login);
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
         });
 
         return view;
@@ -106,6 +104,28 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(com.prm.common.R.menu.add_menu, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+
+                if (id == com.prm.common.R.id.action_add) {
+                    if (isUserAuthenticated()) {
+                        showAddSongDialog();
+                    } else {
+                        showAuthenticationRequiredDialog();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
 
         // Observe loading state
         mViewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {

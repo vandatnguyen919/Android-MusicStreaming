@@ -53,7 +53,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textColorHint="#80FFFFFF"
-            android:hint="Enter song title..."
             tools:text="Sample Song Title" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -75,7 +74,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textColorHint="#80FFFFFF"
-            android:hint="Enter artist ID..."
             tools:text="artist_123" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -97,7 +95,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textColorHint="#80FFFFFF"
-            android:hint="Enter album ID..."
             tools:text="album_456" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -120,7 +117,6 @@
             android:inputType="number"
             android:textColor="@color/white"
             android:textColorHint="#80FFFFFF"
-            android:hint="Enter duration in seconds..."
             tools:text="180" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -143,7 +139,6 @@
             android:inputType="textUri"
             android:textColor="@color/white"
             android:textColorHint="#80FFFFFF"
-            android:hint="Enter audio file URL..."
             tools:text="https://example.com/song.mp3" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -166,7 +161,6 @@
             android:inputType="textUri"
             android:textColor="@color/white"
             android:textColorHint="#80FFFFFF"
-            android:hint="Enter cover image URL..."
             tools:text="https://example.com/cover.jpg" />
 
     </com.google.android.material.textfield.TextInputLayout>

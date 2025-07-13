@@ -39,12 +39,12 @@ public class EditProfileFragment extends Fragment {
     private Button btnSaveProfile;
     private ProgressBar progressBar;
 
-    private FirebaseUser currentUser;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -57,6 +57,7 @@ public class EditProfileFragment extends Fragment {
         btnSaveProfile = view.findViewById(R.id.btn_save_profile);
         progressBar = view.findViewById(R.id.progress_bar);
 
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         etUsername.setText(currentUser.getDisplayName());
 
         return view;
@@ -126,7 +127,7 @@ public class EditProfileFragment extends Fragment {
 //            } else {
 //                showToast("User data not available for update.");
 //            }
-
+            FirebaseUser currentUser = firebaseAuth.getCurrentUser();
             if (currentUser != null) {
                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                         .setDisplayName(username)
