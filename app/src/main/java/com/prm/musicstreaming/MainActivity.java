@@ -2,8 +2,10 @@ package com.prm.musicstreaming;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,6 +29,7 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.palette.graphics.Palette;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -66,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvMiniPlayerTitle;
     private TextView tvMiniPlayerArtist;
     private ImageButton btnMiniPlayerPlayPause;
+    private ProgressBar miniPlayerProgress;
 
     private final Handler progressHandler = new Handler();
     private Runnable progressRunnable;
@@ -122,12 +127,14 @@ public class MainActivity extends AppCompatActivity {
         // Add a listener to handle navigation from child fragment back to parent fragment
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             boolean showToolbar =
+                    destination.getId() != R.id.navigation_track_view &&
                     destination.getId() != R.id.navigation_notification_permission &&
                     destination.getId() != R.id.navigation_membership_plan &&
                     destination.getId() != R.id.navigation_search_result &&
                     destination.getId() != R.id.navigation_login;
 
             boolean showBottomNav =
+                    destination.getId() != R.id.navigation_track_view &&
                     destination.getId() != R.id.navigation_edit_profile &&
                     destination.getId() != R.id.navigation_notification_permission &&
                     destination.getId() != R.id.navigation_profile &&
@@ -135,15 +142,19 @@ public class MainActivity extends AppCompatActivity {
                     destination.getId() != R.id.navigation_search_result &&
                     destination.getId() != R.id.navigation_login;
 
+            toolbar.setVisibility(showToolbar ? View.VISIBLE : View.GONE);
+            navView.setVisibility(showBottomNav? View.VISIBLE : View.GONE);
+
             boolean showMiniPlayer =
                     destination.getId() == R.id.navigation_home ||
                     destination.getId() == R.id.navigation_search ||
                     destination.getId() == R.id.navigation_library ||
                     destination.getId() == R.id.navigation_membership_plan;
 
-            toolbar.setVisibility(showToolbar ? View.VISIBLE : View.GONE);
-            navView.setVisibility(showBottomNav? View.VISIBLE : View.GONE);
-            miniPlayer.setVisibility(showMiniPlayer? View.VISIBLE : View.GONE);
+            Song currentSong = miniPlayerViewModel.getCurrentSong().getValue();
+            boolean shouldShow = showMiniPlayer && currentSong != null;
+
+            miniPlayer.setVisibility(shouldShow ? View.VISIBLE : View.GONE);
 
             // Determine if we're on a top-level destination
             isTopLevelDestination = appBarConfiguration.getTopLevelDestinations()
@@ -221,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
         tvMiniPlayerTitle = miniPlayer.findViewById(R.id.tv_mini_player_title);
         tvMiniPlayerArtist = miniPlayer.findViewById(R.id.tv_mini_player_artist);
         btnMiniPlayerPlayPause = miniPlayer.findViewById(R.id.btn_mini_player_play_pause);
+        miniPlayerProgress = miniPlayer.findViewById(R.id.mini_player_progress);
 
         btnMiniPlayerPlayPause.setOnClickListener(v -> miniPlayerViewModel.playPause());
 
@@ -228,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
             NavOptions navOptions = new NavOptions.Builder()
                     .setPopUpTo(R.id.navigation_home, false)
                     .build();
-            navController.navigate(R.id.navigation_album, null, navOptions);
+            navController.navigate(R.id.navigation_track_view, null, navOptions);
         });
     }
 
@@ -236,7 +248,10 @@ public class MainActivity extends AppCompatActivity {
         miniPlayerViewModel.getCurrentSong().observe(this, this::updateMiniPlayerSong);
         miniPlayerViewModel.getIsPlaying().observe(this, this::updatePlayPauseButton);
 
-        // Start progress updates when playing
+        // Observe progress for mini player
+        miniPlayerViewModel.getCurrentPosition().observe(this, this::updateMiniPlayerProgress);
+        miniPlayerViewModel.getDuration().observe(this, this::updateMiniPlayerDuration);
+
         miniPlayerViewModel.getIsPlaying().observe(this, isPlaying -> {
             if (isPlaying) {
                 startProgressUpdates();
@@ -246,18 +261,73 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void updateMiniPlayerProgress(Long position) {
+        if (position != null && miniPlayerProgress.getMax() > 0) {
+            int progress = (int) (position / 1000);
+            miniPlayerProgress.setProgress(progress);
+        }
+    }
+
+    private void updateMiniPlayerDuration(Long duration) {
+        if (duration != null && duration > 0) {
+            int durationInSeconds = (int) (duration / 1000);
+            miniPlayerProgress.setMax(durationInSeconds);
+        }
+    }
+
     private void updateMiniPlayerSong(Song song) {
         if (song != null) {
             tvMiniPlayerTitle.setText(song.getTitle());
             tvMiniPlayerArtist.setText(song.getArtistId()); // You might want to resolve artist name
             miniPlayer.setVisibility(View.VISIBLE);
 
-            // Load album cover using your preferred image loading library (Glide, Picasso, etc.)
-            // For now, using a placeholder
-            ivMiniPlayerCover.setImageResource(com.prm.common.R.drawable.ic_music_note);
+            Glide.with(this)
+                    .asBitmap()
+                    .load(song.getImageUrl())
+                    .placeholder(com.prm.common.R.drawable.ic_music_note)
+                    .error(com.prm.common.R.drawable.ic_music_note)
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            ivMiniPlayerCover.setImageBitmap(resource);
+                            extractColorAndSetMiniPlayerGradient(resource);
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                            ivMiniPlayerCover.setImageDrawable(placeholder);
+                        }
+                    });
         } else {
             miniPlayer.setVisibility(View.GONE);
         }
+    }
+
+    private void extractColorAndSetMiniPlayerGradient(Bitmap bitmap) {
+        Palette.from(bitmap).generate(palette -> {
+            int dominantColor = palette.getDominantColor(0xFF424242);
+
+            int endColor = darkenColor(dominantColor, 0.1f);
+
+            GradientDrawable gradientDrawable = new GradientDrawable();
+            gradientDrawable.setColor(endColor);
+            gradientDrawable.setCornerRadius(8 * getResources().getDisplayMetrics().density);
+
+            miniPlayer.setBackground(gradientDrawable);
+            miniPlayer.setClipToOutline(true);
+        });
+    }
+
+    private int darkenColor(int color, float factor) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(color, hsv);
+        hsv[2] *= (1 - factor);
+
+        if (hsv[2] > 0.9f) {
+            hsv[2] = 0.9f;
+        }
+
+        return Color.HSVToColor(hsv);
     }
 
     private void updatePlayPauseButton(Boolean isPlaying) {

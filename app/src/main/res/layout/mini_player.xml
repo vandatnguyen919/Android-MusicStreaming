@@ -3,16 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_bordered"
-    android:padding="6dp"
     android:id="@+id/mini_player"
     xmlns:tools="http://schemas.android.com/tools">
-
 
     <ImageView
         android:id="@+id/iv_mini_player_cover"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginVertical="6dp"
+        android:layout_marginStart="6dp"
         android:background="@android:color/darker_gray"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,9 +21,11 @@
 
     <TextView
         android:id="@+id/tv_mini_player_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="From Me to You - Mono / Remastered"
@@ -32,6 +33,7 @@
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline"
+        app:layout_constraintEnd_toStartOf="@+id/btn_mini_player_play_pause"
         app:layout_constraintStart_toEndOf="@+id/iv_mini_player_cover"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,22 +46,38 @@
 
     <TextView
         android:id="@+id/tv_mini_player_artist"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="6dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="The Beatles"
         android:textColor="@android:color/darker_gray"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_mini_player_play_pause"
         app:layout_constraintStart_toEndOf="@+id/iv_mini_player_cover"
         app:layout_constraintTop_toBottomOf="@+id/horizontal_guideline" />
+
+    <ProgressBar
+        android:id="@+id/mini_player_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:progressTint="@android:color/white"
+        android:progressBackgroundTint="#33FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/btn_mini_player_play_pause"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginVertical="6dp"
+        android:layout_marginEnd="6dp"
         android:background="@drawable/mini_player_button_selector"
         android:contentDescription="Play/Pause"
         android:scaleType="center"

@@ -227,6 +227,9 @@ public class MusicService extends MediaBrowserServiceCompat {
         exoPlayer.prepare();
         exoPlayer.play();
 
+        // Make sure MediaSession is active
+        mediaSession.setActive(true);
+
         updateMetadata();
         updatePlaybackState(PlaybackStateCompat.STATE_PLAYING);
         
@@ -394,6 +397,12 @@ public class MusicService extends MediaBrowserServiceCompat {
         @Override
         public void onIsPlayingChanged(boolean isPlaying) {
             MusicService.this.isPlaying = isPlaying;
+            // This is crucial - update the MediaSession state when ExoPlayer state changes
+            if (isPlaying) {
+                updatePlaybackState(PlaybackStateCompat.STATE_PLAYING);
+            } else {
+                updatePlaybackState(PlaybackStateCompat.STATE_PAUSED);
+            }
         }
     }
 

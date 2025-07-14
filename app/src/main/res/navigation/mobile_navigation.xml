@@ -120,5 +120,11 @@
         android:label="NotificationPermissionFragment"
         tools:layout="@layout/fragment_notification_permission"/>
 
+    <fragment
+        android:id="@+id/navigation_track_view"
+        android:name="com.prm.album.TrackViewFragment"
+        app:route="route_track_view"
+        tools:layout="@layout/fragment_track_view"/>
+
 
 </navigation>
