@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.prm.common.MiniPlayerViewModel;
 import com.prm.common.Navigator;
 import com.prm.common.util.MusicPlayerHelper;
 import com.prm.common.util.SampleSongs;
@@ -37,9 +38,6 @@ public class HomeFragment extends Fragment {
     @Inject
     Navigator navigator;
 
-    @Inject
-    MusicPlayerHelper musicPlayerHelper;
-
     // Adapters
     private RecentlyPlayedAdapter recentlyPlayedAdapter;
     private EditorPicksAdapter editorPicksAdapter;
@@ -49,6 +47,8 @@ public class HomeFragment extends Fragment {
     private RecyclerView rvRecentlyPlayed;
     private RecyclerView rvEditorPicks;
     private RecyclerView rvReview;
+
+    private MiniPlayerViewModel miniPlayerViewModel;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment {
                 Log.d(TAG, "Play button clicked");
                 Song testSong = SampleSongs.getSampleSong();
                 Log.d(TAG, "Sample song created: " + testSong.getTitle() + " - " + testSong.getUrl());
-                musicPlayerHelper.playSong(testSong);
+                miniPlayerViewModel.playMusic(testSong);
                 Log.d(TAG, "Play song called successfully");
             } catch (Exception e) {
                 Log.e(TAG, "Error playing song", e);
@@ -99,17 +99,17 @@ public class HomeFragment extends Fragment {
         // Set click listeners
         recentlyPlayedAdapter.setOnItemClickListener(item -> {
             Log.d(TAG, "Recently played item clicked: " + item.getTitle());
-            musicPlayerHelper.playSong(item.getSong());
+            miniPlayerViewModel.playMusic(item.getSong());
         });
 
         editorPicksAdapter.setOnItemClickListener(item -> {
             Log.d(TAG, "Editor pick item clicked: " + item.getTitle());
-            musicPlayerHelper.playSong(item.getSong());
+            miniPlayerViewModel.playMusic(item.getSong());
         });
 
         reviewAdapter.setOnItemClickListener(item -> {
             Log.d(TAG, "Review item clicked: " + item.getTitle());
-            musicPlayerHelper.playSong(item.getSong());
+            miniPlayerViewModel.playMusic(item.getSong());
         });
     }
 
@@ -123,6 +123,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        miniPlayerViewModel = new ViewModelProvider(requireActivity()).get(MiniPlayerViewModel.class);
 
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
