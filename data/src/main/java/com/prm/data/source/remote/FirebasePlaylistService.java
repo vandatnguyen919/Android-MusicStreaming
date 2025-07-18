@@ -56,6 +56,28 @@ public class FirebasePlaylistService {
         });
     }
 
+    public Observable<List<Playlist>> getPlaylistsForUser(String userId, int limit) {
+        return Observable.create(emitter -> {
+            db.collection(COLLECTION_NAME)
+                    .whereEqualTo("userId", userId)
+                    .limit(limit) // Apply the limit
+                    .addSnapshotListener((value, error) -> {
+                        if (error != null) {
+                            emitter.onError(error);
+                            return;
+                        }
+                        if (value != null) {
+                            List<Playlist> playlists = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : value) {
+                                Playlist playlist = document.toObject(Playlist.class);
+                                playlists.add(playlist);
+                            }
+                            emitter.onNext(playlists);
+                        }
+                    });
+        });
+    }
+
     public Completable updatePlaylist(Playlist playlist) {
         return Completable.create(emitter -> {
             if (playlist.getId() == null || playlist.getId().isEmpty()) {

@@ -10,11 +10,21 @@ android {
     namespace 'com.prm.profile'
     compileSdk 35
 
+    buildFeatures {
+        buildConfig = true
+    }
+
+    Properties properties = new Properties()
+    if (rootProject.file("local.properties").exists()) {
+        properties.load(rootProject.file("local.properties").newDataInputStream())
+    }
+
     defaultConfig {
         minSdk 24
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+        buildConfigField "String", "GEMINI_API_KEY", "\"${properties.getProperty("GEMINI_API_KEY")}\""
     }
 
     buildTypes {
@@ -39,14 +49,18 @@ dependencies {
 
     // Hilt core dependency
     implementation libs.hilt.android
-    implementation libs.google.firebase.auth
     implementation libs.lifecycle.viewmodel.android
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0") {
+        exclude group: 'com.google.firebase', module: 'firebase-crashlytics-buildtools'
+    }
+    implementation libs.google.firebase.auth
     kapt libs.hilt.android.compiler
+
+    implementation libs.guava
 
     // Firebase
     implementation platform(libs.firebase.bom)
-    implementation libs.firebase.auth
-
+    
     // RxJava
     implementation libs.rxjava
     implementation libs.rxandroid
@@ -66,5 +80,4 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
-    implementation 'com.google.android.material:material:1.12.0'
 }

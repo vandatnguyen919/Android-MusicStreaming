@@ -10,4 +10,7 @@
     <color name="background_black">#121212</color>
     <color name="teal_gradient_start">#1E3A8A</color>
     <color name="teal_gradient_end">#0891B2</color>
+
+    <color name="md_theme_primary">#6200EE</color>
+    <color name="md_theme_onBackground">#212121</color>
 </resources>
