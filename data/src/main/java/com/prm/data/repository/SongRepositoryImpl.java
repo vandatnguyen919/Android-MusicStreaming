@@ -5,6 +5,7 @@ import com.prm.domain.model.Song;
 import com.prm.domain.repository.SongRepository;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -90,5 +91,13 @@ public class SongRepositoryImpl implements SongRepository {
     @Override
     public Single<List<Song>> getSongsWithPagination(int limit, Song lastSong) {
         return firebaseSongService.getSongsWithPagination(limit, lastSong);
+    }
+
+    @Override
+    public Single<List<Song>> getCurrentUserFavoriteSongs(int limit) {
+        // TODO: Implement actual fetching of user's favorite songs from Firebase
+        // For now, return an empty list or a dummy list.
+        // You would typically get the current user's ID here and query a 'favorites' collection.
+        return Single.just(new ArrayList<>());
     }
 }

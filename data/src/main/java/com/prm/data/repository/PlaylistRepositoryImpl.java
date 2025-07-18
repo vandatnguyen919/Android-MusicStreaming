@@ -51,4 +51,12 @@ public class PlaylistRepositoryImpl implements PlaylistRepository {
     public Completable removeSongFromPlaylist(String playlistId, String songId) {
         return firebasePlaylistService.removeSongFromPlaylist(playlistId, songId);
     }
+
+    @Override
+    public Observable<List<Playlist>> getCurrentUserPlaylists(int limit) {
+        // In a real application, you'd get the current user's ID from an authentication service
+        // For now, let's use a dummy user ID or fetch from a placeholder
+        String currentUserId = "dummyUserId"; // Replace with actual user ID logic
+        return firebasePlaylistService.getPlaylistsForUser(currentUserId, limit);
+    }
 } 
