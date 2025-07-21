@@ -19,6 +19,8 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.NavController;
 
 import com.prm.common.Navigator;
 import com.prm.domain.model.Playlist;
@@ -48,6 +50,16 @@ public class LibraryFragment extends Fragment implements CreatePlaylistDialogFra
         playlistsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         playlistAdapter = new PlaylistAdapter();
         playlistsRecyclerView.setAdapter(playlistAdapter);
+        playlistAdapter.setOnPlaylistActionListener(new PlaylistAdapter.OnPlaylistActionListener() {
+            @Override
+            public void onDeletePlaylist(Playlist playlist) {
+                mViewModel.deletePlaylist(playlist.getId());
+            }
+
+            public void onPlaylistClicked(Playlist playlist) {
+                navigator.navigateToPlaylistDetail(playlist.getId());
+            }
+        });
 
         progressBar = view.findViewById(R.id.progress_bar);
 
@@ -58,6 +70,9 @@ public class LibraryFragment extends Fragment implements CreatePlaylistDialogFra
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(LibraryViewModel.class);
+        // Bind NavController to navigator
+        NavController navController = NavHostFragment.findNavController(this);
+        navigator.bind(navController);
 
         requireActivity().addMenuProvider(new MenuProvider() {
             @Override

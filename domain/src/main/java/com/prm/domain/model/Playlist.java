@@ -15,4 +15,5 @@ public class Playlist {
     private String userId;
     private List<String> songIds;
     private String coverImageUrl;
+    private List<Song> songs; // Thêm trường này để chứa danh sách bài hát đầy đủ
 }

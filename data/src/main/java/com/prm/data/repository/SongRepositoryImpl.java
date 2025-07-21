@@ -94,6 +94,11 @@ public class SongRepositoryImpl implements SongRepository {
     }
 
     @Override
+    public Single<List<Song>> getSongsByIds(List<String> songIds) {
+        return firebaseSongService.getSongsByIds(songIds);
+    }
+
+    @Override
     public Single<List<Song>> getCurrentUserFavoriteSongs(int limit) {
         // TODO: Implement actual fetching of user's favorite songs from Firebase
         // For now, return an empty list or a dummy list.

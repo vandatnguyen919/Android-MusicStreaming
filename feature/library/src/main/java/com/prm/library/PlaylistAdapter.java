@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,6 +35,16 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
     public void onBindViewHolder(@NonNull PlaylistViewHolder holder, int position) {
         Playlist playlist = playlists.get(position);
         holder.bind(playlist);
+        holder.btnDeletePlaylist.setOnClickListener(v -> {
+            if (actionListener != null) {
+                actionListener.onDeletePlaylist(playlist);
+            }
+        });
+        holder.itemView.setOnClickListener(v -> {
+            if (actionListener != null && actionListener instanceof OnPlaylistActionListener) {
+                ((OnPlaylistActionListener) actionListener).onPlaylistClicked(playlist);
+            }
+        });
     }
 
     @Override
@@ -45,22 +56,33 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
         ImageView ivPlaylistCover;
         TextView tvPlaylistTitle;
         TextView tvPlaylistSongCount;
+        ImageButton btnDeletePlaylist;
 
         public PlaylistViewHolder(@NonNull View itemView) {
             super(itemView);
             ivPlaylistCover = itemView.findViewById(R.id.iv_playlist_cover);
             tvPlaylistTitle = itemView.findViewById(R.id.tv_playlist_title);
             tvPlaylistSongCount = itemView.findViewById(R.id.tv_playlist_song_count);
+            btnDeletePlaylist = itemView.findViewById(R.id.btnDeletePlaylist);
         }
 
         public void bind(Playlist playlist) {
             tvPlaylistTitle.setText(playlist.getName());
-            // You might want to update the cover image based on playlist.getCoverImageUrl() if available
-            // For now, using a placeholder
             ivPlaylistCover.setImageResource(com.prm.common.R.drawable.ic_music_note);
             // Update song count (assuming you have a way to get song count from Playlist object)
             int songCount = (playlist.getSongIds() != null) ? playlist.getSongIds().size() : 0;
             tvPlaylistSongCount.setText("Playlist • " + songCount + " songs");
         }
     }
+
+    public interface OnPlaylistActionListener {
+        void onDeletePlaylist(Playlist playlist);
+        void onPlaylistClicked(Playlist playlist);
+    }
+
+    private OnPlaylistActionListener actionListener;
+
+    public void setOnPlaylistActionListener(OnPlaylistActionListener listener) {
+        this.actionListener = listener;
+    }    
 } 

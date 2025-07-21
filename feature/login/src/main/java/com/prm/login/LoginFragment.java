@@ -281,7 +281,20 @@ public class LoginFragment extends Fragment {
                             Log.d(TAG, "User ID: " + user.getUid());
                             Log.d(TAG, "User email: " + user.getEmail());
                             showToast("Login successful!");
-                            navigator.clearAndNavigate(com.prm.common.R.string.route_home);
+                            com.prm.domain.model.User appUser = new com.prm.domain.model.User(
+                                user.getUid(),
+                                user.getDisplayName() != null ? user.getDisplayName() : "",
+                                user.getEmail() != null ? user.getEmail() : "",
+                                user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : ""
+                            );
+                            createUserUseCase.execute(appUser)
+                                .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
+                                .observeOn(io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread())
+                                .subscribe(() -> {
+                                    navigator.clearAndNavigate(com.prm.common.R.string.route_home);
+                                }, throwable -> {
+                                    navigator.clearAndNavigate(com.prm.common.R.string.route_home);
+                                });
                         }
                     } else {
                         Log.e(TAG, "Email/Password sign in failed", task.getException());
