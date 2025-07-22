@@ -1,4 +1,4 @@
-package com.prm.musicstreaming;
+package com.prm.common;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

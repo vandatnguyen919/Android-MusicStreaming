@@ -7,9 +7,13 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import com.prm.common.Navigator;
+import com.prm.musicstreaming.MainActivity;
+import com.prm.musicstreaming.MapsActivity;
 import com.prm.musicstreaming.R;
 
 import javax.inject.Inject;
+
+import android.content.Intent;
 import android.os.Bundle;
 
 public class NavigatorImpl implements Navigator {
@@ -106,5 +110,11 @@ public class NavigatorImpl implements Navigator {
     @Override
     public void unbind() {
 
+    }
+
+    @Override
+    public void navigateToMaps() {
+        Intent intent = new Intent(activity, MapsActivity.class);
+        activity.startActivity(intent);
     }
 }

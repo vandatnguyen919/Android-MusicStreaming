@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.prm.common.MainViewModel;
 import com.prm.common.Navigator;
 import com.prm.payment.R;
 import com.prm.payment.zalo.Api.CreateOrder;
@@ -38,6 +39,8 @@ import vn.zalopay.sdk.listeners.PayOrderListener;
 public class CheckoutFragment extends Fragment {
 
     private CheckoutViewModel mViewModel;
+
+    private MainViewModel mainViewModel;
 
     private Button btnContinue;
 
@@ -98,6 +101,7 @@ public class CheckoutFragment extends Fragment {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user != null) {
                     mViewModel.addPremiumUser(user.getUid());
+                    mainViewModel.refreshUserStatus();
                     navigator.navigate(com.prm.common.R.string.route_payment_success);
                 }
             }
@@ -153,6 +157,7 @@ public class CheckoutFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(CheckoutViewModel.class);
+        mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
     }
 }

@@ -44,6 +44,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.prm.common.MainViewModel;
 import com.prm.common.MiniPlayerViewModel;
 import com.prm.common.Navigator;
 import com.prm.domain.model.Song;

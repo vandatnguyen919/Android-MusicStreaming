@@ -60,10 +60,6 @@ public class SearchResultsFragment extends Fragment implements
     @Inject
     Navigator navigator;
 
-    public static SearchResultsFragment newInstance() {
-        return new SearchResultsFragment();
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {

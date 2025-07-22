@@ -28,4 +28,6 @@ public interface Navigator {
     void navigateToTrackView(String songId);
     void bind(NavController navController);
     void unbind();
+
+    void navigateToMaps();
 }
