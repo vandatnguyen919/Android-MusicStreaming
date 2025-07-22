@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                     destination.getId() != R.id.navigation_edit_profile &&
                     destination.getId() != R.id.navigation_notification_permission &&
                     destination.getId() != R.id.navigation_profile &&
+                    destination.getId() != R.id.navigation_checkout &&
                     destination.getId() != R.id.navigation_payment_success &&
                     destination.getId() != R.id.navigation_search_result &&
                     destination.getId() != R.id.navigation_login;

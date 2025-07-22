@@ -18,17 +18,19 @@
         android:layout_height="wrap_content"
         android:text="Song Title"
         android:textColor="@android:color/darker_gray"
-        android:textSize="10sp"
+        android:textSize="12sp"
+        android:textStyle="bold"
         android:maxLines="1"
         android:ellipsize="end" />
 
     <TextView
         android:id="@+id/tv_editor_pick_subtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="155dp"
         android:layout_height="wrap_content"
         android:text="Artist Name"
         android:textColor="@android:color/darker_gray"
-        android:textSize="10sp"
+        android:textSize="12sp"
+        android:textStyle="bold"
         android:maxLines="1"
         android:ellipsize="end" />
 

@@ -141,7 +141,8 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_editor_picks"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/btn" />
+                    app:layout_constraintBottom_toTopOf="@+id/btn"
+                    tools:listitem="@layout/item_editor_pick" />
 
                 <!-- Test Button for Sample Song -->
                 <Button
