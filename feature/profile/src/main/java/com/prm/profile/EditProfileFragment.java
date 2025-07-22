@@ -76,8 +76,8 @@ public class EditProfileFragment extends Fragment {
 
         mViewModel.userToEdit.observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                etUsername.setText(user.getUsername());
-                etEmail.setText(user.getEmail());
+//                etUsername.setText(user.getUsername());
+//                etEmail.setText(user.getEmail());
             }
         });
 

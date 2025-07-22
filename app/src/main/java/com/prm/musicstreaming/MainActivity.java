@@ -47,7 +47,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.prm.common.MiniPlayerViewModel;
 import com.prm.common.Navigator;
 import com.prm.domain.model.Song;
-import com.prm.domain.repository.SongRepository;
 import com.prm.payment.result.PaymentSuccessFragment;
 
 import java.util.Locale;
@@ -70,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private View miniPlayer;
     private NavController navController;
     private MiniPlayerViewModel miniPlayerViewModel;
+    private MainViewModel mainViewModel;
 
     // Ad related variables
     private InterstitialAd mInterstitialAd;
@@ -78,9 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Inject
     Navigator navigator;
-
-    @Inject
-    SongRepository songRepository;
 
     // Mini player UI components
     private ImageView ivMiniPlayerCover;
@@ -106,7 +103,14 @@ public class MainActivity extends AppCompatActivity {
         );
         setContentView(R.layout.activity_main);
 
-        // Initialize Mobile Ads SDK
+        // Initialize ViewModels
+        miniPlayerViewModel = new ViewModelProvider(this).get(MiniPlayerViewModel.class);
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
+        // Set up observers for ad control
+        setupMainViewModelObservers();
+
+        // Initialize Mobile Ads SDK (will be controlled by user registration status)
         initializeAds();
 
         // Subscribe to FCM topic for new songs
@@ -118,9 +122,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("MainActivity", "Failed to subscribe to notifications", task.getException());
                     }
                 });
-
-        // Initialize ViewModel
-        miniPlayerViewModel = new ViewModelProvider(this).get(MiniPlayerViewModel.class);
 
         // Set up the toolbar
         toolbar = findViewById(R.id.toolbar);
@@ -227,7 +228,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setupMainViewModelObservers() {
+        mainViewModel.shouldShowAds.observe(this, shouldShowAds -> {
+            if (shouldShowAds) {
+                // User is not registered, show ads
+                startAdTimer();
+            } else {
+                // User is registered, turn off ads
+                stopAdTimer();
+                Log.d(TAG, "Ads disabled for registered user");
+            }
+        });
+    }
+
     private void initializeAds() {
+        // Check if ads should be shown before initializing
+        Boolean shouldShowAds = mainViewModel.shouldShowAds.getValue();
+        if (shouldShowAds == null || !shouldShowAds) {
+            Log.d(TAG, "Ads initialization skipped - user is registered");
+            return;
+        }
+
         MobileAds.initialize(this, initializationStatus -> {
             Log.d(TAG, "MobileAds initialized");
             loadInterstitialAd();
@@ -235,6 +256,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadInterstitialAd() {
+        // Double check if ads should still be shown
+        Boolean shouldShowAds = mainViewModel.shouldShowAds.getValue();
+        if (shouldShowAds == null || !shouldShowAds) {
+            Log.d(TAG, "Ad loading cancelled - user is registered");
+            return;
+        }
+
         AdRequest adRequest = new AdRequest.Builder().build();
         InterstitialAd.load(this, getString(R.string.interstitial_ad_unit_id), adRequest,
                 new InterstitialAdLoadCallback() {
@@ -293,6 +321,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showInterstitialAd() {
+        // Check if ads should be shown before displaying
+        Boolean shouldShowAds = mainViewModel.shouldShowAds.getValue();
+        if (shouldShowAds == null || !shouldShowAds) {
+            Log.d(TAG, "Ad display cancelled - user is registered");
+            return;
+        }
+
         if (mInterstitialAd != null) {
             mInterstitialAd.show(this);
         } else {
@@ -303,6 +338,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startAdTimer() {
+        // Check if ads should be shown before starting timer
+        Boolean shouldShowAds = mainViewModel.shouldShowAds.getValue();
+        if (shouldShowAds == null || !shouldShowAds) {
+            Log.d(TAG, "Ad timer start cancelled - user is registered");
+            return;
+        }
+
         if (adRunnable == null) {
             adRunnable = new Runnable() {
                 @Override

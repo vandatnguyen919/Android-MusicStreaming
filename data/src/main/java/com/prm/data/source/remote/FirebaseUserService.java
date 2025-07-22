@@ -1,5 +1,7 @@
 package com.prm.data.source.remote;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.prm.domain.model.User;
 import com.prm.domain.util.Constants;
@@ -44,7 +46,7 @@ public class FirebaseUserService {
         return Single.create(emitter -> {
             db.collection(COLLECTION_NAME).document(userId).get()
                     .addOnSuccessListener(querySnapshot -> {
-                        boolean exists = !querySnapshot.exists();
+                        boolean exists = querySnapshot.exists();
                         emitter.onSuccess(exists);
                     })
                     .addOnFailureListener(emitter::onError);
@@ -71,7 +73,11 @@ public class FirebaseUserService {
             }
             db.collection(COLLECTION_NAME).document(user.getId()).set(user)
                 .addOnSuccessListener(aVoid -> emitter.onComplete())
-                .addOnFailureListener(e -> emitter.onError(e));
+                .addOnFailureListener(e -> {
+                    // Log the error for debugging purposes
+                    Log.d("FirebaseUserService", "Error creating user: " + e.getMessage());
+                    emitter.onError(e);
+                });
         });
     }
 } 
