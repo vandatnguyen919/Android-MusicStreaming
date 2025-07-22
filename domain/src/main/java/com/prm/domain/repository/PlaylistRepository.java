@@ -14,4 +14,5 @@ public interface PlaylistRepository {
     Completable deletePlaylist(String playlistId);
     Completable addSongToPlaylist(String playlistId, String songId);
     Completable removeSongFromPlaylist(String playlistId, String songId);
+    Observable<List<Playlist>> getCurrentUserPlaylists(int limit); // Added for chatbot
 } 

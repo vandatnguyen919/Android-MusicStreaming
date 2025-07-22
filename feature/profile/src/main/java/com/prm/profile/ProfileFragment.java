@@ -25,10 +25,12 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.prm.common.CommonRoutes;
 import com.prm.common.Navigator;
+import com.prm.profile.chatbot.ChatbotDialogFragment;
 
 import javax.inject.Inject;
 
@@ -94,6 +96,12 @@ public class ProfileFragment extends Fragment {
                     })
                     .setNegativeButton("Cancel", null)
                     .show();
+        });
+
+        FloatingActionButton fabChatbot = view.findViewById(R.id.fabChatbot);
+
+        fabChatbot.setOnClickListener(v -> {
+            ChatbotDialogFragment.newInstance().show(getChildFragmentManager(), ChatbotDialogFragment.TAG);
         });
 
         return view;

@@ -10,6 +10,7 @@ import com.prm.common.Navigator;
 import com.prm.musicstreaming.R;
 
 import javax.inject.Inject;
+import android.os.Bundle;
 
 public class NavigatorImpl implements Navigator {
 
@@ -81,5 +82,29 @@ public class NavigatorImpl implements Navigator {
     public void navigateBack() {
         NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_activity_main);
         navController.popBackStack();
+    }
+
+    @Override
+    public void navigateToPlaylistDetail(String playlistId) {
+        Bundle bundle = new Bundle();
+        bundle.putString("playlistId", playlistId);
+        navController.navigate(R.id.action_library_to_playlist_detail, bundle);
+    }
+
+    @Override
+    public void navigateToTrackView(String songId) {
+        Bundle bundle = new Bundle();
+        bundle.putString("songId", songId);
+        navController.navigate(R.id.action_playlist_detail_to_track_view, bundle);
+    }
+
+    @Override
+    public void bind(NavController navController) {
+        this.navController = navController;
+    }
+
+    @Override
+    public void unbind() {
+
     }
 }

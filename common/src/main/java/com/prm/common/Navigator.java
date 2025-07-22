@@ -2,6 +2,7 @@ package com.prm.common;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.StringRes;
+import androidx.navigation.NavController;
 
 public interface Navigator {
 
@@ -22,4 +23,9 @@ public interface Navigator {
     void clearAndNavigate(@StringRes int route);
 
     void clearAndNavigate(String route);
+
+    void navigateToPlaylistDetail(String playlistId);
+    void navigateToTrackView(String songId);
+    void bind(NavController navController);
+    void unbind();
 }

@@ -41,6 +41,14 @@ lifecycleViewmodelAndroid = "2.9.1"
 navigationSafeArgs = "2.7.7"
 navigationFragmentKtx = "2.9.2"
 navigationUiKtx = "2.9.2"
+materialVersion = "1.12.0"
+recyclerview = "1.4.0"
+kotlinxCoroutinesAndroid = "1.10.2"
+generativeai = "0.9.0"
+firebaseCrashlyticsBuildtools = "3.0.4"
+guava = "32.1.3-android"
+navigationFragmentVersion = "2.9.2"
+navigationRuntimeAndroid = "2.9.2"
 
 [libraries]
 androidx-palette = { module = "androidx.palette:palette", version.ref = "paletteVersion" }
@@ -87,6 +95,14 @@ rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
 media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Common" }
 google-firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
+google-material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
+androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "generativeai" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragmentVersion" }
+androidx-navigation-runtime-android = { group = "androidx.navigation", name = "navigation-runtime-android", version.ref = "navigationRuntimeAndroid" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
 
