@@ -35,6 +35,9 @@ public class Song {
     @PropertyName("image_url")
     private String imageUrl; // URL for the song cover image
 
+    @PropertyName("is_approved")
+    private boolean isApproved = false; // Default to false - requires admin approval
+
     // Constructor without ID (for creating new songs)
     public Song(String title, String artistId, String albumId, int duration, String url, String imageUrl) {
         this.title = title;
@@ -43,6 +46,7 @@ public class Song {
         this.duration = duration;
         this.url = url;
         this.imageUrl = imageUrl;
+        this.isApproved = false; // New songs require approval
     }
 
     // Constructor without ID and imageUrl (for backward compatibility)

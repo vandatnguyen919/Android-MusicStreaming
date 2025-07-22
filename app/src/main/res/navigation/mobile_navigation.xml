@@ -146,6 +146,11 @@
             android:name="songId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/adminDashboardFragment"
+        android:name="com.prm.profile.AdminDashboardFragment"
+        android:label="AdminDashboardFragment"
+        app:route="route_admin_dashboard" />
 
 
 </navigation>

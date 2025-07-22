@@ -29,7 +29,10 @@ public class FirebaseSongService {
 
     public Single<List<Song>> getAllSongs() {
         return Single.create(emitter -> {
-            songsCollection.get()
+            // For regular users, only return approved songs
+            songsCollection
+                    .whereEqualTo("is_approved", true)
+                    .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         List<Song> songs = queryDocumentSnapshots.toObjects(Song.class);
                         emitter.onSuccess(songs);
@@ -41,17 +44,20 @@ public class FirebaseSongService {
 
     public Observable<List<Song>> getAllSongsObservable() {
         return Observable.create(emitter -> {
-            songsCollection.addSnapshotListener((queryDocumentSnapshots, error) -> {
-                if (error != null) {
-                    emitter.onError(error);
-                    return;
-                }
+            // For regular users, only return approved songs
+            songsCollection
+                    .whereEqualTo("is_approved", true)
+                    .addSnapshotListener((queryDocumentSnapshots, error) -> {
+                        if (error != null) {
+                            emitter.onError(error);
+                            return;
+                        }
 
-                if (queryDocumentSnapshots != null) {
-                    List<Song> songs = queryDocumentSnapshots.toObjects(Song.class);
-                    emitter.onNext(songs);
-                }
-            });
+                        if (queryDocumentSnapshots != null) {
+                            List<Song> songs = queryDocumentSnapshots.toObjects(Song.class);
+                            emitter.onNext(songs);
+                        }
+                    });
         });
     }
 
@@ -253,6 +259,71 @@ public class FirebaseSongService {
                         }
                         emitter.onSuccess(result);
                     })
+                    .addOnFailureListener(emitter::onError);
+        });
+    }
+
+    // Admin functionality methods
+    public Single<List<Song>> getPendingSongs() {
+        return Single.create(emitter -> {
+            songsCollection
+                    .whereEqualTo("is_approved", false)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        List<Song> songs = queryDocumentSnapshots.toObjects(Song.class);
+                        emitter.onSuccess(songs);
+                    })
+                    .addOnFailureListener(emitter::onError);
+        });
+    }
+
+    public Single<List<Song>> getApprovedSongs() {
+        return Single.create(emitter -> {
+            songsCollection
+                    .whereEqualTo("is_approved", true)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        List<Song> songs = queryDocumentSnapshots.toObjects(Song.class);
+                        emitter.onSuccess(songs);
+                    })
+                    .addOnFailureListener(emitter::onError);
+        });
+    }
+
+    public Observable<List<Song>> getPendingSongsObservable() {
+        return Observable.create(emitter -> {
+            songsCollection
+                    .whereEqualTo("is_approved", false)
+                    .addSnapshotListener((queryDocumentSnapshots, error) -> {
+                        if (error != null) {
+                            emitter.onError(error);
+                            return;
+                        }
+
+                        if (queryDocumentSnapshots != null) {
+                            List<Song> songs = queryDocumentSnapshots.toObjects(Song.class);
+                            emitter.onNext(songs);
+                        }
+                    });
+        });
+    }
+
+    public Completable approveSong(String songId) {
+        return Completable.create(emitter -> {
+            songsCollection
+                    .document(songId)
+                    .update("is_approved", true)
+                    .addOnSuccessListener(aVoid -> emitter.onComplete())
+                    .addOnFailureListener(emitter::onError);
+        });
+    }
+
+    public Completable denySong(String songId) {
+        return Completable.create(emitter -> {
+            songsCollection
+                    .document(songId)
+                    .delete()
+                    .addOnSuccessListener(aVoid -> emitter.onComplete())
                     .addOnFailureListener(emitter::onError);
         });
     }

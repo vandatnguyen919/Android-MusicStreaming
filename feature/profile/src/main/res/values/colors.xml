@@ -13,4 +13,8 @@
 
     <color name="md_theme_primary">#6200EE</color>
     <color name="md_theme_onBackground">#212121</color>
+
+    <!-- Admin dashboard colors -->
+    <color name="orange">#FF9800</color>
+    <color name="green">#4CAF50</color>
 </resources>

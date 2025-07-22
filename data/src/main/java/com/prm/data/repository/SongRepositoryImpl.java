@@ -105,4 +105,30 @@ public class SongRepositoryImpl implements SongRepository {
         // You would typically get the current user's ID here and query a 'favorites' collection.
         return Single.just(new ArrayList<>());
     }
+
+    // Admin functionality implementations
+    @Override
+    public Single<List<Song>> getPendingSongs() {
+        return firebaseSongService.getPendingSongs();
+    }
+
+    @Override
+    public Single<List<Song>> getApprovedSongs() {
+        return firebaseSongService.getApprovedSongs();
+    }
+
+    @Override
+    public Completable approveSong(String songId) {
+        return firebaseSongService.approveSong(songId);
+    }
+
+    @Override
+    public Completable denySong(String songId) {
+        return firebaseSongService.denySong(songId);
+    }
+
+    @Override
+    public Observable<List<Song>> getPendingSongsObservable() {
+        return firebaseSongService.getPendingSongsObservable();
+    }
 }

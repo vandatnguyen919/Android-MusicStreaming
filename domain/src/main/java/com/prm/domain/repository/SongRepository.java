@@ -22,11 +22,18 @@ public interface SongRepository {
 
     Single<List<Song>> getCurrentUserFavoriteSongs(int limit); // Added method
 
+    // Admin functionality
+    Single<List<Song>> getPendingSongs(); // Get songs waiting for approval
+    Single<List<Song>> getApprovedSongs(); // Get only approved songs for regular users
+    Completable approveSong(String songId); // Approve a song
+    Completable denySong(String songId); // Deny/Delete a song
+
     // Observable emissions (real-time updates)
     Observable<List<Song>> getAllSongsObservable();
     Observable<Song> getSongByIdObservable(String songId);
     Observable<List<Song>> getSongsByArtistIdObservable(String artistId);
     Observable<List<Song>> getSongsByAlbumIdObservable(String albumId);
+    Observable<List<Song>> getPendingSongsObservable(); // Real-time pending songs for admin
 
     // Completable emissions (operations without return values)
     Completable updateSong(Song song);
