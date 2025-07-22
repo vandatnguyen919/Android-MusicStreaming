@@ -116,7 +116,7 @@ public class HomeViewModel extends ViewModel {
 
         for (Song song : recentSongs) {
             Artist artist = artistCache.get(song.getArtistId());
-            String artistName = artist != null ? artist.getName() : "Unknown Artist";
+            String artistName = song.getArtistId();
             String imageUrl = artist != null ? artist.getProfileImageUrl() : "";
 
             recentlyPlayedList.add(new RecentlyPlayedUiModel(song, artistName, imageUrl, false));
@@ -135,7 +135,7 @@ public class HomeViewModel extends ViewModel {
 
         for (Song song : pickedSongs) {
             Artist artist = artistCache.get(song.getArtistId());
-            String artistName = artist != null ? artist.getName() : "Unknown Artist";
+            String artistName = song.getArtistId();
             String imageUrl = artist != null ? artist.getProfileImageUrl() : "";
             String subtitle = "Recommended • " + artistName;
 
@@ -154,7 +154,7 @@ public class HomeViewModel extends ViewModel {
 
         for (Song song : reviewSongs) {
             Artist artist = artistCache.get(song.getArtistId());
-            String artistName = artist != null ? artist.getName() : "Unknown Artist";
+            String artistName = song.getArtistId();
             String imageUrl = artist != null ? artist.getProfileImageUrl() : "";
             String reviewText = "Featured Review";
             String reviewTitle = song.getTitle();
