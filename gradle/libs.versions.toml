@@ -39,6 +39,8 @@ media3Common = "1.7.1"
 firebaseAuth = "23.2.1"
 lifecycleViewmodelAndroid = "2.9.1"
 navigationSafeArgs = "2.7.7"
+navigationFragmentKtx = "2.9.2"
+navigationUiKtx = "2.9.2"
 
 [libraries]
 androidx-palette = { module = "androidx.palette:palette", version.ref = "paletteVersion" }
@@ -85,6 +87,8 @@ rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
 media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Common" }
 google-firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
+androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
