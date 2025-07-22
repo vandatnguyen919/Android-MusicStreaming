@@ -25,7 +25,24 @@
         android:name="com.prm.library.LibraryFragment"
         android:label="Your Library"
         app:route="@string/route_library"
-        tools:layout="@layout/fragment_library" />
+        tools:layout="@layout/fragment_library" >
+        <action
+            android:id="@+id/action_library_to_playlist_detail"
+            app:destination="@id/navigation_playlist_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_playlist_detail"
+        android:name="com.prm.library.PlaylistDetailFragment"
+        android:label="Playlist"
+        tools:layout="@layout/fragment_playlist_detail">
+        <argument
+            android:name="playlistId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_playlist_detail_to_track_view"
+            app:destination="@id/navigation_track_view" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_album"
@@ -124,7 +141,11 @@
         android:id="@+id/navigation_track_view"
         android:name="com.prm.album.TrackViewFragment"
         app:route="route_track_view"
-        tools:layout="@layout/fragment_track_view"/>
+        tools:layout="@layout/fragment_track_view">
+        <argument
+            android:name="songId"
+            app:argType="string" />
+    </fragment>
 
 
 </navigation>

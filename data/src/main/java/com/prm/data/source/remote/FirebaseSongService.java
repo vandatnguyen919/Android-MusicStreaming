@@ -227,4 +227,33 @@ public class FirebaseSongService {
                     .addOnFailureListener(emitter::onError);
         });
     }
+
+    public Single<List<Song>> getSongsByIds(List<String> songIds) {
+        return Single.create(emitter -> {
+            if (songIds == null || songIds.isEmpty()) {
+                emitter.onSuccess(new java.util.ArrayList<>());
+                return;
+            }
+            List<Song> result = new java.util.ArrayList<>();
+            List<com.google.android.gms.tasks.Task<com.google.firebase.firestore.DocumentSnapshot>> tasks = new java.util.ArrayList<>();
+            for (String id : songIds) {
+                tasks.add(songsCollection.document(id).get());
+            }
+            com.google.android.gms.tasks.Tasks.whenAllSuccess(tasks)
+                    .addOnSuccessListener(objects -> {
+                        for (Object obj : objects) {
+                            com.google.firebase.firestore.DocumentSnapshot doc = (com.google.firebase.firestore.DocumentSnapshot) obj;
+                            if (doc.exists()) {
+                                Song song = doc.toObject(Song.class);
+                                if (song != null) {
+                                    song.setId(doc.getId()); // set document id
+                                    result.add(song);
+                                }
+                            }
+                        }
+                        emitter.onSuccess(result);
+                    })
+                    .addOnFailureListener(emitter::onError);
+        });
+    }
 }

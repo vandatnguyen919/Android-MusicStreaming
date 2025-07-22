@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,9 +63,19 @@ public class TrackViewFragment extends Fragment implements
     private boolean isUserSeeking = false;
     private final Handler progressHandler = new Handler(Looper.getMainLooper());
     private Runnable progressRunnable;
+    private String songId;
 
     public static TrackViewFragment newInstance() {
         return new TrackViewFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            songId = getArguments().getString("songId");
+            android.util.Log.d("TrackViewFragment", "Received songId: " + songId);
+        }
     }
 
     @Override
@@ -82,6 +93,9 @@ public class TrackViewFragment extends Fragment implements
         setupClickListeners();
         setupObservers();
         setupProgressUpdater();
+        if (songId != null) {
+            miniPlayerViewModel.playSongById(songId);
+        }
     }
 
     private void initViews(View view) {
@@ -114,7 +128,13 @@ public class TrackViewFragment extends Fragment implements
 //        });
 
         btnLike.setOnClickListener(v -> {
-            // TODO: Toggle like
+            Song currentSong = miniPlayerViewModel.getCurrentSong().getValue();
+            if (currentSong != null) {
+                PlaylistDialogFragment dialog = new PlaylistDialogFragment(currentSong.getId());
+                dialog.show(getChildFragmentManager(), "PlaylistDialog");
+            } else {
+                Toast.makeText(requireContext(), "No song is currently playing", Toast.LENGTH_SHORT).show();
+            }
         });
 
         btnShuffle.setOnClickListener(v -> {

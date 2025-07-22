@@ -18,6 +18,9 @@ public interface SongRepository {
     Single<String> addSong(Song song);
     Single<List<Song>> searchSongsByTitle(String searchTerm);
     Single<List<Song>> getSongsWithPagination(int limit, Song lastSong);
+    Single<List<Song>> getSongsByIds(List<String> songIds);
+
+    Single<List<Song>> getCurrentUserFavoriteSongs(int limit); // Added method
 
     // Observable emissions (real-time updates)
     Observable<List<Song>> getAllSongsObservable();

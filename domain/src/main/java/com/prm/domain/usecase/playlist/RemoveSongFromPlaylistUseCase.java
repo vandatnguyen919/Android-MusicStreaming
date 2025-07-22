@@ -4,6 +4,8 @@ import com.prm.domain.repository.PlaylistRepository;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.core.Completable;
+
 public class RemoveSongFromPlaylistUseCase {
 
     private final PlaylistRepository playlistRepository;
@@ -13,7 +15,7 @@ public class RemoveSongFromPlaylistUseCase {
         this.playlistRepository = playlistRepository;
     }
 
-    public void execute(String playlistId, String songId) {
-        playlistRepository.removeSongFromPlaylist(playlistId, songId);
+    public Completable execute(String playlistId, String songId) {
+        return playlistRepository.removeSongFromPlaylist(playlistId, songId);
     }
 } 

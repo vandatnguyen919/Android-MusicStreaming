@@ -17,6 +17,8 @@ public class Song {
     
     @PropertyName("title")
     private String title;
+
+    private String artist;
     
     @PropertyName("artist_id")
     private String artistId;
@@ -46,5 +48,9 @@ public class Song {
     // Constructor without ID and imageUrl (for backward compatibility)
     public Song(String title, String artistId, String albumId, int duration, String url) {
         this(title, artistId, albumId, duration, url, null);
+    }
+
+    public String getArtist() {
+        return artist;
     }
 }

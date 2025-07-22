@@ -8,4 +8,5 @@
     <color name="green_accent">#1DB954</color>
     <color name="teal_gradient_start">#1E3A8A</color>
     <color name="teal_gradient_end">#0891B2</color>
+    <color name="red">#FF0000</color>
 </resources>
