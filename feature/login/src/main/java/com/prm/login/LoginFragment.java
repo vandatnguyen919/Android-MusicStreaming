@@ -51,9 +51,6 @@ public class LoginFragment extends Fragment {
     @Inject
     Navigator navigator;
 
-    @Inject
-    CreateUserUseCase createUserUseCase;
-
     private CredentialManager credentialManager;
 
     @Override
@@ -183,27 +180,6 @@ public class LoginFragment extends Fragment {
         showToast(errorMessage);
     }
 
-    private void signInAnonymously() {
-        FirebaseAuth.getInstance().signInAnonymously()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "Anonymous sign in successful");
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        if (user != null) {
-                            Log.d(TAG, "User ID: " + user.getUid());
-                            Log.d(TAG, "Is anonymous: " + user.isAnonymous());
-                            showToast("Login successful!");
-                            navigator.clearAndNavigate(com.prm.common.R.string.route_home);
-                        }
-                    } else {
-                        Log.e(TAG, "Anonymous sign in failed", task.getException());
-                        String errorMsg = task.getException() != null ?
-                                task.getException().getMessage() : "Unknown error";
-                        showToast("Login failed: " + errorMsg);
-                    }
-                });
-    }
-
     private void showLoginDialog(View v) {
         if (getContext() == null) return;
 
@@ -287,14 +263,6 @@ public class LoginFragment extends Fragment {
                                 user.getEmail() != null ? user.getEmail() : "",
                                 user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : ""
                             );
-                            createUserUseCase.execute(appUser)
-                                .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
-                                .observeOn(io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread())
-                                .subscribe(() -> {
-                                    navigator.clearAndNavigate(com.prm.common.R.string.route_home);
-                                }, throwable -> {
-                                    navigator.clearAndNavigate(com.prm.common.R.string.route_home);
-                                });
                         }
                     } else {
                         Log.e(TAG, "Email/Password sign in failed", task.getException());

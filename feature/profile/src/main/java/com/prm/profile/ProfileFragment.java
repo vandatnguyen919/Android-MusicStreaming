@@ -40,7 +40,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class ProfileFragment extends Fragment {
 
     private static final String TAG = "ProfileFragment";
-    private ProfileViewModel mViewModel;
+//    private ProfileViewModel mViewModel;
     private ImageView ivProfile;
     private TextView tvUsername;
     private TextView tvEmail;
@@ -110,7 +110,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+//        mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         requireActivity().addMenuProvider(new MenuProvider() {
             @Override
@@ -133,37 +133,6 @@ public class ProfileFragment extends Fragment {
                 return false;
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
-
-        // Observe loading state
-        mViewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
-            // Show/hide loading indicator if you have one
-            // progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-            Log.d(TAG, "Loading: " + isLoading);
-        });
-
-        // Observe error messages
-        mViewModel.error.observe(getViewLifecycleOwner(), error -> {
-            if (error != null && !error.isEmpty()) {
-                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Error: " + error);
-            }
-        });
-
-        // Refresh user data on view creation (optional, as it's already fetched in ViewModel's constructor)
-        // mViewModel.fetchCurrentUser();
-
-        // Set up authentication state listener using Firebase directly for immediate UI updates on auth changes
-        FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
-            Log.d(TAG, "Auth state changed");
-            if (firebaseAuth.getCurrentUser() != null) {
-                mViewModel.fetchCurrentUser(); // Re-fetch user data if auth state changes
-            } else {
-                // Clear UI if user logs out
-                tvUsername.setText("");
-                tvEmail.setText("");
-                btnEditProfile.setVisibility(View.GONE);
-            }
-        });
     }
 
     private void showAddSongDialog() {

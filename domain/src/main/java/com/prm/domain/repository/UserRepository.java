@@ -9,4 +9,5 @@ public interface UserRepository {
     Completable updateUser(User user);
     Completable createUser(User user);
     Single<User> getCurrentUser();
+    Single<Boolean> checkUserExistsByUserId(String userId);
 }

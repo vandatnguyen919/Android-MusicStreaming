@@ -49,6 +49,12 @@ dependencies {
     implementation libs.coil
     implementation libs.coil.network.okhttp
 
+    implementation libs.google.firebase.auth
+
+    // RxJava
+    implementation libs.rxjava
+    implementation libs.rxandroid
+
     implementation libs.appcompat
     implementation libs.material
     implementation libs.legacy.support.v4

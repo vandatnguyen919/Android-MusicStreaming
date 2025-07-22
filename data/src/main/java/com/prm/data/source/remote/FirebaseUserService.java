@@ -40,6 +40,17 @@ public class FirebaseUserService {
         });
     }
 
+    public Single<Boolean> checkUserExistsByUserId(String userId) {
+        return Single.create(emitter -> {
+            db.collection(COLLECTION_NAME).document(userId).get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        boolean exists = !querySnapshot.exists();
+                        emitter.onSuccess(exists);
+                    })
+                    .addOnFailureListener(emitter::onError);
+        });
+    }
+
     public Completable updateUser(User user) {
         return Completable.create(emitter -> {
             if (user.getId() == null || user.getId().isEmpty()) {

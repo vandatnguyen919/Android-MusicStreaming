@@ -18,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.prm.common.Navigator;
 import com.prm.payment.R;
 import com.prm.payment.zalo.Api.CreateOrder;
@@ -41,10 +43,6 @@ public class CheckoutFragment extends Fragment {
 
     @Inject
     Navigator navigator;
-
-    public static CheckoutFragment newInstance() {
-        return new CheckoutFragment();
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -97,13 +95,11 @@ public class CheckoutFragment extends Fragment {
         ZaloPaySDK.getInstance().payOrder(requireActivity(), token, "demozpdk://app", new PayOrderListener() {
             @Override
             public void onPaymentSucceeded(final String transactionId, final String transToken, final String appTransID) {
-//                requireActivity().runOnUiThread((Runnable) () -> new AlertDialog.Builder(requireActivity())
-//                        .setTitle("Payment Success")
-//                        .setMessage(String.format("TransactionId: %s - TransToken: %s", transactionId, transToken))
-//                        .setPositiveButton("OK", (dialog, which) -> {
-//                        })
-//                        .setNegativeButton("Cancel", null).show());
-                navigator.navigate(com.prm.common.R.string.route_payment_success);
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    mViewModel.addPremiumUser(user.getUid());
+                    navigator.navigate(com.prm.common.R.string.route_payment_success);
+                }
             }
 
             @Override

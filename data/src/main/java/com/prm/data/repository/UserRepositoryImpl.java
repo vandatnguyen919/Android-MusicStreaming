@@ -32,6 +32,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Single<Boolean> checkUserExistsByUserId(String userId) {
+        return firebaseUserService.checkUserExistsByUserId(userId);
+    }
+
+    @Override
     public Single<User> getCurrentUser() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String userId = auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : null;

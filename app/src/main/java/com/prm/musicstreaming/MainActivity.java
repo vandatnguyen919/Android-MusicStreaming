@@ -34,6 +34,13 @@ import androidx.palette.graphics.Palette;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -42,6 +49,8 @@ import com.prm.common.Navigator;
 import com.prm.domain.model.Song;
 import com.prm.domain.repository.SongRepository;
 import com.prm.payment.result.PaymentSuccessFragment;
+
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -52,12 +61,20 @@ import vn.zalopay.sdk.ZaloPaySDK;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+    private static final long AD_INTERVAL = 60000; // 1 minute in milliseconds
+
     private AppBarConfiguration appBarConfiguration;
     private BottomNavigationView navView;
     private Toolbar toolbar;
     private View miniPlayer;
     private NavController navController;
     private MiniPlayerViewModel miniPlayerViewModel;
+
+    // Ad related variables
+    private InterstitialAd mInterstitialAd;
+    private final Handler adHandler = new Handler();
+    private Runnable adRunnable;
 
     @Inject
     Navigator navigator;
@@ -88,6 +105,9 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         );
         setContentView(R.layout.activity_main);
+
+        // Initialize Mobile Ads SDK
+        initializeAds();
 
         // Subscribe to FCM topic for new songs
         FirebaseMessaging.getInstance().subscribeToTopic("new_songs")
@@ -123,6 +143,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Connect to music service
         miniPlayerViewModel.connect();
+
+        // Start ad timer
+        startAdTimer();
 
         // Add a listener to handle navigation from child fragment back to parent fragment
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
@@ -201,6 +224,101 @@ public class MainActivity extends AppCompatActivity {
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             navigator.clearAndNavigate(com.prm.common.R.string.route_home);
+        }
+    }
+
+    private void initializeAds() {
+        MobileAds.initialize(this, initializationStatus -> {
+            Log.d(TAG, "MobileAds initialized");
+            loadInterstitialAd();
+        });
+    }
+
+    private void loadInterstitialAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(this, getString(R.string.interstitial_ad_unit_id), adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        mInterstitialAd = interstitialAd;
+                        Log.d(TAG, "Interstitial ad loaded successfully");
+
+                        interstitialAd.setFullScreenContentCallback(
+                                new FullScreenContentCallback() {
+                                    @Override
+                                    public void onAdDismissedFullScreenContent() {
+                                        mInterstitialAd = null;
+                                        Log.d(TAG, "The ad was dismissed.");
+                                        // Load a new ad for the next time
+                                        loadInterstitialAd();
+                                    }
+
+                                    @Override
+                                    public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                                        mInterstitialAd = null;
+                                        Log.d(TAG, "The ad failed to show: " + adError.getMessage());
+                                        // Load a new ad for the next time
+                                        loadInterstitialAd();
+                                    }
+
+                                    @Override
+                                    public void onAdShowedFullScreenContent() {
+                                        Log.d(TAG, "The ad was shown.");
+                                        boolean isPlaying = Boolean.TRUE.equals(miniPlayerViewModel.getIsPlaying().getValue());
+                                        if (isPlaying) {
+                                            miniPlayerViewModel.playPause();
+                                        }
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        Log.i(TAG, "Failed to load interstitial ad: " + loadAdError.getMessage());
+                        mInterstitialAd = null;
+
+                        String error = String.format(
+                                Locale.ENGLISH,
+                                "domain: %s, code: %d, message: %s",
+                                loadAdError.getDomain(),
+                                loadAdError.getCode(),
+                                loadAdError.getMessage());
+
+                        Log.e(TAG, "onAdFailedToLoad() with error: " + error);
+
+                        // Retry loading ad after a delay (e.g., 30 seconds)
+                        adHandler.postDelayed(() -> loadInterstitialAd(), 30000);
+                    }
+                });
+    }
+
+    private void showInterstitialAd() {
+        if (mInterstitialAd != null) {
+            mInterstitialAd.show(this);
+        } else {
+            Log.d(TAG, "The interstitial ad wasn't ready yet.");
+            // Try to load a new ad
+            loadInterstitialAd();
+        }
+    }
+
+    private void startAdTimer() {
+        if (adRunnable == null) {
+            adRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    showInterstitialAd();
+                    adHandler.postDelayed(this, AD_INTERVAL);
+                }
+            };
+        }
+        // Start the first ad after 1 minute
+        adHandler.postDelayed(adRunnable, AD_INTERVAL);
+    }
+
+    private void stopAdTimer() {
+        if (adRunnable != null) {
+            adHandler.removeCallbacks(adRunnable);
         }
     }
 
@@ -387,9 +505,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        // Pause ad timer when activity is not visible
+        stopAdTimer();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Resume ad timer when activity becomes visible
+        startAdTimer();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         stopProgressUpdates();
+        stopAdTimer();
         if (miniPlayerViewModel != null) {
             miniPlayerViewModel.disconnect();
         }
