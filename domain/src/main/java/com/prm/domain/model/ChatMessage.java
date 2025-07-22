@@ -1,5 +1,6 @@
 package com.prm.domain.model;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class ChatMessage {
@@ -29,5 +30,22 @@ public class ChatMessage {
     public String getText() { return text; }
     public Author getAuthor() { return author; }
     public long getTimestamp() { return timestamp; }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof ChatMessage)) return false;
+
+        ChatMessage that = (ChatMessage) o;
+        return timestamp == that.timestamp && Objects.equals(id, that.id) && Objects.equals(text, that.text) && author == that.author;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(text);
+        result = 31 * result + Objects.hashCode(author);
+        result = 31 * result + Long.hashCode(timestamp);
+        return result;
+    }
 }
 

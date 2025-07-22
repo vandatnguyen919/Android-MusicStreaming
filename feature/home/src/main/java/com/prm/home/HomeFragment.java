@@ -3,13 +3,18 @@ package com.prm.home;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +29,7 @@ import com.prm.domain.model.Song;
 import com.prm.home.adapter.EditorPicksAdapter;
 import com.prm.home.adapter.RecentlyPlayedAdapter;
 import com.prm.home.adapter.ReviewAdapter;
+import com.prm.home.chatbot.ChatbotDialogFragment;
 
 import javax.inject.Inject;
 
@@ -125,6 +131,25 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         miniPlayerViewModel = new ViewModelProvider(requireActivity()).get(MiniPlayerViewModel.class);
 
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(com.prm.common.R.menu.gemini_menu, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+
+                if (id == com.prm.common.R.id.action_chat) {
+                    ChatbotDialogFragment dialog = new ChatbotDialogFragment();
+                    dialog.show(getParentFragmentManager(), "ChatbotDialogFragment");
+                    return true;
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -141,36 +166,6 @@ public class HomeFragment extends Fragment {
 
         // Observe UI model data
         observeViewModel();
-
-        // Observe songs data (for logging)
-        mViewModel.getSongs().observe(getViewLifecycleOwner(), songs -> {
-            Log.d(TAG, "Songs loaded, count: " + songs.size());
-            for (Song song : songs) {
-                Log.d(TAG, "Song: " + song.getTitle() + " - ID: " + song.getId());
-            }
-        });
-
-        // Observe artists data (for logging)
-        mViewModel.getArtists().observe(getViewLifecycleOwner(), artists -> {
-            Log.d(TAG, "Artists loaded, count: " + artists.size());
-            for (Artist artist : artists) {
-                Log.d(TAG, "Artist: " + artist.getName() + " - ID: " + artist.getId());
-            }
-        });
-
-        // Observe loading state
-        mViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            Log.d(TAG, "Loading state: " + isLoading);
-            // TODO: Show/hide loading indicator
-        });
-
-        // Observe errors
-        mViewModel.getError().observe(getViewLifecycleOwner(), error -> {
-            if (error != null) {
-                Log.e(TAG, "Error loading data: " + error);
-                // TODO: Show error message to user
-            }
-        });
     }
 
     private void observeViewModel() {
